@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!-- $Id: contents.rdf 208 2008-04-12 20:32:29Z vicshih $ -->
+<RDF:RDF xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:chrome="http://www.mozilla.org/rdf/chrome#">
+
+  <!-- Packages -->
+  <RDF:Seq about="urn:mozilla:locale:root">
+    <RDF:li resource="urn:mozilla:locale:en-US"/>
+  </RDF:Seq>
+
+  <!-- Locale information -->
+  <RDF:Description about="urn:mozilla:locale:en-US">
+    <chrome:packages>
+      <RDF:Seq about="urn:mozilla:locale:en-US:packages">
+        <RDF:li resource="urn:mozilla:locale:en-US:tagin-sidebar"/>
+      </RDF:Seq>
+    </chrome:packages>
+  </RDF:Description>
+</RDF:RDF>

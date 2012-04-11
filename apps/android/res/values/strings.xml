@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="app_name">tagin!</string>
+<string name="refresh_button">Refresh</string>
+<string name="refresh_requested">Grabbing fingerprint...</string>
+</resources>

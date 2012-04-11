@@ -1,0 +1,66 @@
+CREATE TABLE AuthenticationKeys(authId INTEGER INCEMENT, authKey TEXT);
+CREATE TABLE FingerPrintCollections (fingerprintId INTEGER PRIMARY KEY AUTOINCREMENT, creationtime TIMESTAMP);
+CREATE TABLE FingerPrints (fingerprint INTEGER, macid TEXT, signalStrength NUMERIC, FOREIGN KEY(fingerprint) REFERENCES FingerPrintCollections(fingerprint) on update cascade, FOREIGN KEY(macid) REFERENCES Macs(macId) on update cascade);
+CREATE TABLE LocationSpec(
+fingerprint NUMERIC, 
+roomnumber TEXT, 
+floor TEXT, 
+building TEXT, 
+street TEXT, 
+city TEXT, 
+province TEXT, 
+country TEXT, 
+FOREIGN KEY(fingerprint) REFERENCES FingerPrintCollection(fingerprint) on update cascade, 
+FOREIGN KEY(roomnumber) REFERENCES Tags(tag),
+FOREIGN KEY(floor) REFERENCES Tags(tag),
+FOREIGN KEY(building) REFERENCES Tags(tag),
+FOREIGN KEY(city) REFERENCES Tags(tag),
+FOREIGN KEY(province) REFERENCES Tags(tag),
+FOREIGN KEY(country) REFERENCES Tags(tag)
+);
+CREATE TABLE MacDetails (macId TEXT, channel NUMERIC, mode TEXT, timestamp TIMESTAMP, FOREIGN KEY(macId) REFERENCES Macs(macId) on update cascade, UNIQUE(macId, channel, mode));
+CREATE TABLE Macs (macId TEXT PRIMARY KEY);
+CREATE TABLE Ownership(userid TEXT, fingerprint NUMERIC, FOREIGN KEY(userid) REFERENCES Users(userid) on update cascade, FOREIGN KEY(fingerprint) REFERENCES FingerPrintCollections(fingerprint) on update cascade);
+CREATE TABLE TagCluster(
+tag TEXT,
+relatedTag TEXT,
+FOREIGN KEY(tag) REFERENCES Tags(tag),
+FOREIGN KEY(relatedTag) REFERENCES Tags(tag)
+);
+CREATE TABLE TagPrints (tag TEXT, fingerprint NUMERIC, FOREIGN KEY(tag) REFERENCES Tags(tag) on update cascade, FOREIGN KEY (fingerprint) REFERENCES FingerPrintCollections(fingerprintId));
+CREATE TABLE Tags (tag TEXT PRIMARY KEY);
+CREATE TABLE Users(userId TEXT PRIMARY KEY, name Text, authid TEXT, FOREIGN KEY(authid) REFERENCES AuthenticationKey(authId));
+sqlite> .schema
+CREATE TABLE AuthenticationKeys(authId NUMERIC INCEMENT, authKey TEXT);
+CREATE TABLE FingerPrintCollections (fingerprintId INTEGER PRIMARY KEY AUTOINCREMENT, creationtime TIMESTAMP);
+CREATE TABLE FingerPrints (fingerprint NUMERIC, macid TEXT, signalStrength NUMERIC, FOREIGN KEY(fingerprint) REFERENCES FingerPrintCollections(fingerprint) on update cascade, FOREIGN KEY(macid) REFERENCES Macs(macId) on update cascade);
+CREATE TABLE LocationSpec(
+fingerprint NUMERIC, 
+roomnumber TEXT, 
+floor TEXT, 
+building TEXT, 
+street TEXT, 
+city TEXT, 
+province TEXT, 
+country TEXT, 
+FOREIGN KEY(fingerprint) REFERENCES FingerPrintCollections(fingerprint) on update cascade, 
+FOREIGN KEY(roomnumber) REFERENCES Tags(tag),
+FOREIGN KEY(floor) REFERENCES Tags(tag),
+FOREIGN KEY(building) REFERENCES Tags(tag),
+FOREIGN KEY(city) REFERENCES Tags(tag),
+FOREIGN KEY(province) REFERENCES Tags(tag),
+FOREIGN KEY(country) REFERENCES Tags(tag)
+);
+CREATE TABLE MacDetails (macId TEXT, channel NUMERIC, mode TEXT, timestamp TIMESTAMP, FOREIGN KEY(macId) REFERENCES Macs(macId) on update cascade, UNIQUE(macId, channel, mode));
+CREATE TABLE Macs (macId TEXT PRIMARY KEY);
+CREATE TABLE Ownership(userid TEXT, fingerprint NUMERIC, FOREIGN KEY(userid) REFERENCES Users(userid) on update cascade, FOREIGN KEY(fingerprint) REFERENCES FingerPrintCollections(fingerprint) on update cascade);
+CREATE TABLE TagCluster(
+tag TEXT,
+relatedTag TEXT,
+FOREIGN KEY(tag) REFERENCES Tags(tag),
+FOREIGN KEY(relatedTag) REFERENCES Tags(tag)
+);
+CREATE TABLE TagPrints (tag TEXT, fingerprint NUMERIC, FOREIGN KEY(tag) REFERENCES Tags(tag) on update cascade, FOREIGN KEY (fingerprint) REFERENCES FingerPrintCollections(fingerprintId));
+CREATE TABLE Tags (tag TEXT PRIMARY KEY);
+CREATE TABLE Users(userId TEXT PRIMARY KEY, name Text, authid TEXT, FOREIGN KEY(authid) REFERENCES AuthenticationKey(authId));
+

@@ -1,0 +1,247 @@
+* {
+	font-family: "Lucida Grande",Verdana,Arial,"Bitstream Vera Sans",sans-serif;
+}
+
+html {
+	padding: 0;
+	margin: 0;
+	border: 0;
+	background-color: #F4F4F4;
+}
+
+body {
+	padding: 0;
+	margin: 0;
+	border: 0;
+	font-size: 1.2em;
+}
+
+h2 {
+	font-size: 1.1em;
+}
+
+a {
+	text-decoration: none;
+}
+
+p {
+	padding: 0;
+	margin: 0;
+	border: 0;
+	margin-top:0.05em;
+	margin-bottom:0.25em;
+}
+
+.small {
+	font-size: 0.6em;
+	color: #CCCCCC;
+}
+.small-note {
+	font-size: 0.6em;
+	color: #000000;
+}
+.shadowtext {
+	font-size: 0.9em;
+	color: #CCCCCC;
+}
+.status {
+	font-size: 0.8em;
+	font-weight: bold;
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+}
+#all-content {
+	padding: 0;
+	margin: 0;
+	border: 0;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#main-content {
+	margin: 0;
+	border: 0;
+	padding: 0.2em;
+}
+
+#status-bar {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	position: relative;
+	margin-top: 0.2em;
+	margin-bottom: 0.2em;
+}
+
+#status-message {
+	position: absolute;
+	left: 0;
+	padding:0.3em;
+	font-size: 0.8em;
+	font-weight: bold;
+}
+
+#location-content {
+	padding: 0;
+	border: 0;
+	position: relative;
+}
+
+#currentLocation {
+	padding: 0;
+	margin: 0;
+	border: 0;
+	position: absolute;
+	left: 0;
+	margin-left: 0.4em;
+	margin-top: 0.2em;
+}
+
+#locationButtons {
+	padding: 0;
+	margin: 0;
+	border: 0;
+	position: absolute;
+	right: 0;
+	margin-right: 0.4em;
+	margin-top: 0.2em;
+	margin-bottom: 0.2em;
+}
+
+#add-button {
+	margin:0;
+	padding:0;
+	border: 0;
+	position: absolute;
+	right: 0;
+	top: 0;
+	margin-right: 0.4em;
+	margin-top: 0.2em;
+}
+
+#cfg-button {
+	margin:0;
+	padding:0;
+	border:0;
+	position: absolute;
+	top: 0px;
+	right: 0;
+	margin-right: 0.25em;
+}
+
+#addTags-section {
+	position: relative;
+	padding: 0.2em;
+}
+
+#tags-field {
+	position: absolute;
+	left: 0;
+	margin-left: 0.4em;
+	border-width: 2px;
+	padding:0;
+}
+
+#tagList {
+	margin: 0.2em;
+	margin-left: 0.4em;
+	padding: 0.2em;
+	overflow: auto;
+}
+
+#editLoc-dialog, #config-dialog {
+	border: 0;
+	margin: 0.4em;
+	padding: 0.4em;
+	font-size: 0.9em;
+}
+
+#editLoc-dialog ul {
+	background: none;
+	border: none;
+	padding-left: 0.8em;
+}
+
+#editLoc-dialog ul li {
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+}
+
+#editLoc-dialog input {
+	width: auto !important;
+}
+
+.fl-theme-mist a:hover {
+	text-decoration: underline;
+	color: #FF9900 !important;
+}
+
+.loc-item {
+    font-weight: bold;
+}
+
+.square-button, .square-button img {
+	border: 0;
+	margin: 0;
+	padding: 0;
+	width: 48px;
+	height: 48px;
+}
+
+.tagList-item {
+	font-size: 1.3em;
+	margin:0.2em 0 0.2em 0;
+	line-height: 2em;
+}
+
+.tagList-item a:hover {
+	text-decoration: none;
+}
+
+.tagList-button {
+	margin:0; 
+	padding: .4em 1em; 
+	cursor: pointer; 
+	background: #DFEFFC url(images/ui-bg_glass_light_1x400.png) repeat-x scroll 50% 50%;
+	max-width: 90%;
+	display: block;
+}
+
+.tagList-button:hover {
+	background: #DFEFFC url(images/ui-bg_glass_85_dfeffc_1x400.png) repeat-x scroll 50% 50%;
+}
+
+.delTag-button {
+    background:transparent url(../skin/xit.gif) no-repeat scroll 0 0;
+    width:10px;
+    height:10px;
+    cursor:pointer;
+    margin-right: 0.2em;
+    overflow: hidden;
+    text-decoration: none !important;
+}
+
+.delTag-button span {
+    visibility: hidden;
+}
+
+.delTag-button:hover {
+    background: transparent url(../skin/xit.gif) no-repeat scroll -10px 0;
+}
+
+.ui-tabs .ui-tabs-hide {
+     display: none;
+}
+
+.ui-tabs-panel {
+	margin: 0;
+	padding: 1em !important;
+	border-width: 1px !important;
+}
+
+.offScreen {
+	position: absolute;
+	left: -999px;
+	top: -999px;
+}

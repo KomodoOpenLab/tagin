@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <meta name="author" content="Jorge Silva, Susahosh Rahman" />
+    <meta name="keywords" content="mobile, accessibility, universal design, inclusive design, location, context, tagging, indoor" />
+    <meta name="description" content="Tag your location!" />
+    <link rel="shortcut icon" href="http://scyp.atrc.utoronto.ca/favicon.ico" type="image/vnd.microsoft.icon" />
+    <link rel="icon" href="http://scyp.atrc.utoronto.ca/favicon.ico" type="image/vnd.microsoft.icon" />
+
+    <title>TagIn! | Tag your location!</title>
+
+    <!-- Fluid Skinning System-->
+    <link rel="stylesheet" type="text/css" href="skin/fss/css/fss-reset.css" />
+    <link rel="stylesheet" type="text/css" href="skin/fss/css/fss-layout.css" />
+    <link rel="stylesheet" type="text/css" href="skin/fss/css/fss-text.css" />
+    <link rel="stylesheet" type="text/css" href="skin/fss/css/fss-theme-mist.css" />
+
+    <!-- Custom & Extended Styles-->
+    <link rel="stylesheet" type="text/css" href="skin/taginStyle.css" />
+	
+    <script type="text/javascript" src="jquery/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" src="jquery/jquery.blockUI.js"></script>
+	
+	<!-- tagin code -->
+    <script type="text/javascript" src="tagin-util.js"></script>
+	<script type="text/javascript" src="android-wifi-util.js"></script>
+    <script type="text/javascript" src="tagin-communicator.js"></script>
+    <script type="text/javascript" src="datamanager-util.js"></script>
+
+    <script type="text/javascript" src="tagin-init.js"></script>
+
+</head>
+
+<body class="fl-theme-mist">
+
+    <!-- Main Content -->
+    <div id="main-content" class="container">
+
+        <h1 id="pageTitle">Tag your location!</h1>
+
+        <!-- mainTop Content -->
+        <div id="mainTop-content">
+
+            <div id="status" class="fl-container-auto tagin-status"></div>
+
+            <!-- Location Widget-->
+            <div id="location-widget" class="fl-widget">
+                <div class="fl-widget-titlebar">
+                    <h2>You are at...</h2>
+                </div>
+                <div class="fl-widget-content">
+                    <div id="locationStatus" class="fl-container-auto tagin-status">
+                    </div>
+                    <div id="currentLocation" class="fl-container-auto">
+                    </div>
+                    <!--<button id="mapAddress-button" name="mapAddress-button" class="fl-button">
+                        <span>Map Address</span>
+                    </button>-->
+                </div>				
+            </div><!-- Location Widget Ends -->
+
+            <!-- All Tags Widget-->
+            <div id="allTags-widget" class="fl-widget">
+                <div class="fl-widget-titlebar">
+                    <h2>This location is tagged as...</h2>
+                </div>
+                <div class="fl-widget-content">
+                    <div id="worldTagsStatus" class="fl-container-auto tagin-status"></div>
+                    <div id="worldTags" class="fl-container-auto tagCloud"></div>
+					<hr/>
+					<a class="normallink" id="tagSettingButton" href=""><img id="sortbyimg" src="skin/dropsidearrow.jpg" /> Sort by...</a>
+		            <!-- Tag settings-->
+		            <div id="tag-settings-widget">
+							<table id="tagsortoptions">
+							<tr>
+			                	<td class="options"><input checked="" type="radio" name="sort_tag_by" value="distance" /></td><td>Proximity</td>
+								<td class="options"><input type="radio" name="sort_tag_by" value="count" /></td><td>Most tagged</td>
+							</tr>
+							</table>
+		            </div><!-- Tag settings Ends-->
+                </div>
+            </div><!-- All Tags Widget Ends-->
+
+            <div id="addtagwidget" class="fl-widget">
+                <div class="fl-widget-titlebar">
+                    <h2>Tag this location as...</h2>
+                </div>
+                <!-- Widget Content -->
+                <div class="fl-widget-content">
+                    <ul class="fl-controls-left">
+                            <!--<input type="button" id="closeaddbox" value="Close" />-->
+                            <li>
+                                <input class="fl-textfield" type="text" name="tagfield" id="tagfield"/>
+                                <button name="addTag-button" id='addTag-button'><span>Add Tags</span> </button> 
+								<button name="clearTag-button" id='clearTag-button'><span>Clear</span> </button> 
+                                <!--onclick="addTag(event);" -->
+                                <label class="small-note" id="tagfield-label" for="tagfield">*use commas to separate multiple tags</label>
+                            </li>
+                    </ul>
+                    <!-- Location Specs Tags -->
+                    <div id="specTags-section">
+                        <ul class="fl-tabs fl-tabs-enhanced">
+                            <li  id="specsTab-indoor" class="fl-tabs-active"><a href="#" onClick="return false;">Indoor</a></li>
+                            <li id="specsTab-address"><a href="#" onClick="return false;">Address</a></li>
+                        </ul>
+                        <!-- Tabs Content Wrapper -->
+                        <div class="fl-tabs-content fl-tabs-content-enhanced">
+                            <div id="indoorTab-content">
+                                <ul class="fl-controls-left">
+                                    <li>
+                                        <label for="room" class="fl-label">Room/Apt/Unit:</label>
+                                        <input type="text" class="fl-textfield" name="room" id="room"/>
+                                    </li>
+                                    <li>
+                                        <label for="floor" class="fl-label">Floor:</label>
+                                        <input type="text" class="fl-textfield" name="floor" id="floor"/>
+                                    </li>
+                                    <li>
+                                        <label for="building" class="fl-label">Building:</label>
+                                        <input type="text" class="fl-textfield" name="building" id="building"/>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div id="addressTab-content">
+                                <ul class="fl-controls-left">
+                                    <li>
+                                        <label for="street" class="fl-label">Street Address:</label>
+                                        <input type="text" class="fl-textfield" name="street" id="street"/>
+                                    </li>
+                                    <li>
+                                        <label for="city" class="fl-label">City:</label>
+                                        <input type="text" class="fl-textfield" name="city" id="city"/>
+                                    </li>
+                                    <li>
+                                        <label for="state" class="fl-label">Province/State:</label>
+                                        <input type="text" class="fl-textfield" name="state" id="state"/>
+                                    </li>
+                                    <li>
+                                        <label for="country" class="fl-label">Country:</label>
+                                        <input type="text" class="fl-textfield" name="country" id="country"/>
+                                    </li>
+                                    <li>
+                                        <label for="postal" class="fl-label">Postal/ZIP Code:</label>
+                                        <input type="text" class="fl-textfield" name="postal" id="postal"/>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="textalign-right">
+                                <button id="saveLoc-button" name="saveLoc-button"> <span>Save Location</span></button>
+								<button name="clearLoc-button" id='clearLoc-button'><span>Clear</span> </button> 
+                            </div>
+                        </div><!-- Tabs Content Wrapper Ends -->
+                    </div> <!-- Location Specs Tags Ends -->
+                </div> <!-- Widget Content Ends -->
+            </div> <!-- Tag location Widget Ends -->
+        </div><!-- mainTop Content Ends-->
+
+    <!-- Footer -->
+    <div>
+        <!-- div that will contain the UI Options component -->
+        <div id="myUIOptions">
+            <div id="dialogContent">
+            </div>
+        </div>
+    </div><!-- Footer Ends -->
+
+</body>
+</html>

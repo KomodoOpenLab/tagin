@@ -1,0 +1,82 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          tagin
+# Required-Start:
+# Required-Stop:
+# Default-Start:     S
+# Default-Stop:
+# Short-Description: Start tagin server.
+# Description:
+### END INIT INFO
+
+PATH=/usr/bin:/usr/sbin:/sbin:/bin
+
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
+
+do_start () {
+	if [ ! -d /var/run/tagin ]; then
+		cd /usr/local/tagin
+		mkdir /var/run/tagin && /usr/local/python2.6/bin/python /usr/local/tagin/server.py start
+		PID=`cat /var/run/tagin/tagin.pid`
+	        [ "$VERBOSE" != no ] && log_action_begin_msg "Starting tagin server"
+        	ES=$?
+	        [ "$VERBOSE" != no ] && log_action_end_msg $ES
+		#echo "tagin server started with pid $PID"
+	elif [ -d /var/run/tagin ]; then
+		if [ -f /var/run/tagin/tagin.pid ]; then
+			PID=`cat /var/run/tagin/tagin.pid`
+	                [ "$VERBOSE" != no ] && log_action_begin_msg "tagin server is already running with pid $PID"
+        	        ES=$?
+                	[ "$VERBOSE" != no ] && log_action_end_msg $ES
+			echo "tagin server is already running with pid $PID, please use /etc/init.d/tagin restart"
+		elif [ ! -f /var/run/tagin/tagin.pid ]; then
+			cd /usr/local/tagin
+			/usr/local/python2.6/bin/python /usr/local/tagin/server.py start
+                        PID=`cat /var/run/tagin/tagin.pid`
+                        [ "$VERBOSE" != no ] && log_action_begin_msg "tagin server started with pid $PID"
+                        ES=$?
+                        [ "$VERBOSE" != no ] && log_action_end_msg $ES
+			#echo "tagin server started with pid $PID"
+		fi
+	fi
+}
+
+do_stop () {
+	if [ -f /var/run/tagin/tagin.pid ]; then
+		PID=`cat /var/run/tagin/tagin.pid`
+		[ "$VERBOSE" != no ] && log_action_begin_msg "tagin stopping with pid $PID"
+		ES=$?
+		[ "$VERBOSE" != no ] && log_action_end_msg $ES
+		echo "tagin server stopping with pid $PID"
+		cd /usr/local/tagin
+		/usr/local/python2.6/bin/python /usr/local/tagin/server.py stop
+		if [ ! -f /var/run/tagin/tagin.pid ]; then
+			rm -rf /var/run/tagin
+			echo "successfully stopped tagin server"
+		elif [ -f /var/run/tagin/tagin.pid ]; then
+			echo "couldn't stop tagin server with pid $PID, please try again or manually kill it"
+		fi
+	fi
+}
+
+do_restart () {
+	do_stop
+	do_start
+}
+
+case "$1" in
+  start|"")
+	do_start
+	;;
+  restart|reload|force-reload)
+	do_restart	
+	;;
+  stop)
+	do_stop
+	;;
+  *)
+	echo "Usage: hostname.sh [start|stop]" >&2
+	exit 3
+	;;
+esac

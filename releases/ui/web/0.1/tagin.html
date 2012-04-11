@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+  xmlns:wairole="http://www.w3.org/2005/01/wai-rdf/GUIRoleTaxonomy#"
+  xmlns:x2="http://www.w3.org/2002/06/xhtml2"
+  xmlns:aaa="http://www.w3.org/2005/07/aaa">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<meta name="author" content="Jorge Silva, Susahosh Rahman" />
+	<meta name="keywords" content="mobile, accessibility, universal design, inclusive design, location, context, tagging, indoor" />
+	<meta name="description" content="Tag your location!" />
+	<link rel="shortcut icon" href="http://scyp.atrc.utoronto.ca/favicon.ico" type="image/vnd.microsoft.icon" />
+	<link rel="icon" href="http://scyp.atrc.utoronto.ca/favicon.ico" type="image/vnd.microsoft.icon" />
+	
+	<title>tagin!</title>
+	
+	<!-- Fluid Skinning System-->
+	<link rel="stylesheet" type="text/css" href="skin/fss/css/fss-reset.css" />
+	<link rel="stylesheet" type="text/css" href="skin/fss/css/fss-layout.css" />
+	<link rel="stylesheet" type="text/css" href="skin/fss/css/fss-text.css" />
+	<link rel="stylesheet" type="text/css" href="skin/fss/css/fss-theme-mist.css" />
+
+	<!-- jQuery CSS -->
+	<link type="text/css" href="scripts/jquery-ui/css/redmond/jquery-ui-1.7.2.custom.css" rel="stylesheet" />	
+	
+	<!-- Custom & Extended Styles-->
+	<link rel="stylesheet" type="text/css" href="skin/taginStyle.css" />
+
+	<!-- jQuery -->
+	<script type="text/javascript" src="scripts/jquery-ui/js/jquery-1.3.2.min.js"></script>
+	<script type="text/javascript" src="scripts/jquery-ui/js/jquery-ui-1.7.2.custom.min.js"></script>
+
+	<!-- tagin code -->
+	<script type="text/javascript" src="scripts/taginUI.js"></script>
+	<script type="text/javascript" src="scripts/taginInit.js"></script>
+	<!-- tagin code ends -->
+	
+</head>
+
+<body class="fl-theme-mist"><div id="all-content">
+
+	<h1 class="offScreen" id="pageTitle" tabindex="-1">tagin!, tag your location!</h1>
+
+	<!-- Status Bar-->
+	<div id="status-bar">
+
+		<!-- Status Message-->
+		<div id="status-message" class="ui-state-highlight ui-corner-all" tabindex="0" role="status" aria-live="polite" aria-atomic="true" aria-relevant="all text">
+		</div><!-- Status Message Ends-->
+
+		<!-- Config Button-->
+		<a id="cfg-button" class="square-button" href="javascript:taginUI.configHandler();">
+			<img alt="click to change preferences" title="click to change preferences" src="skin/images/cfg_up.png" onmousedown="$(this).attr('src','skin/images/cfg_down.png');" onkeydown="$(this).attr('src','skin/images/cfg_down.png');" onmouseup="$(this).attr('src','skin/images/cfg_up.png');" onkeyup="$(this).attr('src','skin/images/cfg_up.png');"/>
+		</a><!-- Config Button Ends -->
+	</div><!-- Status Bar Ends -->
+
+	<!-- Location Widget-->
+	<div id="location-widget" class="fl-widget">
+
+		<div class="fl-widget-titlebar">
+			<h2 tabindex="0">Location</h2>
+		</div>
+
+		<div id="location-content" class="fl-widget-content">
+
+			<div id="currentLocation" role="status" aria-live="polite" aria-atomic="true" aria-relevant="all text">
+				<div id="indoor_d">
+				</div>
+				<div id="address_d">
+				</div>
+			</div>
+
+			<div id="locationButtons">
+				<a id="edit-button" class="square-button" href="javascript:taginUI.editLocHandler();">
+					<img alt="click to edit location" title="click to edit location" src="skin/images/edit_up.png" onmousedown="$(this).attr('src','skin/images/edit_down.png');" onkeydown="$(this).attr('src','skin/images/edit_down.png');" onmouseup="$(this).attr('src','skin/images/edit_up.png');" onkeyup="$(this).attr('src','skin/images/edit_up.png');"/>
+				</a>
+				<br/>
+				<a id="mapAddress-button" class="square-button" href="javascript:taginUI.mapHandler($('#address_d'));">
+					<img alt="click to map location" title="click to map location" src="skin/images/map_up.png" onmousedown="$(this).attr('src','skin/images/map_down.png');" onkeydown="$(this).attr('src','skin/images/map_down.png');" onmouseup="$(this).attr('src','skin/images/map_up.png');" onkeyup="$(this).attr('src','skin/images/map_up.png');"/>
+				</a>
+			</div>
+
+		</div>				
+
+	</div><!-- Location Widget Ends -->
+
+	<!-- All Tags Widget-->
+	<div id="allTags-widget" class="fl-widget">
+
+		<div  id="allTags-title" class="fl-widget-titlebar">
+			<h2 tabindex="0">Tags</h2>
+		</div>
+
+		<div id="allTags-content" class="fl-widget-content">
+
+			<div id="addTags-section">
+				<label for="tags-field" class="offScreen">
+					Add tags
+				</label>
+				<input class="fl-textfield" title="Add tags" autocomplete="off" type="text" name="tags-field" id="tags-field" onkeypress="if(event.keyCode==13) taginUI.addTagsHandler();"/>
+				<a id="add-button" class="square-button" href="javascript:taginUI.addTagsHandler();">
+					<img alt="click to add tags" title="click to add tags" src="skin/images/add_up.png" onmousedown="$(this).attr('src','skin/images/add_down.png');" onkeydown="$(this).attr('src','skin/images/add_down.png');" onmouseup="$(this).attr('src','skin/images/add_up.png');"  onkeyup="$(this).attr('src','skin/images/add_up.png');"/>
+				</a>
+				<br/><br/>
+
+			</div>
+
+			<ul  id="tagList" role="status" aria-live="polite" aria-atomic="true" aria-relevant="all text">
+			</ul>
+
+		</div>
+	</div><!-- All Tags Widget Ends-->
+
+	<!-- Edit location Dialog -->
+	<div id="editLoc-dialog" role="region" aria-live="polite" aria-atomic="true" aria-relevant="all">
+		<ul>
+			<li><a href="#indoor-tab">Indoor</a></li>
+			<li><a href="#address-tab">Address</a></li>
+		</ul>
+		<div id="indoor-tab" class="ui-corner-all">
+			<p>
+				<label for="room" class="fl-label">Room:</label>
+				<br/>
+				<input autocomplete="off" type="text" class="fl-textfield" name="room" id="room"/>
+			</p>
+			<p>
+				<label for="floor" class="fl-label">Floor:</label>
+				<br/>
+				<input autocomplete="off" type="text" class="fl-textfield" name="floor" id="floor"/>
+			</p>
+			<p>
+				<label for="building" class="fl-label">Building:</label>
+				<br/>
+				<input autocomplete="off" type="text" class="fl-textfield" name="building" id="building"/>
+			</p>
+		</div>
+		<div id="address-tab" class="ui-corner-all">
+			<p>
+				<label for="street" class="fl-label">Street Address:</label>
+				<br/>
+				<input autocomplete="off" type="text" class="fl-textfield" name="street" id="street"/>
+			</p>
+			<p>
+				<label for="city" class="fl-label">City:</label>
+				<br/>
+				<input autocomplete="off" type="text" class="fl-textfield" name="city" id="city"/>
+			</p>
+			<p>
+				<label for="province" class="fl-label">Province/State:</label>
+				<br/>
+				<input autocomplete="off" type="text" class="fl-textfield" name="province" id="province"/>
+			</p>
+			<p>
+				<label for="country" class="fl-label">Country:</label>
+				<br/>
+				<input autocomplete="off" type="text" class="fl-textfield" name="country" id="country"/>
+			</p>
+			<p>
+				<label for="postal" class="fl-label">Postal/ZIP Code:</label>
+				<br/>
+				<input autocomplete="off" type="text" class="fl-textfield" name="postal" id="postal"/>
+			</p>
+		</div>
+	</div> <!-- Edit location Dialog Ends -->
+
+	<!-- Config Dialog -->
+	<div id="config-dialog">
+		<!-- Sort tags form-->
+		<form id="tagsort-form">
+			<fieldset>
+				<legend><strong>Sort tags by...</strong></legend>
+				<label><input id="dradio" type="radio" name="tagsort-order" value="distance"/> Proximity</label>
+				<br/>
+				<label><input id="cradio" type="radio" name="tagsort-order" value="count"/> Frequency</label>
+			</fieldset>
+		</form><!-- Sort tags form Ends-->
+	</div> <!-- Config Dialog Ends -->
+
+</div></body>
+</html>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!-- $Id: tagin-sidebar.xul 213 2008-04-29 00:00:31Z ATRC $ -->
+<?xml-stylesheet href="chrome://global/skin/" type"text/css" ?>
+<?xml-stylesheet href="chrome://browser/skin/browser.css" type="text/css" ?>
+<!DOCTYPE page SYSTEM "chrome://tagin-sidebar/locale/tagin-sidebar.dtd">
+
+<page id="sbTaginSidebar" title="&tagin-sidebar.title;"
+      xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" >
+  <script type="application/x-javascript" src="chrome://tagin-sidebar/content/tagin-sidebar-sidebar.js" />
+
+  <vbox flex="1" width="270px" minwidth="270px">
+    <browser id="browserTaginSidebar" type="content" flex="1" />
+  </vbox>
+</page>

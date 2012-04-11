@@ -1,0 +1,157 @@
+* {
+    font-family: "Lucida Grande",Verdana,Arial,"Bitstream Vera Sans",sans-serif;
+}
+
+html {
+    padding: 0px;
+    margin: 0px;
+    height: 100%;
+}
+
+body {
+    padding: 0px;
+    margin: 0px;
+    height: 100%;
+}
+
+#main-content {
+    padding: 5px;
+}
+
+#pageTitle {
+    display: none;
+}
+
+#addressTab-content {
+    display: none;
+}
+
+#mapAddress-button {
+    float: right;
+    margin-right: 2%;
+}
+
+#saveLoc-button {
+    margin-right: 3%;
+}
+
+#customTags-section {
+    margin-top:20px;
+}
+
+#uiOptions-button-wrapper {
+    display: none;
+}
+
+#tagfield-label {
+    margin: 2px;
+    display: block;
+}
+
+#currentLocation a:hover, .tagCloud-item a:hover {
+    color: #FF9900 !important;
+}
+
+
+.normallink {
+	padding: 0px 0px 0px 5px;
+	color: #0000FF !important;
+	text-decoration: none !important;
+	font-size: .8em;
+	font-weight: normal !important;
+}
+
+hr{
+	width: 70%;
+	margin-left: 0px;
+	padding-left: 0px;
+}
+
+.small {
+	font-size: 0.6em;
+	color: #CCCCCC;
+}
+
+#tag-settings-widget {
+	width: 230px;
+}
+
+#tagsortoptions {
+	position: relative;
+	left: 5px !important;
+	width: 230px;
+}
+
+#tagsortoptions tr td {
+	padding: 5px 0px 0px 0px !important;
+	border-style: hidden !important;
+}
+
+#tagsortoptions tr td .options {
+	padding: 5px 0px 0px 0px !important;
+	border-style: hidden;
+	width: 50px;
+}
+
+#debug-widget {
+    /*display: none;*/
+	visibility: hidden;
+}
+
+.fl-widget li {
+    margin:4px 0 4px 0;
+}
+
+.fl-widget input {
+    width: 45%;
+}
+
+.fl-controls-left {
+    width: 98%;
+    margin: 0px;
+    margin-left: 2%;
+    padding: 0px;
+}
+
+.textalign-right {
+    text-align: right;
+}
+
+.tagCloud {
+    margin:5px;
+    margin-top:10px;
+}
+
+.tagCloud-item {
+    line-height:2.8em;
+}
+
+.delTag-button {
+    background:transparent url(../skin/xit.gif) no-repeat scroll 0 0;
+    width:10px;
+    height:10px;
+    cursor:pointer;
+    margin-right: 5px;
+    overflow: hidden;
+    text-decoration: none !important;
+}
+
+.delTag-button span {
+    visibility: hidden;
+}
+
+.delTag-button:hover {
+    background: transparent url(../skin/xit.gif) no-repeat scroll -10px 0;
+}
+
+.tagin-status {
+    font-size: 1.1em;
+    color: blue;
+    padding: 2px;
+    text-align: center;
+}
+
+.small-note {
+    font-size: 0.76em;
+}
+

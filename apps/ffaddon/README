@@ -1,0 +1,17 @@
+To create this add-on, I followed the tutorial at https://developer.mozilla.org/en/Building_an_Extension 
+
+but then I gave up and used the todoist-sidebar code as a starting point instead.
+
+Testing:
+
+1. Create a "dev" profile in firefox to play with the code (do not check the "don't ask me" line):
+
+$ /usr/bin/firefox -no-remote -P dev &
+
+2. Place the latest xpi file from the release folder inside the extensions folder in the firefox profile you created (e.g., .mozilla/firefox/[something].dev/extensions)
+
+4. Close and open firefox using the same command you used before:
+
+$ /usr/bin/firefox -no-remote -P dev &
+
+5. The add-on should now be installed

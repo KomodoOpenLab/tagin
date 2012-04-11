@@ -1,0 +1,77 @@
+CREATE TABLE Macs(mac TEXT PRIMARY KEY);
+CREATE TABLE MacDetails(
+	mac TEXT, 
+	channel INTEGER, 
+	mode TEXT, 
+	timestamp TIMESTAMP, 
+	FOREIGN KEY (mac) REFERENCES Macs(mac) on update cascade
+);
+CREATE TABLE Tags(tag TEXT PRIMARY KEY);
+CREATE TABLE TagCluster(
+	tag TEXT, 
+	relatedTag TEXT, 
+	FOREIGN KEY (tag) REFERENCES Tags(tag), 
+	FOREIGN KEY (relatedTag) REFERENCES Tags(tag)
+);
+
+CREATE TABLE FingerPrintsCollection(
+	fingerPrint INTEGER PRIMARY KEY AUTOINCREMENT, 
+	creationTime TIMESTAMP
+);
+
+CREATE TABLE TagPrints(
+	tag TEXT,
+	fingerPrint INTEGER,
+	FOREIGN KEY (tag) REFERENCES Tags(tag),
+	FOREIGN KEY (fingerPrint) REFERENCES FingerPrintsCollection(fingerPrint) on update cascade
+);
+
+CREATE TABLE FingerPrints(
+	fingerPrint INTEGER, 
+
+	Mac TEXT,
+	Strength NUMARIC,
+	FOREIGN KEY (fingerPrint) REFERENCES FingerPrintsCollection(fingerPrint),
+	FOREIGN KEY (mac) REFERENCES Macs(mac)
+);
+
+
+CREATE TABLE Users(
+	userId TEXT PRIMARY KEY, 
+	name TEXT,
+	registrationDate TIMESTAMP
+);
+
+CREATE TABLE UserAuthentication(
+	userId TEXT, 
+	authkey TEXT, 
+	UNIQUE (userId),
+	FOREIGN KEY(userId) REFERENCES Users(userId)
+);
+
+CREATE TABLE Ownership(
+	userid TEXT, 
+	fingerprint INTEGER, 
+	activeOwnership BOOLEAN DEFAULT 1,
+	FOREIGN KEY(userid) REFERENCES Users(userid) on update cascade, 
+	FOREIGN KEY(fingerprint) REFERENCES FingerPrintsCollection(fingerPrint) on update cascade
+);
+
+CREATE TABLE LocationSpec(
+	fingerprint INTEGER, 
+	roomnumber TEXT, 
+	floor TEXT, 
+	building TEXT, 
+	street TEXT, 
+	city TEXT, 
+	province TEXT, 
+	country TEXT, 
+	FOREIGN KEY(fingerprint) REFERENCES FingerPrintCollections(fingerprint) on update cascade, 
+	FOREIGN KEY(roomnumber) REFERENCES Tags(tag),
+	FOREIGN KEY(floor) REFERENCES Tags(tag),
+	FOREIGN KEY(building) REFERENCES Tags(tag),
+	FOREIGN KEY(city) REFERENCES Tags(tag),
+	FOREIGN KEY(province) REFERENCES Tags(tag),
+	FOREIGN KEY(country) REFERENCES Tags(tag)
+);
+

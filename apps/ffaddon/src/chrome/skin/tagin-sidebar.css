@@ -1,0 +1,23 @@
+/* $Id: tagin-sidebar.css 212 2008-04-14 17:31:01Z vicshih $ */
+
+#buttonTaginSidebar { 
+  list-style-image: url("chrome://tagin-sidebar/skin/tagin-sidebar-24x24.png"); 
+  -moz-image-region: rect(0px, 24px, 24px, 0px);  
+}
+#buttonTaginSidebar:hover {
+  -moz-image-region: rect(24px, 24px, 48px, 0px);
+}
+#buttonTaginSidebar[checked="true"] { 
+  -moz-image-region: rect(24px, 24px, 48px, 0px);
+}
+
+toolbar[iconsize="small"] #buttonTaginSidebar {
+  list-style-image: url("chrome://tagin-sidebar/skin/tagin-sidebar-16x16.png");
+  -moz-image-region: rect(0px, 16px, 16px, 0px);
+}
+toolbar[iconsize="small"] #buttonTaginSidebar:hover {
+  -moz-image-region: rect(16px, 16px, 32px, 0px);
+}
+toolbar[iconsize="small"] #buttonTaginSidebar[checked="true"] {
+  -moz-image-region: rect(16px, 16px, 32px, 0px);
+}

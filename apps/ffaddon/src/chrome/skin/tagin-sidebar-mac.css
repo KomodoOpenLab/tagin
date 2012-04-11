@@ -1,0 +1,23 @@
+/* $Id: tagin-sidebar-mac.css 213 2008-04-29 00:00:31Z vicshih $ */
+
+#buttonTaginSidebar { 
+  list-style-image: url("chrome://tagin-sidebar/skin/tagin-sidebar-32x32.png"); 
+  -moz-image-region: rect(0px, 32px, 32px, 0px);  
+}
+#buttonTaginSidebar:hover {
+  -moz-image-region: rect(32px, 32px, 64px, 0px);
+}
+#buttonTaginSidebar[checked="true"] { 
+  -moz-image-region: rect(32px, 32px, 64px, 0px);
+}
+
+toolbar[iconsize="small"] #buttonTaginSidebar {
+  list-style-image: url("chrome://tagin-sidebar/skin/tagin-sidebar-24x24.png");
+  -moz-image-region: rect(0px, 24px, 24px, 0px);
+}
+toolbar[iconsize="small"] #buttonTaginSidebar:hover {
+  -moz-image-region: rect(24px, 24px, 48px, 0px);
+}
+toolbar[iconsize="small"] #buttonTaginSidebar[checked="true"] {
+  -moz-image-region: rect(24px, 24px, 48px, 0px);
+}

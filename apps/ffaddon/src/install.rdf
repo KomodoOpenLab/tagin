@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: install.rdf 212 2008-04-14 17:31:01Z ATRC $ -->
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+ xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+  <Description about="urn:mozilla:install-manifest">
+    <em:id>tagin-sidebar@atrc.utoronto.ca</em:id>
+    <em:name>Tagin!</em:name>
+    <em:version></em:version>
+	<em:creator>ATRC</em:creator>
+	<em:contributor>Jorge Silva</em:contributor>
+	<em:contributor>Susahosh Rahman</em:contributor>
+	<em:contributor>Yura Zenevich</em:contributor>
+	<em:contributor>Jamon Camisso</em:contributor>
+    <em:description>Tag your location!</em:description>
+	<em:homepageURL>http://scyp.atrc.utoronto.ca/tagin</em:homepageURL>
+	<em:iconURL>chrome://tagin-sidebar/skin/tagin-sidebar.png</em:iconURL>
+
+    <em:targetApplication>
+      <Description>
+        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id> <!-- firefox -->
+        <em:minVersion>3.5b4pre</em:minVersion>
+        <em:maxVersion>3.6.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+  </Description>
+</RDF>

@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!-- $Id: firefoxOverlay.xul 208 2008-04-12 20:32:29Z ATRC $ -->
+<?xml-stylesheet href="chrome://tagin-sidebar/skin/tagin-sidebar.css" type="text/css"?>
+<?xml-stylesheet href="chrome://tagin-sidebar/skin/tagin-sidebar-mac.css" type="text/css"?>
+
+<!DOCTYPE overlay SYSTEM "chrome://tagin-sidebar/locale/tagin-sidebar.dtd">
+<overlay id="TaginSidebarOverlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script type="application/x-javascript" src="chrome://tagin-sidebar/content/tagin-sidebar.js" />
+
+  <stringbundleset id="stringbundleset"> 
+    <stringbundle id="bundleTaginSidebar" src="chrome://tagin-sidebar/locale/tagin-sidebar.properties" />
+  </stringbundleset>
+
+  <menupopup id="viewSidebarMenu">
+      <menuitem id="menuTaginSidebar" key="keyTaginSidebar" accesskey="g" observes="viewTaginSidebar" />
+  </menupopup>
+
+  <keyset id="mainKeyset">
+    <key id="keyTaginSidebar" command="viewTaginSidebar" />
+  </keyset>
+
+  <toolbox id="navigator-toolbox">
+      <toolbarpalette id="BrowserToolbarPalette">
+	  <toolbarbutton id="buttonTaginSidebar" class="toolbarbutton-1 chromeclass-toolbar-additional"
+                 label="&tagin-sidebar.tbbutton.label;"
+				 tooltiptext="&tagin-sidebar.tooltip;"
+				 observes="viewTaginSidebar"
+                 onclick="tagin.click(event);"
+                 oncommand="toggleSidebar('viewTaginSidebar');" />
+      </toolbarpalette>
+  </toolbox>
+
+  <broadcasterset id="mainBroadcasterSet">
+    <broadcaster id="viewTaginSidebar"
+                 label="&tagin-sidebar.title;"
+                 autoCheck="false"
+                 type="checkbox"
+                 group="sidebar"
+                 sidebarurl="chrome://tagin-sidebar/content/tagin-sidebar.xul"
+                 sidebartitle="&tagin-sidebar.title;"
+                 oncommand="toggleSidebar('viewTaginSidebar');" />
+  </broadcasterset>
+</overlay>
