@@ -47,10 +47,10 @@ public class Fingerprinter extends Service implements Runnable {
     	mHelper = Helper.getInstance();
     	mFP = new Fingerprint();
 
-    	registerReceiver(mReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION) );
+    	registerReceiver(mReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 	}
 	
-    // platform.  On 2.0 or later we override onStartCommand() so this
+    // On 2.0 or later we override onStartCommand() so this
     // method will not be called.
     /*
     * The system calls this method when another component, such as an activity, 

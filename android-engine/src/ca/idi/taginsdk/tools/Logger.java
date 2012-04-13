@@ -175,7 +175,7 @@ public class Logger extends Activity {
 					pAP = Integer.toString(mSavedFP.getBeacons().length);
 					Log.d(Helper.TAG, LogItem);
 					writeToFile(LogItem); //Writing pairs of Rank Distance and Inside/Outside to log file.
-					mMonitor5.setText("Distance: " + Double.toString(measureRankDistance(mSavedFP,lastFP)));
+					mMonitor5.setText("Distance to previous: " + Double.toString(measureRankDistance(mSavedFP,lastFP)));
 				}	
 				mMonitor1.setText("Taken at: " +  cTime  );
 				mMonitor2.setText("Number of Beacons: " + cAP);

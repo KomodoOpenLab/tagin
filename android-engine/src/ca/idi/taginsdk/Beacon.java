@@ -49,10 +49,10 @@ public class Beacon implements Comparable<Beacon> {
 	}
 	
 	/**
-	 * Calculates the Rank of the beacon by normalizing w.r.t Max Power
-	 * @param rssi - RSSI of beacon
-	 * @param mMaxRSSIEver - Max Power
-	 * @return Rank value
+	 * Calculates the Rank of the beacon by normalizing with respect to Max RSSI
+	 * @param rssi - received signal strength indication
+	 * @param mMaxRSSIEver - Maximum RSSI ever recorded by this device
+	 * @return Normalized rank value in the range [0, 1]
 	 */
 	public Double calculateRank(int rssi, int mMaxRSSIEver){
 		Double maxPowerEver = dBm2Power(mMaxRSSIEver);
