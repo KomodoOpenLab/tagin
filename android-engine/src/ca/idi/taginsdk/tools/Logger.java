@@ -167,12 +167,12 @@ public class Logger extends Activity {
 				Fingerprint lastFP = new Fingerprint(Fingerprinter.getFingerprint().getBeacons());
 				Log.d(Helper.TAG, "Fingerprint: " + printFP(lastFP));
 				cTime = lastFP.getTime(); //Getting the time current Fingerprint was taken
-				cAP = Integer.toString(lastFP.getBeacons().length);
+				cAP = Integer.toString(lastFP.getBeacons().size());
 				if (mSavedFP != null){	
 					pTime = mSavedFP.getTime();
 					LogItem =  cAP + "," + measureRankDistance(mSavedFP,lastFP) +
 									"," + mToggleButton.isChecked() +"\n" ;
-					pAP = Integer.toString(mSavedFP.getBeacons().length);
+					pAP = Integer.toString(mSavedFP.getBeacons().size());
 					Log.d(Helper.TAG, LogItem);
 					writeToFile(LogItem); //Writing pairs of Rank Distance and Inside/Outside to log file.
 					mMonitor5.setText("Distance to previous: " + Double.toString(measureRankDistance(mSavedFP,lastFP)));
@@ -187,17 +187,15 @@ public class Logger extends Activity {
 	};
 	
 	private String printFP (Fingerprint fp) {
-		Beacon[] beacons = fp.getBeacons();
-		Double[] ranks = fp.getRanks();
 		String msg = ""; int i = 0;
-        for (i = 0; i < beacons.length ;i++) {
-        	msg += beacons[i].getBSSID() + ", " + beacons[i].getRSSI().toString() + ", " + ranks[i].toString();
+        for (Beacon beacon : fp.getBeacons()) {
+        	msg += beacon.getBSSID() + ", " + beacon.getRSSI().toString() + ", " + beacon.getRank().toString();
         }
 		return msg;
 	}
 	
 	private double measureRankDistance(Fingerprint fp1, Fingerprint fp2) {
-		return fp1.rankDistanceTo(fp2, mHelper.getMaxRSSIEver(this));
+		return fp1.rankDistanceTo(fp2);
 	}
 	
 	/*
