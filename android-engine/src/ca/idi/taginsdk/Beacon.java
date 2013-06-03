@@ -63,7 +63,7 @@ public class Beacon implements Comparable<Beacon> {
 	}
 	
 	public String toString() {
-		return "BSSID:" + getBSSID() + ", RSSI: " + getRSSI() + ", rank: " + getRank();
+		return "BSSID: " + getBSSID() + ", RSSI: " + getRSSI() + ", rank: " + getRank();
 	}
 
 }

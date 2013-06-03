@@ -9,7 +9,9 @@ package ca.idi.taginsdk;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.net.wifi.ScanResult;
 
@@ -237,61 +239,24 @@ public class Fingerprint {
 	 * Merges two fingerprints
 	 * @return
 	 */
-
 	public void merge(Fingerprint fp) {
-		List<Beacon> thisBeacons = mBeacons;
-		List<Beacon> fpBeacons = fp.getBeacons();
-		Integer thisSize = mBeacons.size();
-		Integer fpSize = fpBeacons.size();
-		int i, j;
-		Boolean dupFound; //To check if dup was found for this beacon
-		// Initialize boolean masks for identifying identical beacons
-		// Can be used to check latter on which beacons in this fingerprint 
-		// had no identical beacon in other Fingerprint. 
-		Boolean[] FPUsed = new Boolean[fpSize];
-		for (i = 0; i < fpSize; i++) {
-			FPUsed[i] = false;
+		Map<String,Beacon> beacons = new HashMap<String,Beacon>();
+		for (Beacon beacon : this.getBeacons()) {
+			beacon.setRank(beacon.getRank() / 2);
+			beacons.put(beacon.getBSSID(), beacon);
 		}
-		for (i=0; i < thisSize; i++) {
-			j = 0; 
-			dupFound = false; 
-			while (!dupFound && (j < fpSize)) {
-				if (!FPUsed[j]) {
-					if (thisBeacons.get(i).getBSSID().equals(fpBeacons.get(j).getBSSID())) {
-						//Log.v(Helper.TAG, "Averaging Ranks");
-						// The same beacon was found in the other fingerprint. Ranks must be averaged.
-						thisBeacons.get(i).setRank((thisBeacons.get(i).getRank() +  fpBeacons.get(j).getRank())/2);
-						FPUsed[j] = true; //The identical beacon found.
-						dupFound = true;  
-					}
-				}
-				j++;
-			}
-			if (!dupFound) {  
-				/*
-				 * The dup was not found and the rank value of this beacon in this fingerprint is halved.
-				 */
-				//Log.v(Helper.TAG, "Halving Ranks for" + thisBeacons[i].getBSSID());
-				thisBeacons.get(i).setRank(thisBeacons.get(i).getRank()/2);
+		
+		for (Beacon beacon : fp.getBeacons()) {
+			if (beacons.containsKey(beacon.getBSSID())) {
+				Beacon b = beacons.get(beacon.getBSSID());
+				b.setRank(b.getRank() + (beacon.getRank() / 2));
+				beacons.put(b.getBSSID(), b);
+			} else {
+				beacon.setRank(beacon.getRank() / 2);
+				beacons.put(beacon.getBSSID(), beacon);
 			}
 		}
-		// Add remaining beacons from the other fingerprint
-		ArrayList<Beacon> BeaconList = new ArrayList<Beacon>(thisBeacons);
-		//Log.v(Helper.TAG, "Merge Size Check Before Adding : " + Integer.toString(BeaconList.size()));
-		for (i = 0; i < fpSize; i++) {
-			// Adding the new fingerprint's i-th beacon to the URN
-			if (!FPUsed[i]) {
-				//Log.v(Helper.TAG, "Adding new Ranks");
-				Beacon beacon = new Beacon();
-				beacon.setRSSI(fpBeacons.get(i).getRSSI());
-				beacon.setBSSID(fpBeacons.get(i).getBSSID());
-				beacon.setRank(fpBeacons.get(i).getRank()/2); //Averaging the Rank of the new Beacon
-				BeaconList.add(beacon);
-				//Log.v(Helper.TAG, "Adding new Ranks: " +  beacon.getBSSID());
-			}
-		}
-		//Log.v(Helper.TAG, "Merge Size Check After Adding : " + Integer.toString(BeaconList.size()));
-		this.setBeacons(BeaconList);
+		setBeacons(new ArrayList<Beacon>(beacons.values()));
 	}
 
 	public List<Beacon> getBeacons() { 
