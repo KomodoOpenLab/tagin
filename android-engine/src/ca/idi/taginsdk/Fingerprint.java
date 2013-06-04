@@ -36,7 +36,7 @@ public class Fingerprint {
 	}
 	
 	public void setBeacons(List<Beacon> beacons) {
-		mBeacons = new ArrayList<Beacon>(beacons);
+		mBeacons = beacons;
 		mTime = mHelper.getTime();
 	}
 	
@@ -117,77 +117,27 @@ public class Fingerprint {
 	}
 	
 	/**
-	 * Returns a rank in the range (0, 1.0] based on the beacon's RSSI.
-	 * The highest RSSI values approach a rank of 1.0 while the weakest ones
-	 * approach 0.0
-	**/
-	public List<Double> getRanks() {
-		List<Double> ranks = new ArrayList<Double>();
-		for (Beacon beacon : mBeacons)
-			ranks.add(beacon.getRank());
-		return ranks;
-	}
-	
-	public double rankDistanceTo(Fingerprint another) {
-		/*
-		 * Calculates the relative distance between two fingerprints.
-		 * The relative is between 0 and 1 and is max when two fingerprints
-		 * doesnt share a beacon and min where there are lot of shared 
-		 * beacons.
-		 */
-		//Log.d(Helper.TAG, "Calculating rank distance...");
-		// Used to save fingerprint distance by calculating the euclidean distance between two beacons having same
-		// BSSID in two fingerprints. 
-		Double d = 0.0;
-		// Used to save the maximum possible fingerprint distance (for distance normalization) by considering
-		// the case when two fingerprints doesn't share any beacon.
-		Double maxD = 0.0;
-		
-		Boolean dupFound; int i, j;
-		List<Beacon> thisBeacons = mBeacons;
-		List<Beacon> otherBeacons = another.getBeacons();
-		List<Double> thisRanks = getRanks(); // Getting the ranks of beacons 
-		List<Double> otherRanks = another.getRanks();
-		Integer thisLength = mBeacons.size();
-		Integer otherLength = otherBeacons.size();
-		
-		// Initialize boolean masks for identifying identical beacons
-		// Can be used to check latter on which beacons had no identical beacon
-		Boolean[] otherUsed = new Boolean[otherLength];
-		for (i = 0; i < otherLength; i++) {
-			otherUsed[i] = false;
+	 * Calculates the relative distance between two fingerprints.
+	 * The value is between 0 and 1 and is maximal when two fingerprints
+	 * don't share a beacon and minimal where they share a lot of beacons.
+	 */
+	public double rankDistanceTo(Fingerprint fp) {
+		double d = 0.0;    // Euclidean distance between two beacons having same BSSID in two fingerprints.
+		double maxD = 0.0; // Maximum possible fingerprint distance when two fingerprints don't share any beacon.
+		Map<String,Beacon> beacons = new HashMap<String,Beacon>();
+		for (Beacon beacon : this.getBeacons()) {
+			maxD += Math.pow(beacon.getRank(), 2.0);
+			d += Math.pow(beacon.getRank(), 2.0);
+			beacons.put(beacon.getBSSID(), beacon);
 		}
-		// Measure differences from this fingerprint
-		for (i=0; i < thisLength; i++) {
-			// Maximum contribution from this fingerprint's i-th beacon
-			maxD += Math.pow(thisRanks.get(i), 2.0);
-			j = 0; 
-			dupFound = false; // To check if dup was found for this beacon
-			while (!dupFound && (j < otherLength)) {
-				if (!otherUsed[j]) {
-					if (thisBeacons.get(i).getBSSID().equals(otherBeacons.get(j).getBSSID())) {
-						// The same beacon was found in the other fingerprint.
-						// The distance between both must be measured
-						d += Math.pow(thisRanks.get(i) - otherRanks.get(j), 2.0);
-						otherUsed[j] = true; //The identical beacon found.
-						dupFound = true;  
-					}
-				}
-				j++;
-			}
-			if (!dupFound) {
-				/*
-				 * The dup was not found and the maximum contribution is added from this beacon.
-				 */
-				d += Math.pow(thisRanks.get(i), 2.0);
-			}
-		}
-		// Measure remaining differences from the other fingerprint
-		for ( i = 0; i < otherLength; i++ ) {
-			// Maximum contribution from other fingerprint's i-th beacon
-			maxD += Math.pow(otherRanks.get(i), 2.0);
-			if (!otherUsed[i]) {
-				d += Math.pow(otherRanks.get(i), 2.0);
+		
+		for (Beacon beacon : fp.getBeacons()) {
+			maxD += Math.pow(beacon.getRank(), 2.0);
+			if (beacons.containsKey(beacon.getBSSID())) {
+				Beacon b = beacons.get(beacon.getBSSID());
+				d += Math.pow(beacon.getRank() - b.getRank(), 2.0) - Math.pow(b.getRank(), 2.0);
+			} else {
+				d += Math.pow(beacon.getRank(), 2.0);
 			}
 		}
 		return Math.sqrt(d) / Math.sqrt(maxD);
