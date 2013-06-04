@@ -9,9 +9,9 @@ package ca.idi.taginsdk;
 
 public class Beacon implements Comparable<Beacon> {
 	
-	private String BSSID; //MAC ID
-	private Integer RSSI; //Recieved Signal Strength
-	private Double rank; //Rank value in the range [0, 1]
+	private String BSSID; // MAC ID
+	private Integer RSSI; // Recieved Signal Strength Indication
+	private Double rank; // Rank value in the range [0, 1]
 
 	// Constructors
 	public Beacon() {
@@ -23,13 +23,7 @@ public class Beacon implements Comparable<Beacon> {
 	public Beacon(String bssid, Integer rssi, int maxRSSIEver) {
 		this.BSSID = bssid;
 		this.RSSI = rssi;
-		this.rank = calculateRank(rssi, maxRSSIEver); //TODO Check 
-	}
-	
-	public Beacon(String bssid, Integer rssi, Double rank) {
-		this.BSSID = bssid;
-		this.RSSI = rssi;
-		this.rank = rank;
+		this.rank = calculateRank(rssi, maxRSSIEver);
 	}
 
 	public void setBSSID(String bssid) { this.BSSID = bssid; }
@@ -44,7 +38,7 @@ public class Beacon implements Comparable<Beacon> {
 		/*Natural Comparison method of the class. The ordering given by this method is considered 
 		the natural ordering of the objects of the class.
 		*/
-		return another.getRSSI() - RSSI;
+		return another.getRSSI() - getRSSI();
 	}
 	
 	/**
@@ -63,7 +57,10 @@ public class Beacon implements Comparable<Beacon> {
 	}
 	
 	public String toString() {
-		return "BSSID: " + getBSSID() + ", RSSI: " + getRSSI() + ", rank: " + getRank();
+		return getClass().getName() + "[" + 
+			"BSSID: " + getBSSID() + 
+			", RSSI: " + getRSSI() + 
+			", rank: " + getRank() + "]";
 	}
 
 }

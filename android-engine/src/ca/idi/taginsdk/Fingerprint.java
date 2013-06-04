@@ -16,7 +16,6 @@ import java.util.Map;
 import android.net.wifi.ScanResult;
 
 
-
 public class Fingerprint {
 	/**
 	 * Individual beacons that this fingerprint contains
