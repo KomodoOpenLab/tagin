@@ -81,10 +81,10 @@ public class Fingerprinter extends Service implements Runnable {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		if(mHandler!= null){
+		if (mHandler!= null) {
 			mHandler.removeCallbacks(mFPScanRunnable);
 		}
-		if(mReceiver != null){
+		if (mReceiver != null) {
 			unregisterReceiver(mReceiver);
 			mReceiver = null;
 		}
@@ -178,7 +178,7 @@ public class Fingerprinter extends Service implements Runnable {
 	*/
 	private void startServiceThread() {
 		Thread thread = new Thread(this);
-        	thread.start();
+        thread.start();
 	}
 	
 	//TODO: Find a non-static way to do this. Maybe include with intent?

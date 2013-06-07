@@ -14,8 +14,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import ca.idi.taginsdk.Helper;
-import ca.idi.taginsdk.TaginDatabase;
-import ca.idi.taginsdk.TaginProvider;
 
 public class TagsDatabase {
 	

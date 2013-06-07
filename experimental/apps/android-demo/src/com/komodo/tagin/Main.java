@@ -6,7 +6,6 @@ package com.komodo.tagin;
  * @authors Reza Shiftehfar, Sara Khosravinasr and Jorge Silva
  */
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import android.app.Activity;
@@ -15,7 +14,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
@@ -37,7 +35,7 @@ import ca.idi.taginsdk.TaginURN;
 public class Main extends Activity {
 	
 	public static String URN;
-	public static final String EXTRA_URN ="Uniform Resource Name";
+	public static final String EXTRA_URN = "Uniform Resource Name";
 	public static final String EXTRA_TAG_NAME = "tag_name";
 	public static final String EXTRA_TAG_POPULARITY = "popularity";
 
@@ -45,7 +43,7 @@ public class Main extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		tDb = new TagsDatabase(this);
-    	tDb.open();
+		tDb.open();
 
 		// Step1: register the receiver to get changes in your location using
 		// URN and start it:
