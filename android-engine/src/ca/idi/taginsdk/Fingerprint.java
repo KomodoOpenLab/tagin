@@ -144,7 +144,6 @@ public class Fingerprint {
 	
 	
 	public int getMaxRSSI() {
-		// Make sure limit RSSI values are still valid
 		Collections.sort(mBeacons);
 		return mBeacons.get(0).getRSSI();
 	}
