@@ -2,3 +2,7 @@
 bin/
 gen/
 *.class
+
+appengine-generated/
+datastore-indexes-auto.xml
+local_db.bin
