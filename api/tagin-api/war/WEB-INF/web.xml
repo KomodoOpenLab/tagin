@@ -15,7 +15,7 @@
   <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
   <init-param>
    <param-name>services</param-name>
-   <param-value>ca.idrc.tagin.TaginEndpoints</param-value>
+   <param-value>ca.idrc.tagin.spi.v1.FingerprintEndpoints,ca.idrc.tagin.spi.v1.PatternEndpoints,ca.idrc.tagin.spi.v1.URNEndpoints</param-value>
   </init-param>
  </servlet>
  <servlet-mapping>
