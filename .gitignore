@@ -1,8 +1,7 @@
-*.*~
+*~
 bin/
 gen/
 *.class
-
+*.api
 appengine-generated/
-datastore-indexes-auto.xml
-local_db.bin
+classes/
