@@ -17,14 +17,12 @@ import android.net.wifi.ScanResult;
 
 
 public class Fingerprint {
-	/**
-	 * Individual beacons that this fingerprint contains
-	**/
+
 	private List<Beacon> mBeacons;
 	private String mTime;
 	private Helper mHelper = Helper.getInstance();
 	
-	// Constructors
+	
 	public Fingerprint() {
 		mBeacons = new ArrayList<Beacon>();
 		mTime = mHelper.getTime();
@@ -39,10 +37,10 @@ public class Fingerprint {
 		mTime = mHelper.getTime();
 	}
 	
-	public void setBeaconsFromScanResult(List<ScanResult> scanResults, int mMaxRSSIEver) {
+	public void setBeaconsFromScanResult(List<ScanResult> scanResults, int maxRSSIEver) {
 		mBeacons = new ArrayList<Beacon>();
 		for (ScanResult scanResult : scanResults) {
-			mBeacons.add(new Beacon(scanResult.BSSID, scanResult.level, mMaxRSSIEver));
+			mBeacons.add(new Beacon(scanResult.BSSID, scanResult.level, maxRSSIEver));
 		}
 		mTime = mHelper.getTime();
 	}
@@ -54,48 +52,27 @@ public class Fingerprint {
 	 * @param scanResults: Results from a WiFi scan
 	 * @param n: Iteration per fingerprint that this scan represents (for calculating an average)
 	**/
-	public void addBeaconsFromScanResult(List<ScanResult> scanResults, int n, int mMaxRSSIEver) {
-		ArrayList<Beacon> allBeacons = new ArrayList<Beacon>();
-		Integer thisLength = mBeacons.size();
-		Integer otherLength = scanResults.size();
-		Boolean dupFound; int i, j;
-		// Initialize boolean masks for identifying identical beacons
-		Boolean[] otherUsed = new Boolean[otherLength];
-		for (i = 0; i < otherLength; i++) {
-			otherUsed[i] = false;
+	public void addBeaconsFromScanResult(List<ScanResult> scanResults, int n, int maxRSSIEver) {
+		Map<String,Beacon> beacons = new HashMap<String,Beacon>();
+		for (Beacon beacon : this.getBeacons()) {
+			beacons.put(beacon.getBSSID(), new Beacon(beacon.getBSSID(), 
+					movingRSSIAvg(Helper.NULL_RSSI, beacon.getRSSI(), n), 
+					maxRSSIEver));
 		}
-		// 
-		for (i=0; i < thisLength; i++) {
-			j = 0; dupFound = false;
-			while (!dupFound && (j < otherLength)) {
-				if (!otherUsed[j]) {
-					if (mBeacons.get(i).getBSSID().equals(scanResults.get(j).BSSID)) {
-						// The same beacon was found in the other fingerprint.
-						// Calculate the average
-						allBeacons.add(new Beacon(mBeacons.get(i).getBSSID(),
-												  movingRSSIAvg(mBeacons.get(i).getRSSI(), scanResults.get(j).level, n),
-												  mMaxRSSIEver));
-						otherUsed[j] = true;
-						dupFound = true;
-					}
-				}
-				j++;
-			}
-			if (!dupFound) {
-				allBeacons.add(new Beacon(mBeacons.get(i).getBSSID(), 
-										  movingRSSIAvg(Helper.NULL_RSSI, mBeacons.get(i).getRSSI(), n), 
-										  mMaxRSSIEver));
+
+		for (ScanResult scanResult: scanResults) {
+			if (beacons.containsKey(scanResult.BSSID)) {
+				Beacon b = beacons.get(scanResult.BSSID);
+				beacons.put(scanResult.BSSID, new Beacon(scanResult.BSSID,
+						movingRSSIAvg(b.getRSSI(), scanResult.level, n),
+						maxRSSIEver));
+			} else {
+				beacons.put(scanResult.BSSID, new Beacon(scanResult.BSSID, 
+						movingRSSIAvg(Helper.NULL_RSSI, scanResult.level,n),
+						maxRSSIEver));
 			}
 		}
-		// Add non-duplicate scan results
-		for (i = 0; i < otherLength; i++) {
-			if (!otherUsed[i]) {
-				allBeacons.add(new Beacon(scanResults.get(i).BSSID,
-										  movingRSSIAvg(Helper.NULL_RSSI,scanResults.get(i).level,n),
-										  mMaxRSSIEver));
-			}
-		}
-		mBeacons = allBeacons;
+		mBeacons = new ArrayList<Beacon>(beacons.values());
 		mTime = mHelper.getTime();
 	}
 	
@@ -111,7 +88,7 @@ public class Fingerprint {
 		double startPower = avgRSSI == Helper.NULL_RSSI? 0 : dBm2Power(avgRSSI);
 		double newPower = newRSSI == Helper.NULL_RSSI? 0 : dBm2Power(newRSSI);
 		double avgPower = ((startPower * Double.valueOf(n-1)) + newPower) / Double.valueOf(n); 
-		//Until (n-1)th scan the value was startPower and for nth scan the value is newPower.
+		// Until (n-1)th scan the value was startPower and for nth scan the value is newPower.
 		return power2dBm(avgPower);
 	}
 	
@@ -152,35 +129,22 @@ public class Fingerprint {
 	 * Displaces the fingerprint by the change vector.
 	 * @param changeVector - An Array of Beacons
 	 */
-	public void applyDisplacement(List<Beacon> changeVector){
-		List<Beacon> thisBeacons = mBeacons;
-		Integer thisLength = mBeacons.size();
-		Integer vectorLength = changeVector.size();
-		int i, j;
-		Boolean [] vectorUsed = new Boolean[vectorLength];
-		for(i=0; i<vectorLength; i++){
-			vectorUsed[i] = false;
+	public void applyDisplacement(List<Beacon> displacementVector) {
+		Map<String,Beacon> beacons = new HashMap<String,Beacon>();
+		for (Beacon beacon : this.getBeacons()) {
+			beacons.put(beacon.getBSSID(), beacon);
 		}
-		for(i=0; i<thisLength; i++){
-			j = 0; 
-			while (j < vectorLength) {
-				if (!vectorUsed[j]) {
-					if (thisBeacons.get(i).getBSSID().equals(changeVector.get(j).getBSSID())) {
-						// The same beacon was found in the change vector
-						thisBeacons.get(i).setRank(thisBeacons.get(i).getRank() + changeVector.get(j).getRank());
-						vectorUsed[j] = true; //The identical beacon found. 
-					}
-				}
-				j++;
+		
+		for (Beacon beacon : displacementVector) {
+			if (beacons.containsKey(beacon.getBSSID())) {
+				Beacon b = beacons.get(beacon.getBSSID());
+				b.setRank(b.getRank() + beacon.getRank()); //TODO check if this operation is valid
+				beacons.put(beacon.getBSSID(), b);
+			} else {
+				beacons.put(beacon.getBSSID(), beacon);
 			}
 		}
-		// Converting to an ArrayList to add the new beacons
-		ArrayList<Beacon> beaconList = new ArrayList<Beacon>(thisBeacons); 
-		// Add remaining beacons from the Change Vector
-		for ( i = 0; i < vectorLength; i++ )
-			if (!vectorUsed[i])
-				beaconList.add(changeVector.get(i));
-		this.setBeacons(beaconList);
+		setBeacons(new ArrayList<Beacon>(beacons.values()));
 	}
 	
 	/**

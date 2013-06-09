@@ -50,14 +50,12 @@ public class Fingerprinter extends Service implements Runnable {
     	registerReceiver(mReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 	}
 	
-    // On 2.0 or later we override onStartCommand() so this
-    // method will not be called.
     /*
     * The system calls this method when another component, such as an activity, 
     * requests that the service be started, by calling startService(). 
     */
     @Override
-    public void onStart(Intent intent, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
     	if (intent.hasExtra(EXTRA_SCAN_INTERVAL)) {
 			mScanInterval = intent.getExtras().getInt(EXTRA_SCAN_INTERVAL); 
 		} else {
@@ -76,6 +74,7 @@ public class Fingerprinter extends Service implements Runnable {
         } else {
         	Helper.showToast(this, "Please enable WiFi");
         }
+		return START_STICKY;
     }
 
 	@Override
