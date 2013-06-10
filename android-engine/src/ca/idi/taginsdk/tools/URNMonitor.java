@@ -31,7 +31,6 @@ public class URNMonitor extends ListActivity {
 	private TextView mURNView;
 	private Button mGetURNButton;
 	private ProgressDialog mProgressDialog;
-	public String URN;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,7 +56,7 @@ public class URNMonitor extends ListActivity {
     }
     
     private void fetchURN(){
-    	if(CheckWiFiEnabled()){
+    	if(isWiFiEnabled()){
     		showDialog("Please wait");
     		startService(new Intent(TaginURN.INTENT_START_SERVICE));
     	}
@@ -101,11 +100,9 @@ public class URNMonitor extends ListActivity {
         setListAdapter(urns);
     }
 	
-	 public Boolean CheckWiFiEnabled(){
-	    WifiManager mWifiManager;
-	    mWifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-	    if (mWifiManager.isWifiEnabled()) return true;
-	    else return false;   		
+	 public Boolean isWiFiEnabled(){
+	    WifiManager mWifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+	    return mWifiManager.isWifiEnabled();
 	}    		
 
 	@Override

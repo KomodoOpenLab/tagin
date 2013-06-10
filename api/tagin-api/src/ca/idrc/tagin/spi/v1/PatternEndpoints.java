@@ -20,15 +20,11 @@ import com.google.api.server.spi.config.ApiMethod.HttpMethod;
 public class PatternEndpoints {
 
 	@ApiMethod(path = "patterns", httpMethod = HttpMethod.POST)
-	public Pattern addPattern(@Named("pattern_bssid") String patternBssid, 
-							  @Named("pattern_rssi") Integer patternRssi) {
+	public Pattern addPattern(Pattern pattern) {
 		EntityManager m = EMFService.createEntityManager();
-		Pattern p = new Pattern();
-		p.setBSSID(patternBssid);
-		p.setRSSI(patternRssi);
-		m.persist(p);
+		m.persist(pattern);
 		m.close();
-		return p;
+		return pattern;
 	}
 
 	@ApiMethod(path = "patterns", httpMethod = HttpMethod.GET)

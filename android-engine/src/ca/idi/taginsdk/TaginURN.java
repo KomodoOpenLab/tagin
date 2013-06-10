@@ -42,7 +42,7 @@ public class TaginURN extends Service implements Runnable {
 	public static final int DEFAULT_RUN_INTERVAL = 9000; //Default interval between runs
 	
 	private static String mURN; //Uniform Resource Name for the location
-	Neighbour [] neighbours;
+	private Neighbour [] mNeighbours;
 	private static Fingerprint mFingerprint;
 	
 	private static Boolean check; //To check whether neighbours for a fingerprint have been computed already.
@@ -125,7 +125,7 @@ public class TaginURN extends Service implements Runnable {
 	public void startURN() {
 		long URNId = 0;
 		//checkContents(); //Uncomment to see the table contents on the Log View.
-		neighbours = getNeighbours(mFingerprint);
+		mNeighbours = getNeighbours(mFingerprint);
 		URNId = getClosestNeighbour();
 		if (URNId == 0) {
 			generateURN();
@@ -343,10 +343,10 @@ public class TaginURN extends Service implements Runnable {
 			getNeighbours(fp);
 		}
 		ArrayList<Neighbour> overLapNeighboursList = new ArrayList<Neighbour>();
-		for(i=0; i<neighbours.length ; i++){
+		for(i=0; i<mNeighbours.length ; i++){
 			//Log.v(Helper.TAG, "Rank Distance to Neighbour: " + neighbours[i].rankDistance);
-			if (neighbours[i].rankDistance < THRESHOLD && neighbours[i].id != urnId) { 
-				overLapNeighboursList.add(neighbours[i]);
+			if (mNeighbours[i].rankDistance < THRESHOLD && mNeighbours[i].id != urnId) { 
+				overLapNeighboursList.add(mNeighbours[i]);
 			}
 		}
 		return overLapNeighboursList.toArray(new Neighbour[overLapNeighboursList.size()]);
@@ -357,11 +357,11 @@ public class TaginURN extends Service implements Runnable {
 	 * @return Identifier of the closest neighbour
 	 */
 	private long getClosestNeighbour() {
-		Arrays.sort(neighbours);
-		if (neighbours.length == 0)
+		Arrays.sort(mNeighbours);
+		if (mNeighbours.length == 0)
 			return 0;
 		//Log.i(Helper.TAG, "Get Closest Neighbour: " + neighbours[0].id + "Rank Distance" + neighbours[0].rankDistance);
-		return neighbours[0].rankDistance < THRESHOLD? neighbours[0].id : 0; 
+		return mNeighbours[0].rankDistance < THRESHOLD? mNeighbours[0].id : 0; 
 	}
 
 	/**
@@ -643,9 +643,6 @@ public class TaginURN extends Service implements Runnable {
 	}
 
 	public static String getURN() {
-		/**
-		 * Getter Function for URN
-		 */
 		return mURN;
 	}
 

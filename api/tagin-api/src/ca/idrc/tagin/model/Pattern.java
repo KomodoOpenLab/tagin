@@ -1,53 +1,36 @@
 package ca.idrc.tagin.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Pattern implements Comparable<Pattern> {
+public class Pattern {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	private Long id;
-	private String bssid;
-	private Integer rssi;
+	private Map<String,Integer> mBeacons; // BSSID / RSSI pairs
 	
 	public Pattern() {
-		
+		mBeacons = new HashMap<String,Integer>();
 	}
 	
 	public Long getId() {
 		return id;
 	}
-
-	public String getBSSID() {
-		return bssid;
-	}
-
-	public void setBSSID(String bssid) {
-		this.bssid = bssid;
-	}
-
-	public Integer getRSSI() {
-		return rssi;
-	}
-
-	public void setRSSI(Integer rssi) {
-		this.rssi = rssi;
-	}
 	
-	@Override
-	public int compareTo(Pattern p) {
-		return p.getRSSI() - getRSSI();
+	public Map<String,Integer> getBeacons() {
+		return mBeacons;
 	}
 	
 	public String toString() {
 		return getClass().getName() +
-			"[ID: " + getId() + 
-			", BSSID: " + getBSSID() + 
-			", RSSI: " + getRSSI() + "]";
+			"[ID: " + getId() + ", values: " + getBeacons().toString();
 	}
 
 }

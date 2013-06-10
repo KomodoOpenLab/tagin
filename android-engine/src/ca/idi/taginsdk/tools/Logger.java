@@ -47,7 +47,7 @@ public class Logger extends Activity {
 	private AnimationDrawable loadAnimation;
 
 	private static BufferedWriter out;
-	private final String LogHeader = "FINGERPRINT_APS, RANK_DISTANCE_TO_PREVIOUS, In-place/Moving";
+	private final String mLogHeader = "FINGERPRINT_APS, RANK_DISTANCE_TO_PREVIOUS, In-place/Moving";
 	
 	//Strings for storing previous and current fingerprint details
 	private String cTime, pAP, cAP, pTime = "-Infinity";
@@ -129,16 +129,17 @@ public class Logger extends Activity {
 	 * Function to initially create the log file and it also writes the time of creation to file.
 	 */
     private void createFileOnDevice(Boolean append) throws IOException {
-    	File Root, LogFile;
+    	File root, LogFile;
     	FileWriter LogWriter;
-    	Root = Environment.getExternalStorageDirectory();
-    	if(Root.canWrite()){
-    		 LogFile = new File(Root, "taginLog.txt");
+    	root = Environment.getExternalStorageDirectory();
+    	if (root.canWrite()) {
+    		 LogFile = new File(root, "taginLog.txt");
     	     LogWriter = new FileWriter(LogFile, append);
     	     out = new BufferedWriter(LogWriter);
     	     out.write("Logged at" + mHelper.getTime() + "\n");
-    	     out.write(LogHeader + "\n");
-    	     Log.d(Helper.TAG, LogHeader);
+    	     out.write(mLogHeader + "\n");
+    	     out.close();
+    	     Log.d(Helper.TAG, mLogHeader);
     	}
 	}
 
@@ -165,7 +166,8 @@ public class Logger extends Activity {
 			if (action.equals(Fingerprinter.ACTION_FINGERPRINT_CHANGED)) {
 				Helper.showToast(Logger.this, "Logging");
 				Fingerprint lastFP = new Fingerprint(Fingerprinter.getFingerprint().getBeacons());
-				Log.d(Helper.TAG, "Fingerprint: " + printFP(lastFP));
+				Log.d(Helper.TAG, "Fingerprint: ");
+				printFP(lastFP);
 				cTime = lastFP.getTime(); //Getting the time current Fingerprint was taken
 				cAP = Integer.toString(lastFP.getBeacons().size());
 				if (mSavedFP != null){	
@@ -186,12 +188,9 @@ public class Logger extends Activity {
 		}
 	};
 	
-	private String printFP (Fingerprint fp) {
-		String msg = ""; int i = 0;
-        for (Beacon beacon : fp.getBeacons()) {
-        	msg += beacon.getBSSID() + ", " + beacon.getRSSI().toString() + ", " + beacon.getRank().toString();
-        }
-		return msg;
+	private void printFP (Fingerprint fp) {
+		for (Beacon b : fp.getBeacons())
+			Log.d(Helper.TAG, b.toString());
 	}
 	
 	private double measureRankDistance(Fingerprint fp1, Fingerprint fp2) {
