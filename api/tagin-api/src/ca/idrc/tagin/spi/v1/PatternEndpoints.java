@@ -19,7 +19,11 @@ import com.google.api.server.spi.config.ApiMethod.HttpMethod;
 )
 public class PatternEndpoints {
 
-	@ApiMethod(path = "patterns", httpMethod = HttpMethod.POST)
+	@ApiMethod(
+			name = "patterns.add",
+			path = "patterns",
+			httpMethod = HttpMethod.POST
+	)
 	public Pattern addPattern(Pattern pattern) {
 		EntityManager m = EMFService.createEntityManager();
 		m.persist(pattern);
@@ -27,7 +31,11 @@ public class PatternEndpoints {
 		return pattern;
 	}
 
-	@ApiMethod(path = "patterns", httpMethod = HttpMethod.GET)
+	@ApiMethod(
+			name = "patterns.list",
+			path = "patterns",
+			httpMethod = HttpMethod.GET
+	)
 	public List<Pattern> listPatterns() {
 		EntityManager m = EMFService.createEntityManager();
 		Query query = m.createQuery("select p from Pattern p");
@@ -35,13 +43,21 @@ public class PatternEndpoints {
 		return patterns;
 	}
 	
-	@ApiMethod(path = "patterns/{pattern_id}", httpMethod = HttpMethod.GET)
+	@ApiMethod(
+			name = "patterns.get",
+			path = "patterns/{pattern_id}",
+			httpMethod = HttpMethod.GET
+	)
 	public Pattern getPattern(@Named("pattern_id") String patternId) {
 		//TODO implement functionality
 		return new Pattern();
 	}
 
-	@ApiMethod(path = "patterns/{pattern_id}", httpMethod = HttpMethod.DELETE)
+	@ApiMethod(
+			name = "patterns.remove",
+			path = "patterns/{pattern_id}",
+			httpMethod = HttpMethod.DELETE
+	)
 	public Pattern removePattern(@Named("pattern_id") String patternId) {
 		//TODO implement functionality
 		return new Pattern();

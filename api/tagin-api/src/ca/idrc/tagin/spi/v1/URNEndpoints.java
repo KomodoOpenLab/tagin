@@ -18,7 +18,11 @@ import com.google.api.server.spi.config.ApiMethod.HttpMethod;
 )
 public class URNEndpoints {
 
-	@ApiMethod(path = "URNs/{URN1}/distanceto/{URN2}", httpMethod = HttpMethod.GET)
+	@ApiMethod(
+			name = "URNs.distanceto",
+			path = "URNs/{URN1}/distanceto/{URN2}",
+			httpMethod = HttpMethod.GET
+	)
 	public DoubleContainer getDistanceTo(@Named("URN1") String urn1, @Named("URN2") String urn2) {
 		//TODO implement functionality
 		DoubleContainer d = new DoubleContainer();
@@ -26,13 +30,21 @@ public class URNEndpoints {
 		return d;
 	}
 
-	@ApiMethod(path = "URNs/{URN}/neighbours", httpMethod = HttpMethod.GET)
-	public List<String> updateTag(@Named("URN") String urn, @Named("max_count") int maxCount) {
+	@ApiMethod(
+			name = "URNs.neighbours",
+			path = "URNs/{URN}/neighbours",
+			httpMethod = HttpMethod.GET
+	)
+	public List<String> getNeighbours(@Named("URN") String urn, @Named("max_count") Integer maxCount) {
 		//TODO implement functionality
 		return new ArrayList<String>();
 	}
 
-	@ApiMethod(path = "URNs/{URN}", httpMethod = HttpMethod.DELETE)
+	@ApiMethod(
+			name = "URNs.remove",
+			path = "URNs/{URN}",
+			httpMethod = HttpMethod.DELETE
+	)
 	public Fingerprint removeURN(@Named("URN") String urn) {
 		//TODO implement functionality
 		return new Fingerprint();

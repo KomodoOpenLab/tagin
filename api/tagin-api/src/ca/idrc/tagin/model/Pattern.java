@@ -30,7 +30,7 @@ public class Pattern {
 	
 	public String toString() {
 		return getClass().getName() +
-			"[ID: " + getId() + ", values: " + getBeacons().toString();
+			"[ID: " + getId() + ", values: " + getBeacons().toString() + "]";
 	}
 
 }

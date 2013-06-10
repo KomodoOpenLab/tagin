@@ -16,7 +16,11 @@ import com.google.api.server.spi.config.ApiMethod.HttpMethod;
 public class FingerprintEndpoints {
 
 
-	@ApiMethod(path = "fingerprints", httpMethod = HttpMethod.GET)
+	@ApiMethod(
+			name = "fingerprints.list",
+			path = "fingerprints",
+			httpMethod = HttpMethod.GET
+	)
 	public List<Fingerprint> listFingerprints() {
 		//TODO implement functionality
 		Fingerprint fp1 = new Fingerprint();
@@ -25,7 +29,11 @@ public class FingerprintEndpoints {
 		return fingerprints;
 	}
 
-	@ApiMethod(path = "fingerprints/{fingerprint_id}", httpMethod = HttpMethod.GET)
+	@ApiMethod(
+			name = "fingerprints.get",
+			path = "fingerprints/{fingerprint_id}",
+			httpMethod = HttpMethod.GET
+	)
 	public Fingerprint getFingerprint() {
 		//TODO implement functionality
 		return new Fingerprint();
