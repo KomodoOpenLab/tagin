@@ -3,7 +3,10 @@ package ca.idrc.tagin.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.Basic;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,10 +17,13 @@ public class Pattern {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	private Long id;
-	private Map<String,Integer> mBeacons; // BSSID / RSSI pairs
+	
+	@Basic(fetch = FetchType.EAGER)
+	@ElementCollection
+	private Map<String,Integer> beacons; // BSSID / RSSI pairs
 	
 	public Pattern() {
-		mBeacons = new HashMap<String,Integer>();
+		beacons = new HashMap<String,Integer>();
 	}
 	
 	public Long getId() {
@@ -25,7 +31,7 @@ public class Pattern {
 	}
 	
 	public Map<String,Integer> getBeacons() {
-		return mBeacons;
+		return beacons;
 	}
 	
 	public String toString() {

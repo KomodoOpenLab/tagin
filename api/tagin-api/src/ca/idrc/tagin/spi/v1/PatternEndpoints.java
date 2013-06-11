@@ -31,6 +31,7 @@ public class PatternEndpoints {
 		return pattern;
 	}
 
+	@SuppressWarnings("unchecked")
 	@ApiMethod(
 			name = "patterns.list",
 			path = "patterns",
@@ -40,6 +41,9 @@ public class PatternEndpoints {
 		EntityManager m = EMFService.createEntityManager();
 		Query query = m.createQuery("select p from Pattern p");
 		List<Pattern> patterns = query.getResultList();
+		for (Pattern p : patterns) 
+			p.getBeacons(); // Forces eager-loading
+		m.close();
 		return patterns;
 	}
 	
@@ -48,19 +52,25 @@ public class PatternEndpoints {
 			path = "patterns/{pattern_id}",
 			httpMethod = HttpMethod.GET
 	)
-	public Pattern getPattern(@Named("pattern_id") String patternId) {
-		//TODO implement functionality
-		return new Pattern();
+	public Pattern getPattern(@Named("pattern_id") Long patternId) {
+		EntityManager m = EMFService.createEntityManager();
+		Pattern p = m.find(Pattern.class, patternId);
+		if (p != null) 
+			p.getBeacons(); // Forces eager-loading
+		m.close();
+		return p;
 	}
-
+	
 	@ApiMethod(
 			name = "patterns.remove",
 			path = "patterns/{pattern_id}",
 			httpMethod = HttpMethod.DELETE
 	)
-	public Pattern removePattern(@Named("pattern_id") String patternId) {
-		//TODO implement functionality
-		return new Pattern();
+	public void removePattern(@Named("pattern_id") Long patternId) {
+		EntityManager m = EMFService.createEntityManager();
+		Pattern p = m.find(Pattern.class, patternId);
+		m.remove(p);
+		m.close();
 	}
 	
 }
