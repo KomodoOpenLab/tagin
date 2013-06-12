@@ -5,12 +5,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.google.appengine.api.datastore.Key;
+
 @Entity
 public class Fingerprint implements Comparable<Fingerprint> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
-	private Long id;
+	private Key key;
 	private Pattern mPattern;
 	private Double mRank;
 	
@@ -18,8 +20,8 @@ public class Fingerprint implements Comparable<Fingerprint> {
 		
 	}
 	
-	public Long getId() {
-		return id;
+	public Key getKey() {
+		return key;
 	}
 
 	public Pattern getPattern() {

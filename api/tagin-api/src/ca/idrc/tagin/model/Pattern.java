@@ -11,12 +11,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.google.appengine.api.datastore.Key;
+
 @Entity
 public class Pattern {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
-	private Long id;
+	private Key key;
 	
 	@Basic(fetch = FetchType.EAGER)
 	@ElementCollection
@@ -26,8 +28,8 @@ public class Pattern {
 		beacons = new HashMap<String,Integer>();
 	}
 	
-	public Long getId() {
-		return id;
+	public Key getKey() {
+		return key;
 	}
 	
 	public Map<String,Integer> getBeacons() {
@@ -36,7 +38,7 @@ public class Pattern {
 	
 	public String toString() {
 		return getClass().getName() +
-			"[ID: " + getId() + ", values: " + getBeacons().toString() + "]";
+			"[Key: " + getKey() + ", values: " + getBeacons().toString() + "]";
 	}
 
 }
