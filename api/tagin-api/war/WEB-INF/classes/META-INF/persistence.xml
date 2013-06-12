@@ -14,8 +14,8 @@
             <property name="javax.persistence.query.timeout" value="5000" />
             <property name="datanucleus.datastoreWriteTimeout" value="10000" />
         </properties>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <class>ca.idrc.tagin.model.Pattern</class>
         <class>ca.idrc.tagin.model.Fingerprint</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
     </persistence-unit>
 </persistence>

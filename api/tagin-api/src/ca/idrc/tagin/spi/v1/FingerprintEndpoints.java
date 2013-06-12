@@ -1,8 +1,12 @@
 package ca.idrc.tagin.spi.v1;
 
-import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
+import ca.idrc.tagin.dao.EMFService;
 import ca.idrc.tagin.model.Fingerprint;
 
 import com.google.api.server.spi.config.Api;
@@ -16,16 +20,17 @@ import com.google.api.server.spi.config.ApiMethod.HttpMethod;
 public class FingerprintEndpoints {
 
 
+	@SuppressWarnings("unchecked")
 	@ApiMethod(
 			name = "fingerprints.list",
 			path = "fingerprints",
 			httpMethod = HttpMethod.GET
 	)
 	public List<Fingerprint> listFingerprints() {
-		//TODO implement functionality
-		Fingerprint fp1 = new Fingerprint();
-		Fingerprint fp2 = new Fingerprint();
-		List<Fingerprint> fingerprints = Arrays.asList(fp1, fp2);
+		EntityManager m = EMFService.createEntityManager();
+		Query query = m.createQuery("select f from Fingerprint f");
+		List<Fingerprint> fingerprints = query.getResultList();
+		m.close();
 		return fingerprints;
 	}
 
@@ -34,9 +39,11 @@ public class FingerprintEndpoints {
 			path = "fingerprints/{fingerprint_id}",
 			httpMethod = HttpMethod.GET
 	)
-	public Fingerprint getFingerprint() {
-		//TODO implement functionality
-		return new Fingerprint();
+	public Fingerprint getFingerprint(@Named("fingerprint_id") Long id) {
+		EntityManager m = EMFService.createEntityManager();
+		Fingerprint fp = m.find(Fingerprint.class, id);
+		m.close();
+		return fp;
 	}
 	
 }

@@ -52,9 +52,9 @@ public class PatternEndpoints {
 			path = "patterns/{pattern_id}",
 			httpMethod = HttpMethod.GET
 	)
-	public Pattern getPattern(@Named("pattern_id") Long patternId) {
+	public Pattern getPattern(@Named("pattern_id") Long id) {
 		EntityManager m = EMFService.createEntityManager();
-		Pattern p = m.find(Pattern.class, patternId);
+		Pattern p = m.find(Pattern.class, id);
 		if (p != null) 
 			p.getBeacons(); // Forces eager-loading
 		m.close();
@@ -66,9 +66,9 @@ public class PatternEndpoints {
 			path = "patterns/{pattern_id}",
 			httpMethod = HttpMethod.DELETE
 	)
-	public void removePattern(@Named("pattern_id") Long patternId) {
+	public void removePattern(@Named("pattern_id") Long id) {
 		EntityManager m = EMFService.createEntityManager();
-		Pattern p = m.find(Pattern.class, patternId);
+		Pattern p = m.find(Pattern.class, id);
 		m.remove(p);
 		m.close();
 	}
