@@ -14,7 +14,7 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiMethod.HttpMethod;
 
 @Api(
-	name = "tagin-api",
+	name = "tagin",
 	version = "v1"
 )
 public class FingerprintEndpoints {

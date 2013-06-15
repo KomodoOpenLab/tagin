@@ -14,7 +14,7 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiMethod.HttpMethod;
 
 @Api(
-	name = "tagin-api",
+	name = "tagin",
 	version = "v1"
 )
 public class PatternEndpoints {
@@ -41,7 +41,7 @@ public class PatternEndpoints {
 		EntityManager m = EMFService.createEntityManager();
 		Query query = m.createQuery("select p from Pattern p");
 		List<Pattern> patterns = query.getResultList();
-		for (Pattern p : patterns) 
+		for (Pattern p : patterns)
 			p.getBeacons(); // Forces eager-loading
 		m.close();
 		return patterns;

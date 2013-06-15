@@ -13,14 +13,14 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiMethod.HttpMethod;
 
 @Api(
-	name = "tagin-api",
+	name = "tagin",
 	version = "v1"
 )
 public class URNEndpoints {
 
 	@ApiMethod(
-			name = "URNs.distanceto",
-			path = "URNs/{URN1}/distanceto/{URN2}",
+			name = "urns.distanceto",
+			path = "urns/{URN1}/distanceto/{URN2}",
 			httpMethod = HttpMethod.GET
 	)
 	public DoubleContainer getDistanceTo(@Named("URN1") String urn1, @Named("URN2") String urn2) {
@@ -31,8 +31,8 @@ public class URNEndpoints {
 	}
 
 	@ApiMethod(
-			name = "URNs.neighbours",
-			path = "URNs/{URN}/neighbours",
+			name = "urns.neighbours",
+			path = "urns/{URN}/neighbours",
 			httpMethod = HttpMethod.GET
 	)
 	public List<String> getNeighbours(@Named("URN") String urn, @Named("max_count") Integer maxCount) {
@@ -41,8 +41,8 @@ public class URNEndpoints {
 	}
 
 	@ApiMethod(
-			name = "URNs.remove",
-			path = "URNs/{URN}",
+			name = "urns.remove",
+			path = "urns/{URN}",
 			httpMethod = HttpMethod.DELETE
 	)
 	public Fingerprint removeURN(@Named("URN") String urn) {
