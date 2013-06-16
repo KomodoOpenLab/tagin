@@ -112,16 +112,15 @@ public class TaginURN extends Service implements Runnable {
 	 * Returns a newly generated URN or modified existing URN.
 	 */
 	public void startURN() {
-		long URNId = 0;
 		//checkContents(); //Uncomment to see the table contents on the Log View.
 		mNeighbours = getNeighbours(mFingerprint);
-		URNId = getClosestNeighbour();
-		if (URNId == 0) {
+		long urnId = getClosestNeighbour();
+		if (urnId == 0) {
 			generateURN();
 		}
 		else {
-			mergeFingerprint(mFingerprint, URNId);
-			mURN = fetchURNfromDB(URNId);
+			mergeFingerprint(mFingerprint, urnId);
+			mURN = fetchURNfromDB(urnId);
 		}
 		sendBroadcast(mURNReadyIntent);
 	}
@@ -226,16 +225,16 @@ public class TaginURN extends Service implements Runnable {
 
 	/**
 	 * Builds a fingerprint object from an URN Identifier Reference
-	 * @param URNId - Identifier for the fingerprint in the database
+	 * @param urnId - Identifier for the fingerprint in the database
 	 * @return Fingerprint 
 	 */
-	private Fingerprint getFingerprint(Long URNId) {
+	private Fingerprint getFingerprint(Long urnId) {
 		String where1, where2;
 		Cursor c1 = null;
 		Cursor c2 = null;
 		Long beaconId;
 		Fingerprint fp = null;
-		where1 = TaginDatabase.FINGERPRINT_ID + "=" + URNId;
+		where1 = TaginDatabase.FINGERPRINT_ID + "=" + urnId;
 		try {
 			c1 = cr.query(TaginProvider.URN_FINGERPRINTS_DETAIL_URI, 
 					TaginProvider.FINGERPRINT_DETAIL_PROJECTION, where1, null, null);
@@ -254,15 +253,13 @@ public class TaginURN extends Service implements Runnable {
 				} while (c1.moveToNext());
 			}
 			fp.setBeacons(uBeacons);
-		} catch (Exception ex) { 
-			ex.printStackTrace();
+		} catch (Exception e) { 
+			e.printStackTrace();
 		} finally {
-			try {
-				if (c1 != null && !c1.isClosed())
-					c1.close();
-				if (c2 != null && !c2.isClosed())
-					c2.close();
-			} catch (Exception ex) {}
+			if (c1 != null && !c1.isClosed())
+				c1.close();
+			if (c2 != null && !c2.isClosed())
+				c2.close();
 		}
 		//Log.d(Helper.TAG, "GetFingerprint - URNID: " + URNId +  ", "+ "Fingerprint: " + printFP(fp));
 		return fp;
@@ -305,18 +302,10 @@ public class TaginURN extends Service implements Runnable {
 		} catch (Exception e) { 
 			e.printStackTrace();
 		} finally {
-			try {
-				if (c != null && !c.isClosed())
-					c.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			try {
-				if (fpc != null && !fpc.isClosed())
-					fpc.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			if (c != null && !c.isClosed())
+				c.close();
+			if (fpc != null && !fpc.isClosed())
+				fpc.close();
 		}
 		return neighbours;
 	}
@@ -381,10 +370,8 @@ public class TaginURN extends Service implements Runnable {
 		} catch (Exception ex) { 
 			ex.printStackTrace();
 		} finally {
-			try {
-				if (cursor != null && !cursor.isClosed())
-					cursor.close();
-			} catch (Exception ex) {}
+			if (cursor != null && !cursor.isClosed())
+				cursor.close();
 		}
 		return urn;
 	}
@@ -411,12 +398,8 @@ public class TaginURN extends Service implements Runnable {
 		} catch (Exception e) { 
 			e.printStackTrace();
 		} finally {
-			try {
-				if (c != null && !c.isClosed())
-					c.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			if (c != null && !c.isClosed())
+				c.close();
 		}
 	}
 
@@ -475,12 +458,8 @@ public class TaginURN extends Service implements Runnable {
 		} catch (Exception e) { 
 			e.printStackTrace();
 		} finally {
-			try {
-				if (cursor != null && !cursor.isClosed())
-					cursor.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			if (cursor != null && !cursor.isClosed())
+				cursor.close();
 		}
 		return rowId;
 	}
@@ -558,12 +537,8 @@ public class TaginURN extends Service implements Runnable {
 			} catch (Exception e) { 
 				e.printStackTrace();
 			} finally {
-				try {
-					if (cursor != null && !cursor.isClosed())
-						cursor.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				if (cursor != null && !cursor.isClosed())
+					cursor.close();
 			}
 
 		}
