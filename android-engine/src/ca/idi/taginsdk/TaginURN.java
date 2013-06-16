@@ -7,7 +7,7 @@ package ca.idi.taginsdk;
  */
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,10 +42,9 @@ public class TaginURN extends Service implements Runnable {
 	public static final int DEFAULT_RUN_INTERVAL = 9000; //Default interval between runs
 	
 	private static String mURN; //Uniform Resource Name for the location
-	private Neighbour [] mNeighbours;
+	private List<Neighbour> mNeighbours;
 	private static Fingerprint mFingerprint;
 	
-	private static Boolean check; //To check whether neighbours for a fingerprint have been computed already.
 	private static double THRESHOLD = 0.25; //TODO Pass it by intents?
 
 	private Helper mHelper;
@@ -66,7 +65,6 @@ public class TaginURN extends Service implements Runnable {
 		cr = getContentResolver();
 		mURN =  new String();
 		mHandler = new Handler();
-		check = false; //Initializing it to false
 		mRunCount = 0;
 	}
 
@@ -78,16 +76,8 @@ public class TaginURN extends Service implements Runnable {
 		 * Checking if extras are attached with the intent passed.
 		 * If not, use the default values
 		 */
-		if (intent.hasExtra(EXTRA_RUN_INTERVAL)) {
-			mRunInterval = intent.getExtras().getInt(EXTRA_RUN_INTERVAL); 
-		} else {
-			mRunInterval = DEFAULT_RUN_INTERVAL;
-		}
-		if (intent.hasExtra(EXTRA_NUMBER_OF_RUNS)) {
-			mNumberOfRuns  = intent.getExtras().getInt(EXTRA_NUMBER_OF_RUNS);
-		} else {
-			mNumberOfRuns = DEFAULT_NUMBER_OF_RUNS;
-		}
+		mRunInterval = intent.getExtras().getInt(EXTRA_RUN_INTERVAL, DEFAULT_RUN_INTERVAL);
+		mNumberOfRuns = intent.getExtras().getInt(EXTRA_NUMBER_OF_RUNS, DEFAULT_NUMBER_OF_RUNS);
 		registerReceiver(mReceiver, new IntentFilter(Fingerprinter.ACTION_FINGERPRINT_CHANGED));
 		startURNRun();
 		startServiceThread();
@@ -95,7 +85,6 @@ public class TaginURN extends Service implements Runnable {
 
 
 	private void startFingerprint() {
-		//Starts the Fingerprinter Service
 		startService(new Intent(Fingerprinter.INTENT_START_SERVICE));
 	}
 
@@ -224,8 +213,8 @@ public class TaginURN extends Service implements Runnable {
 	 * @param changeVector - The vector denoting change in ranks of beacons
 	 */
 	private void pushFingerprint(long urnId, List<Beacon> changeVector) {
-		Neighbour[] overLappingNeighbours = getOverlappingNeighbours(urnId);
-		if (overLappingNeighbours.length == 0) return;
+		List<Neighbour> overLappingNeighbours = getOverlappingNeighbours(urnId);
+		if (overLappingNeighbours.isEmpty()) return;
 		for (Neighbour neighbour : overLappingNeighbours) {
 			Fingerprint neighbourFp = getFingerprint(neighbour.id);
 			neighbourFp.applyDisplacement(changeVector);
@@ -283,8 +272,8 @@ public class TaginURN extends Service implements Runnable {
 	 * Computes the neighbours for Fingerprint which have at least one beacon in common.
 	 * @param fp - Fingerprint
 	 */
-	private Neighbour [] getNeighbours(Fingerprint fp) {
-		ArrayList<Neighbour> NeighbourList = new ArrayList<Neighbour>();
+	private List<Neighbour> getNeighbours(Fingerprint fp) {
+		ArrayList<Neighbour> neighbours = new ArrayList<Neighbour>();
 		long urn_id;
 		Double rankDistance;
 		Cursor c = null;
@@ -302,10 +291,10 @@ public class TaginURN extends Service implements Runnable {
 					if (fpc.moveToFirst()) {
 						do {				
 							urn_id =  fpc.getLong(fpc.getColumnIndexOrThrow(TaginDatabase.FINGERPRINT_ID));
-							if (NotAlreadyExistsURN(urn_id, NeighbourList)) {
+							if (notAlreadyExistsURN(urn_id, neighbours)) {
 								Fingerprint temp_fp = getFingerprint(urn_id);
 								rankDistance = fp.rankDistanceTo(temp_fp);
-								NeighbourList.add(new Neighbour(urn_id, rankDistance));
+								neighbours.add(new Neighbour(urn_id, rankDistance));
 							}
 						} while(fpc.moveToNext());	
 					}
@@ -313,20 +302,23 @@ public class TaginURN extends Service implements Runnable {
 				else
 					continue;
 			}
-		} catch (Exception ex) { 
-			ex.printStackTrace();
+		} catch (Exception e) { 
+			e.printStackTrace();
 		} finally {
 			try {
 				if (c != null && !c.isClosed())
 					c.close();
-			} catch (Exception ex) {}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			try {
 				if (fpc != null && !fpc.isClosed())
 					fpc.close();
-			} catch (Exception ex) {}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-		check = true; //Setting flag to true to indicate Neighbours have been computed 
-		return NeighbourList.toArray(new Neighbour[NeighbourList.size()]);
+		return neighbours;
 	}
 
 	/**
@@ -334,22 +326,18 @@ public class TaginURN extends Service implements Runnable {
 	 * @param urnId - Identifier for fingerprint in the Database
 	 * @return List of Neighbour Objects
 	 */
-	private Neighbour[] getOverlappingNeighbours(Long urnId) {
-		int i;
-		if(check) //TODO Remove this check mechanism, if possible.
-			check = false;
-		else {
+	private List<Neighbour> getOverlappingNeighbours(Long urnId) {
+		if (mNeighbours.isEmpty()) {
 			Fingerprint fp = getFingerprint(urnId);
-			getNeighbours(fp);
+			mNeighbours = getNeighbours(fp);
 		}
-		ArrayList<Neighbour> overLapNeighboursList = new ArrayList<Neighbour>();
-		for(i=0; i<mNeighbours.length ; i++){
-			//Log.v(Helper.TAG, "Rank Distance to Neighbour: " + neighbours[i].rankDistance);
-			if (mNeighbours[i].rankDistance < THRESHOLD && mNeighbours[i].id != urnId) { 
-				overLapNeighboursList.add(mNeighbours[i]);
+		ArrayList<Neighbour> overlappingNeighbours = new ArrayList<Neighbour>();
+		for (Neighbour neighbour : mNeighbours) {
+			if (neighbour.rankDistance < THRESHOLD && neighbour.id != urnId) { 
+				overlappingNeighbours.add(neighbour);
 			}
 		}
-		return overLapNeighboursList.toArray(new Neighbour[overLapNeighboursList.size()]);
+		return overlappingNeighbours;
 	}
 
 	/**
@@ -357,11 +345,10 @@ public class TaginURN extends Service implements Runnable {
 	 * @return Identifier of the closest neighbour
 	 */
 	private long getClosestNeighbour() {
-		Arrays.sort(mNeighbours);
-		if (mNeighbours.length == 0)
+		if (mNeighbours.isEmpty())
 			return 0;
-		//Log.i(Helper.TAG, "Get Closest Neighbour: " + neighbours[0].id + "Rank Distance" + neighbours[0].rankDistance);
-		return mNeighbours[0].rankDistance < THRESHOLD? mNeighbours[0].id : 0; 
+		Collections.sort(mNeighbours);
+		return mNeighbours.get(0).rankDistance < THRESHOLD ? mNeighbours.get(0).id : 0; 
 	}
 
 	/**
@@ -369,9 +356,9 @@ public class TaginURN extends Service implements Runnable {
 	 * @param urnId - Identifier for the fingerprint in the database
 	 * @return True if it doesn't exist, false otherwise.
 	 */
-	private boolean NotAlreadyExistsURN(long urnId, ArrayList<Neighbour> NeighbourList) {
-		for (int i = 0; i < NeighbourList.size(); i++) {
-			if (NeighbourList.get(i).id == urnId)
+	private boolean notAlreadyExistsURN(long urnId, ArrayList<Neighbour> neighbours) {
+		for (Neighbour neighbour : neighbours) {
+			if (neighbour.id == urnId)
 				return false;
 		}
 		return true;
@@ -421,13 +408,15 @@ public class TaginURN extends Service implements Runnable {
 			if (c.moveToFirst() && c.getCount() > 0) {
 				mURN = c.getString(c.getColumnIndexOrThrow(TaginDatabase.URN));
 			}
-		} catch (Exception ex) { 
-			ex.printStackTrace();
+		} catch (Exception e) { 
+			e.printStackTrace();
 		} finally {
 			try {
 				if (c != null && !c.isClosed())
 					c.close();
-			} catch (Exception ex) {}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -435,13 +424,11 @@ public class TaginURN extends Service implements Runnable {
 	 * Adds a new URN to the Database.
 	 */
 	private long addURN() {
-		Uri uri;
-		UUID URN = java.util.UUID.randomUUID(); //Generates a unique ID
-		String uuid = URN.toString(); //Converts it to string
+		UUID urn = java.util.UUID.randomUUID(); //Generates a unique ID
 		ContentValues values = new ContentValues();
 		values.put(TaginDatabase.MODIFIED, mHelper.getTime());
-		values.put(TaginDatabase.URN, uuid);
-		uri = cr.insert(TaginProvider.URN_FINGERPRINTS_URI, values);
+		values.put(TaginDatabase.URN, urn.toString());
+		Uri uri = cr.insert(TaginProvider.URN_FINGERPRINTS_URI, values);
 		return (uri == null) ? 0 : Long.parseLong(uri.getPathSegments().get(2));	
 	}
 
@@ -485,13 +472,15 @@ public class TaginURN extends Service implements Runnable {
 				uri = cr.insert(TaginProvider.RAW_RADIO_URI, values);
 				rowId = Long.parseLong(uri.getPathSegments().get(2));
 			}
-		} catch (Exception ex) { 
-			ex.printStackTrace();
+		} catch (Exception e) { 
+			e.printStackTrace();
 		} finally {
 			try {
 				if (cursor != null && !cursor.isClosed())
 					cursor.close();
-			} catch (Exception ex) {}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return rowId;
 	}
@@ -552,9 +541,9 @@ public class TaginURN extends Service implements Runnable {
 		ContentValues values = new ContentValues();
 		values.put(TaginDatabase.BSSID, bssid);
 		values.put(TaginDatabase.TYPE, type);
-		if (tables == TaginDatabase.RAW_TABLES)
+		if (tables == TaginDatabase.RAW_TABLES) {
 			uri = cr.insert(TaginProvider.RAW_BEACONS_URI, values);
-		else { //In URN Contents, each beacon appears only at most once.
+		} else { //In URN Contents, each beacon appears only at most once.
 			String where = TaginDatabase.BSSID + "=" + "?";
 			try {
 				cursor = cr.query(TaginProvider.URN_BEACONS_URI, TaginProvider.BEACON_PROJECTION, where, new String[]{bssid}, null );
@@ -566,13 +555,15 @@ public class TaginURN extends Service implements Runnable {
 					//Log.i(Helper.TAG, "Duplicate not found, Inserting");
 					uri = cr.insert(TaginProvider.URN_BEACONS_URI, values);
 				}
-			} catch (Exception ex) { 
-				ex.printStackTrace();
+			} catch (Exception e) { 
+				e.printStackTrace();
 			} finally {
 				try {
 					if (cursor != null && !cursor.isClosed())
 						cursor.close();
-				} catch (Exception ex) {}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 
 		}
@@ -586,12 +577,11 @@ public class TaginURN extends Service implements Runnable {
 	 * @return - Row Number
 	 */
 	private long addFingerprint(String created, long radioId) {
-		Uri uri;
 		ContentValues values = new ContentValues();
 		values.put(TaginDatabase.CREATED, created);
 		values.put(TaginDatabase.WLAN_RADIO_ID, radioId);
 		values.put(TaginDatabase.BT_RADIO_ID, "");
-		uri = cr.insert(TaginProvider.RAW_FINGERPRINTS_URI, values);
+		Uri uri = cr.insert(TaginProvider.RAW_FINGERPRINTS_URI, values);
 		if (uri == null) {
 			Log.e(Helper.TAG, "Fingerprint Insertion Failed");
 			return 0;
@@ -602,7 +592,6 @@ public class TaginURN extends Service implements Runnable {
 
 	@Override
 	public IBinder onBind(Intent arg0) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -617,8 +606,6 @@ public class TaginURN extends Service implements Runnable {
 			unregisterReceiver(mReceiver);
 			mReceiver = null;
 		}
-		/* Call this from the main Activity to shutdown the connection */
-
 	}
 
 	private Runnable mURNRunnable = new Runnable() {
