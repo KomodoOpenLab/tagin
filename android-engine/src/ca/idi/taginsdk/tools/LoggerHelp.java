@@ -45,9 +45,9 @@ public class LoggerHelp extends Activity {
 		
 		tStartLogging.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if(CheckWiFiEnabled())
+				if (isWifiEnabled())
 					startActivity(new Intent(LoggerHelp.this, Logger.class)); //Starting the Logging Activity
-				else{
+				else {
 					Helper.showToast(LoggerHelp.this, "Please enable WiFi");
 				}
 			}
@@ -55,10 +55,10 @@ public class LoggerHelp extends Activity {
 
 		tLearnMore.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if(tLearnMore.getText().toString().equals("Previous")){
+				if (tLearnMore.getText().toString().equals("Previous")) {
 					tLearnMore.setText("Next");
 				}
-				else{
+				else {
 					tLearnMore.setText("Previous");
 				}
 				mFlipper.showNext(); //Flips into the next view in the ViewFlipper
@@ -67,14 +67,8 @@ public class LoggerHelp extends Activity {
 		});
 	}
 	
-    public Boolean CheckWiFiEnabled(){
-    	WifiManager mWifiManager;
-    	mWifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-    	if (mWifiManager.isWifiEnabled()) {
-    		return true;
-    	}
-    	else{
-    		return false;
-    	}
+    public Boolean isWifiEnabled() {
+    	WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+    	return wifiManager.isWifiEnabled();
     }
 }

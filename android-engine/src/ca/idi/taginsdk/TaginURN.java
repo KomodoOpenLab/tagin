@@ -38,10 +38,10 @@ public class TaginURN extends Service implements Runnable {
 	
 	public static final String EXTRA_RUN_INTERVAL = "ca.idi.taginsdk.extra.RUN_INTERVAL";
 	public static final String EXTRA_NUMBER_OF_RUNS = "ca.idi.taginsdk.NUMBER_OF_RUNS";
-	public static final int DEFAULT_NUMBER_OF_RUNS = 9999; //Default number of runs
-	public static final int DEFAULT_RUN_INTERVAL = 9000; //Default interval between runs
+	public static final int DEFAULT_NUMBER_OF_RUNS = 9999; // Default number of runs
+	public static final int DEFAULT_RUN_INTERVAL = 9000; // Default interval between runs
 	
-	private static String mURN; //Uniform Resource Name for the location
+	private static String mURN; // Uniform Resource Name for the location
 	private List<Neighbour> mNeighbours;
 	private static Fingerprint mFingerprint;
 	
@@ -72,12 +72,18 @@ public class TaginURN extends Service implements Runnable {
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
-		/**
-		 * Checking if extras are attached with the intent passed.
-		 * If not, use the default values
-		 */
-		mRunInterval = intent.getExtras().getInt(EXTRA_RUN_INTERVAL, DEFAULT_RUN_INTERVAL);
-		mNumberOfRuns = intent.getExtras().getInt(EXTRA_NUMBER_OF_RUNS, DEFAULT_NUMBER_OF_RUNS);
+		if (intent.hasExtra(EXTRA_NUMBER_OF_RUNS)) {
+			mRunInterval = intent.getExtras().getInt(EXTRA_RUN_INTERVAL);
+		} else {
+			mRunInterval = DEFAULT_RUN_INTERVAL;
+		}
+		
+		if (intent.hasExtra(EXTRA_NUMBER_OF_RUNS)) {
+			mNumberOfRuns = intent.getExtras().getInt(EXTRA_NUMBER_OF_RUNS);
+		} else {
+			mNumberOfRuns = DEFAULT_NUMBER_OF_RUNS;
+		}
+		
 		registerReceiver(mReceiver, new IntentFilter(Fingerprinter.ACTION_FINGERPRINT_CHANGED));
 		startURNRun();
 		startServiceThread();
@@ -96,7 +102,7 @@ public class TaginURN extends Service implements Runnable {
 				mRunCount++;
 				Fingerprint lastFP = new Fingerprint(Fingerprinter.getFingerprint().getBeacons());	
 				addFPToDatabase(lastFP); 
-				mFingerprint = lastFP; //Backs up for URN Generation
+				mFingerprint = lastFP; // Backs up for URN Generation
 				startURN(); 
 				if (mRunCount < mNumberOfRuns) {
 					/* Executes the code recursively after definite time intervals
@@ -112,7 +118,7 @@ public class TaginURN extends Service implements Runnable {
 	 * Returns a newly generated URN or modified existing URN.
 	 */
 	public void startURN() {
-		//checkContents(); //Uncomment to see the table contents on the Log View.
+		//checkContents(); // Uncomment to see the table contents on the Log View.
 		mNeighbours = getNeighbours(mFingerprint);
 		long urnId = getClosestNeighbour();
 		if (urnId == 0) {
@@ -147,16 +153,16 @@ public class TaginURN extends Service implements Runnable {
 	 * @param fp - New Fingerprint
 	 */
 	private void updateURN(long urnId, Fingerprint fp) {
-		//Deleting the fingerprint details from URN Content Table
+		// Deleting the fingerprint details from URN Content Table
 		String where = TaginDatabase.FINGERPRINT_ID + "=" + urnId;
 		cr.delete(TaginProvider.URN_FINGERPRINTS_DETAIL_URI, where, null);
 		Long beacon_id;
-		//Updating with fingerprint details of merged Fingerprint
+		// Updating with fingerprint details of merged Fingerprint
 		for (Beacon beacon : fp.getBeacons()) {
 			beacon_id = addBeacon(beacon.getBSSID(), TaginDatabase.WLAN, TaginDatabase.URN_TABLES);
 			addFPDetails(urnId, beacon_id, beacon.getRank(), TaginDatabase.URN_TABLES);
 		}
-		changeModifiedTime(urnId); //Changes the modified time of URN.
+		changeModifiedTime(urnId); // Changes the modified time of URN.
 	}
 
 	/**
@@ -176,7 +182,7 @@ public class TaginURN extends Service implements Runnable {
 		Boolean dupFound;
 		for (i = 0; i < newLength; i++) {
 			j = 0; 
-			dupFound = false; //To check if dup was found for this beacon in new fingerprint
+			dupFound = false; // To check if dup was found for this beacon in new fingerprint
 			Beacon vector = new Beacon();
 			while (!dupFound && (j < oldLength)) {
 				if (newBeacons.get(i).getBSSID().equals(oldBeacons.get(j).getBSSID())) {
@@ -200,7 +206,7 @@ public class TaginURN extends Service implements Runnable {
 	 * @param urnId - Identifier for the fingerprint in the database
 	 */
 	private void changeModifiedTime(Long urnId) {
-		//Change the modified time to current time.
+		// Change the modified time to current time.
 		ContentValues updateValues = new ContentValues();
 		updateValues.put(TaginDatabase.MODIFIED, mHelper.getTime());
 		cr.update(TaginProvider.URN_FINGERPRINTS_URI, updateValues, TaginDatabase._ID + "=" + urnId , null);
@@ -407,7 +413,7 @@ public class TaginURN extends Service implements Runnable {
 	 * Adds a new URN to the Database.
 	 */
 	private long addURN() {
-		UUID urn = java.util.UUID.randomUUID(); //Generates a unique ID
+		UUID urn = java.util.UUID.randomUUID(); // Generates a unique ID
 		ContentValues values = new ContentValues();
 		values.put(TaginDatabase.MODIFIED, mHelper.getTime());
 		values.put(TaginDatabase.URN, urn.toString());
@@ -428,7 +434,7 @@ public class TaginURN extends Service implements Runnable {
 			beacon_id =	addBeacon(beacon.getBSSID(), TaginDatabase.WLAN, TaginDatabase.RAW_TABLES);
 			addFPDetails(fp_id, beacon_id, beacon.getRSSI(), TaginDatabase.RAW_TABLES);
 		}
-		updateRadio(radioId); //Updates the radio based on current fingerprint.
+		updateRadio(radioId); // Updates the radio based on current fingerprint.
 	}
 
 	/**
@@ -522,7 +528,7 @@ public class TaginURN extends Service implements Runnable {
 		values.put(TaginDatabase.TYPE, type);
 		if (tables == TaginDatabase.RAW_TABLES) {
 			uri = cr.insert(TaginProvider.RAW_BEACONS_URI, values);
-		} else { //In URN Contents, each beacon appears only at most once.
+		} else { // In URN Contents, each beacon appears only at most once.
 			String where = TaginDatabase.BSSID + "=" + "?";
 			try {
 				cursor = cr.query(TaginProvider.URN_BEACONS_URI, TaginProvider.BEACON_PROJECTION, where, new String[]{bssid}, null );
