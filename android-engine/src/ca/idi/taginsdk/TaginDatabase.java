@@ -13,7 +13,7 @@ import android.util.Log;
 
 public class TaginDatabase extends SQLiteOpenHelper {
 	
-private static final String TAG = "ca.idi.tagin.TaginDbAdapter";
+	private static final String TAG = "ca.idi.tagin.TaginDbAdapter";
 	
 	private static final int DATABASE_VERSION = 4; //increment to update Database
 	
@@ -102,7 +102,6 @@ private static final String TAG = "ca.idi.tagin.TaginDbAdapter";
 			db.execSQL(CREATE_TABLE_URN_B);
 			db.execSQL(CREATE_TABLE_URN_FP);
 			db.execSQL(CREATE_TABLE_URN_FP_D);
-			
 			//TODO Creation of Temp Tables
 	}
 
@@ -118,8 +117,6 @@ private static final String TAG = "ca.idi.tagin.TaginDbAdapter";
 		db.execSQL("DROP TABLE IF EXISTS urn_fingerprints");
 		db.execSQL("DROP TABLE IF EXISTS urn_fingerprint_details");
 		onCreate(db);
-		
 	}
-
 
 }

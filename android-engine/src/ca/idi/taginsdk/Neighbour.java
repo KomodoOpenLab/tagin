@@ -7,23 +7,23 @@ package ca.idi.taginsdk;
  */
 
 public class Neighbour implements Comparable<Neighbour>{
-	
+
 	public Long id;
 	public Double rankDistance;
-	
-	public Neighbour(){
+
+	public Neighbour() {
 		id = null;
 		rankDistance = null;
 	}
-	
-	public Neighbour(Long id, Double rankDistance){
+
+	public Neighbour(Long id, Double rankDistance) {
 		this.id = id;
 		this.rankDistance = rankDistance;
 	}
 
 	@Override
 	public int compareTo(Neighbour another) {
-		if(another.rankDistance > rankDistance )
+		if (another.rankDistance > rankDistance)
 			return -1;
 		else
 			return 1;

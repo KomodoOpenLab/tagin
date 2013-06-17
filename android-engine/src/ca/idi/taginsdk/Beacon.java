@@ -8,7 +8,7 @@ package ca.idi.taginsdk;
  */
 
 public class Beacon implements Comparable<Beacon> {
-	
+
 	private String bssid; // MAC ID
 	private Integer rssi; // Received Signal Strength Indication
 	private Double rank; // Rank value in the range [0, 1]
@@ -36,7 +36,7 @@ public class Beacon implements Comparable<Beacon> {
 	public int compareTo(Beacon b) {
 		return b.getRSSI() - getRSSI();
 	}
-	
+
 	/**
 	 * Calculates the Rank of the beacon by normalizing with respect to Max RSSI
 	 * @param rssi - received signal strength indication
@@ -47,16 +47,16 @@ public class Beacon implements Comparable<Beacon> {
 		Double maxPowerEver = dBm2Power(maxRSSIEver);
 		return Math.pow(dBm2Power(rssi) / maxPowerEver, 0.25);
 	}
-	
+
 	private double dBm2Power(int rssi) {
 		return Math.pow(10.0, Double.valueOf(rssi - 30) / 10.0);
 	}
-	
+
 	public String toString() {
 		return getClass().getName() + "[" + 
-			"BSSID: " + getBSSID() + 
-			", RSSI: " + getRSSI() + 
-			", rank: " + getRank() + "]";
+				"BSSID: " + getBSSID() + 
+				", RSSI: " + getRSSI() + 
+				", rank: " + getRank() + "]";
 	}
 
 }

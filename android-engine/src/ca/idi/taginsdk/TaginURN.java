@@ -35,16 +35,16 @@ public class TaginURN extends Service implements Runnable {
 	//TODO: Is it okay to have the two values same, START and STOP?
 	public static final String INTENT_START_SERVICE = "ca.idi.taginsdk.TaginURN";
 	public static final String INTENT_STOP_SERVICE = "ca.idi.taginsdk.TaginURN";
-	
+
 	public static final String EXTRA_RUN_INTERVAL = "ca.idi.taginsdk.extra.RUN_INTERVAL";
 	public static final String EXTRA_NUMBER_OF_RUNS = "ca.idi.taginsdk.NUMBER_OF_RUNS";
 	public static final int DEFAULT_NUMBER_OF_RUNS = 9999; // Default number of runs
 	public static final int DEFAULT_RUN_INTERVAL = 9000; // Default interval between runs
-	
+
 	private static String mURN; // Uniform Resource Name for the location
 	private List<Neighbour> mNeighbours;
 	private static Fingerprint mFingerprint;
-	
+
 	private static double THRESHOLD = 0.25; //TODO Pass it by intents?
 
 	private Helper mHelper;
@@ -77,13 +77,13 @@ public class TaginURN extends Service implements Runnable {
 		} else {
 			mRunInterval = DEFAULT_RUN_INTERVAL;
 		}
-		
+
 		if (intent.hasExtra(EXTRA_NUMBER_OF_RUNS)) {
 			mNumberOfRuns = intent.getExtras().getInt(EXTRA_NUMBER_OF_RUNS);
 		} else {
 			mNumberOfRuns = DEFAULT_NUMBER_OF_RUNS;
 		}
-		
+
 		registerReceiver(mReceiver, new IntentFilter(Fingerprinter.ACTION_FINGERPRINT_CHANGED));
 		startURNRun();
 		startServiceThread();
@@ -123,8 +123,7 @@ public class TaginURN extends Service implements Runnable {
 		long urnId = getClosestNeighbour();
 		if (urnId == 0) {
 			generateURN();
-		}
-		else {
+		} else {
 			mergeFingerprint(mFingerprint, urnId);
 			mURN = fetchURNfromDB(urnId);
 		}
@@ -290,7 +289,7 @@ public class TaginURN extends Service implements Runnable {
 				if (c.moveToFirst()) {
 					long rowId = c.getLong(c.getColumnIndexOrThrow(TaginDatabase._ID));
 					fpc = cr.query(TaginProvider.URN_FINGERPRINTS_DETAIL_URI, TaginProvider.FINGERPRINT_ID_PROJECTION,
-							TaginDatabase.BEACON_ID + "=" + rowId, null, null);
+								   TaginDatabase.BEACON_ID + "=" + rowId, null, null);
 					if (fpc.moveToFirst()) {
 						do {				
 							urn_id =  fpc.getLong(fpc.getColumnIndexOrThrow(TaginDatabase.FINGERPRINT_ID));
@@ -370,7 +369,7 @@ public class TaginURN extends Service implements Runnable {
 		Cursor cursor = null;
 		try {
 			cursor = cr.query(TaginProvider.URN_FINGERPRINTS_URI, 
-							TaginProvider.URN_PROJECTION, where, null, null);
+							  TaginProvider.URN_PROJECTION, where, null, null);
 			if (cursor.moveToFirst())
 				urn = cursor.getString(cursor.getColumnIndexOrThrow(TaginDatabase.URN));
 		} catch (Exception ex) { 
@@ -393,11 +392,11 @@ public class TaginURN extends Service implements Runnable {
 			beacon_id = addBeacon(beacon.getBSSID(), TaginDatabase.WLAN, TaginDatabase.URN_TABLES);
 			addFPDetails(urn_id, beacon_id, beacon.getRank(), TaginDatabase.URN_TABLES);
 		}
-		
+
 		String where = TaginDatabase._ID + "=" + urn_id;
 		Cursor c = null;
 		try {
-			c = cr.query(TaginProvider.URN_FINGERPRINTS_URI, TaginProvider.URN_PROJECTION, where, null, null );
+			c = cr.query(TaginProvider.URN_FINGERPRINTS_URI, TaginProvider.URN_PROJECTION, where, null, null);
 			if (c.moveToFirst() && c.getCount() > 0) {
 				mURN = c.getString(c.getColumnIndexOrThrow(TaginDatabase.URN));
 			}
@@ -448,7 +447,7 @@ public class TaginURN extends Service implements Runnable {
 		long rowId = 0;
 		Cursor cursor = null;
 		try {
-			cursor = cr.query(TaginProvider.RAW_RADIO_URI, TaginProvider.RADIO_PROJECTION, where, new String[]{deviceId}, null );
+			cursor = cr.query(TaginProvider.RAW_RADIO_URI, TaginProvider.RADIO_PROJECTION, where, new String[]{deviceId}, null);
 			if (cursor.moveToFirst() && cursor.getCount() > 0) {
 				rowId = cursor.getLong(cursor.getColumnIndexOrThrow(TaginDatabase._ID));
 			}
@@ -531,7 +530,7 @@ public class TaginURN extends Service implements Runnable {
 		} else { // In URN Contents, each beacon appears only at most once.
 			String where = TaginDatabase.BSSID + "=" + "?";
 			try {
-				cursor = cr.query(TaginProvider.URN_BEACONS_URI, TaginProvider.BEACON_PROJECTION, where, new String[]{bssid}, null );
+				cursor = cr.query(TaginProvider.URN_BEACONS_URI, TaginProvider.BEACON_PROJECTION, where, new String[]{bssid}, null);
 				if (cursor.moveToFirst() && cursor.getCount() > 0) {
 					rowId = cursor.getLong(cursor.getColumnIndexOrThrow(TaginDatabase._ID));
 					//Log.i(Helper.TAG, "Duplicate Found for beacon in URN Contents" + Long.toString(rowId));

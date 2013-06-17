@@ -114,7 +114,7 @@ public class TaginProvider extends ContentProvider {
 	}
 	
 	private static final UriMatcher uriMatcher;
-	static{
+	static {
 		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 		uriMatcher.addURI(AUTHORITY, "raw/radio", RADIO_RAW);
 		uriMatcher.addURI(AUTHORITY, "raw/fingerprints", FINGERPRINTS_RAW);
@@ -159,7 +159,7 @@ public class TaginProvider extends ContentProvider {
 
 	@Override
 	public String getType(Uri uri) {
-		switch(uriMatcher.match(uri)){
+		switch(uriMatcher.match(uri)) {
 		case RADIO_RAW:
 			Log.i(TAG, "Returning content type of radios");
 			return CONTENT_ITEM_TYPE + "radios";
@@ -193,7 +193,7 @@ public class TaginProvider extends ContentProvider {
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
 		String DATABASE_TABLE;
-		switch(uriMatcher.match(uri)){
+		switch (uriMatcher.match(uri)){
 		case RADIO_RAW:
 			DATABASE_TABLE="raw_radios";
 			break;
@@ -221,9 +221,9 @@ public class TaginProvider extends ContentProvider {
 		
 		long rowID = DB.insert(DATABASE_TABLE, "", values);
 		
-		if(rowID > 0){
+		if (rowID > 0) {
 			Uri _uri;
-			switch(uriMatcher.match(uri)){
+			switch (uriMatcher.match(uri)) {
 			case RADIO_RAW:
 				_uri = ContentUris.withAppendedId(RAW_RADIO_URI, rowID);
 				getContext().getContentResolver().notifyChange(_uri, null);
@@ -275,7 +275,7 @@ public class TaginProvider extends ContentProvider {
 		String DATABASE_TABLE;
 		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 		
-		switch(uriMatcher.match(uri)){
+		switch (uriMatcher.match(uri)) {
 		case RADIO_RAW:
 			DATABASE_TABLE = "raw_radios";
 			break;
@@ -308,14 +308,14 @@ public class TaginProvider extends ContentProvider {
                 null, 
                 sortOrder, null);
 		Log.i(Helper.TAG, "Query " + "=" + query); */
-		 Cursor c = qb.query(
-                 DB, 
-                 projection, 
-                 selection, 
-                 selectionArgs, 
-                 null, 
-                 null, 
-                 sortOrder);
+		Cursor c = qb.query(
+				DB, 
+				projection, 
+				selection, 
+				selectionArgs, 
+				null, 
+				null, 
+				sortOrder);
 		 c.setNotificationUri(getContext().getContentResolver(), uri);
 	     return c;
 	}
@@ -323,7 +323,7 @@ public class TaginProvider extends ContentProvider {
 	@Override
 	public int update(Uri uri, ContentValues values, String where, String[] whereArgs) {
 		int count = 0;
-		switch(uriMatcher.match(uri)){
+		switch (uriMatcher.match(uri)) {
 			case RADIO_RAW:
 				count = DB.update("raw_radios", values, where, whereArgs);
 				break;

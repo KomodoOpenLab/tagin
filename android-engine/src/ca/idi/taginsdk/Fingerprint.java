@@ -21,8 +21,8 @@ public class Fingerprint {
 	private List<Beacon> mBeacons;
 	private String mTime;
 	private Helper mHelper = Helper.getInstance();
-	
-	
+
+
 	public Fingerprint() {
 		mBeacons = new ArrayList<Beacon>();
 		mTime = mHelper.getTime();
@@ -31,12 +31,12 @@ public class Fingerprint {
 	public Fingerprint(List<Beacon> beacons) {
 		setBeacons(beacons);
 	}
-	
+
 	public void setBeacons(List<Beacon> beacons) {
 		mBeacons = beacons;
 		mTime = mHelper.getTime();
 	}
-	
+
 	public void setBeaconsFromScanResult(List<ScanResult> scanResults, int maxRSSIEver) {
 		mBeacons = new ArrayList<Beacon>();
 		for (ScanResult scanResult : scanResults) {
@@ -44,46 +44,46 @@ public class Fingerprint {
 		}
 		mTime = mHelper.getTime();
 	}
-	
+
 	/**
 	 * Instead of substituting the fingerprint's beacons, add a list from another scan.
 	 * This is useful when performing multiple scans in a single fingerprint to increase
 	 * its accuracy.
 	 * @param scanResults: Results from a WiFi scan
 	 * @param n: Iteration per fingerprint that this scan represents (for calculating an average)
-	**/
+	 **/
 	public void addBeaconsFromScanResult(List<ScanResult> scanResults, int n, int maxRSSIEver) {
 		Map<String,Beacon> beacons = new HashMap<String,Beacon>();
 		for (Beacon beacon : this.getBeacons()) {
 			beacons.put(beacon.getBSSID(), new Beacon(beacon.getBSSID(), 
-					movingRSSIAvg(Helper.NULL_RSSI, beacon.getRSSI(), n), 
-					maxRSSIEver));
+												movingRSSIAvg(Helper.NULL_RSSI, beacon.getRSSI(), n), 
+												maxRSSIEver));
 		}
 
 		for (ScanResult scanResult: scanResults) {
 			if (beacons.containsKey(scanResult.BSSID)) {
 				Beacon b = beacons.get(scanResult.BSSID);
 				beacons.put(scanResult.BSSID, new Beacon(scanResult.BSSID,
-						movingRSSIAvg(b.getRSSI(), scanResult.level, n),
-						maxRSSIEver));
+													movingRSSIAvg(b.getRSSI(), scanResult.level, n),
+													maxRSSIEver));
 			} else {
 				beacons.put(scanResult.BSSID, new Beacon(scanResult.BSSID, 
-						movingRSSIAvg(Helper.NULL_RSSI, scanResult.level,n),
-						maxRSSIEver));
+													movingRSSIAvg(Helper.NULL_RSSI, scanResult.level, n),
+													maxRSSIEver));
 			}
 		}
 		mBeacons = new ArrayList<Beacon>(beacons.values());
 		mTime = mHelper.getTime();
 	}
-	
+
 	private double dBm2Power(int rssi) {
 		return Math.pow(10.0, Double.valueOf(rssi - 30) / 10.0);
 	}
-	
+
 	private int power2dBm(double power) {
 		return (int) Math.round(10 * Math.log10(power)) + 30;
 	}
-	
+
 	private int movingRSSIAvg (int avgRSSI, int newRSSI, int n) {
 		double startPower = avgRSSI == Helper.NULL_RSSI? 0 : dBm2Power(avgRSSI);
 		double newPower = newRSSI == Helper.NULL_RSSI? 0 : dBm2Power(newRSSI);
@@ -91,7 +91,7 @@ public class Fingerprint {
 		// Until (n-1)th scan the value was startPower and for nth scan the value is newPower.
 		return power2dBm(avgPower);
 	}
-	
+
 	/**
 	 * Calculates the relative distance between two fingerprints.
 	 * The value is between 0 and 1 and is maximal when two fingerprints
@@ -106,7 +106,7 @@ public class Fingerprint {
 			d += Math.pow(beacon.getRank(), 2.0);
 			beacons.put(beacon.getBSSID(), beacon);
 		}
-		
+
 		for (Beacon beacon : fp.getBeacons()) {
 			maxD += Math.pow(beacon.getRank(), 2.0);
 			if (beacons.containsKey(beacon.getBSSID())) {
@@ -118,13 +118,13 @@ public class Fingerprint {
 		}
 		return Math.sqrt(d) / Math.sqrt(maxD);
 	}
-	
-	
+
+
 	public int getMaxRSSI() {
 		Collections.sort(mBeacons);
 		return mBeacons.get(0).getRSSI();
 	}
-	
+
 	/**
 	 * Displaces the fingerprint by the change vector.
 	 * @param changeVector - An Array of Beacons
@@ -134,7 +134,7 @@ public class Fingerprint {
 		for (Beacon beacon : this.getBeacons()) {
 			beacons.put(beacon.getBSSID(), beacon);
 		}
-		
+
 		for (Beacon beacon : displacementVector) {
 			if (beacons.containsKey(beacon.getBSSID())) {
 				Beacon b = beacons.get(beacon.getBSSID());
@@ -146,7 +146,7 @@ public class Fingerprint {
 		}
 		setBeacons(new ArrayList<Beacon>(beacons.values()));
 	}
-	
+
 	/**
 	 * Merges two fingerprints
 	 * @return
@@ -157,7 +157,7 @@ public class Fingerprint {
 			beacon.setRank(beacon.getRank() / 2);
 			beacons.put(beacon.getBSSID(), beacon);
 		}
-		
+
 		for (Beacon beacon : fp.getBeacons()) {
 			if (beacons.containsKey(beacon.getBSSID())) {
 				Beacon b = beacons.get(beacon.getBSSID());
@@ -174,7 +174,7 @@ public class Fingerprint {
 	public List<Beacon> getBeacons() { 
 		return mBeacons;
 	}
-	
+
 	public String getTime() { 
 		return mTime;
 	}

@@ -31,40 +31,39 @@ public class URNMonitor extends ListActivity {
 	private TextView mURNView;
 	private Button mGetURNButton;
 	private ProgressDialog mProgressDialog;
-	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-    	super.onCreate(savedInstanceState);
-		if (Helper.DEBUG) android.os.Debug.waitForDebugger();
-    	
-		//android.os.Debug.startMethodTracing("tagin");
-		
-    	setContentView(R.layout.simple);
 
-    	registerReceiver(mReceiver, new IntentFilter(TaginURN.ACTION_URN_READY));
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		if (Helper.DEBUG) android.os.Debug.waitForDebugger();
+
+		//android.os.Debug.startMethodTracing("tagin");
+
+		setContentView(R.layout.simple);
+
+		registerReceiver(mReceiver, new IntentFilter(TaginURN.ACTION_URN_READY));
 
 		mGetURNButton = (Button) findViewById(R.id.U_Button01);
 		mURNView = (TextView) findViewById(R.id.U_TextView01);
-		
+
 		mGetURNButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-					fetchURN();
-					fillData();
+				fetchURN();
+				fillData();
 			}
 		});
-    }
-    
-    private void fetchURN(){
-    	if(isWiFiEnabled()){
-    		showDialog("Please wait");
-    		startService(new Intent(TaginURN.INTENT_START_SERVICE));
-    	}
-    	else{
+	}
+
+	private void fetchURN() {
+		if (isWiFiEnabled()) {
+			showDialog("Please wait");
+			startService(new Intent(TaginURN.INTENT_START_SERVICE));
+		} else {
 			Helper.showToast(this, "Please enable WiFi and try again");
 		}
-    }
-    
+	}
+
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -79,42 +78,42 @@ public class URNMonitor extends ListActivity {
 
 	private void showDialog(String message) {
 		mProgressDialog = ProgressDialog.show(this, "Please wait...", 
-				message , true, true);
+											  message , true, true);
 	}
 
 	private void closeDialog() {
 		if (mProgressDialog != null)
 			mProgressDialog.dismiss();
 	}
-	
+
 	private void fillData() {
-        // Get all of the rows from the database and create the URN list
-        Cursor mCursor = getContentResolver().query(TaginProvider.URN_FINGERPRINTS_URI,
-        				null, null, null, null);
-        startManagingCursor(mCursor);
- 
-        String[] from = new String[]{TaginDatabase._ID, TaginDatabase.MODIFIED, TaginDatabase.URN};
-        int[] to = new int[]{R.id.Row_TextView01, R.id.Row_TextView02, R.id.Row_TextView03};
-        
-        SimpleCursorAdapter urns = new SimpleCursorAdapter(this, R.layout.row, mCursor, from, to);
-        setListAdapter(urns);
-    }
-	
-	 public Boolean isWiFiEnabled(){
-	    WifiManager mWifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-	    return mWifiManager.isWifiEnabled();
+		// Get all of the rows from the database and create the URN list
+		Cursor mCursor = getContentResolver().query(TaginProvider.URN_FINGERPRINTS_URI,
+													null, null, null, null);
+		startManagingCursor(mCursor);
+
+		String[] from = new String[]{TaginDatabase._ID, TaginDatabase.MODIFIED, TaginDatabase.URN};
+		int[] to = new int[]{R.id.Row_TextView01, R.id.Row_TextView02, R.id.Row_TextView03};
+
+		SimpleCursorAdapter urns = new SimpleCursorAdapter(this, R.layout.row, mCursor, from, to);
+		setListAdapter(urns);
+	}
+
+	public Boolean isWiFiEnabled() {
+		WifiManager mWifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+		return mWifiManager.isWifiEnabled();
 	}    		
 
 	@Override
-    public void onDestroy () {
-    	super.onDestroy();
-    	//android.os.Debug.stopMethodTracing();
-    	stopService(new Intent(TaginURN.INTENT_STOP_SERVICE));
-    	if(mReceiver != null){
+	public void onDestroy() {
+		super.onDestroy();
+		//android.os.Debug.stopMethodTracing();
+		stopService(new Intent(TaginURN.INTENT_STOP_SERVICE));
+		if (mReceiver != null) {
 			unregisterReceiver(mReceiver);
 			mReceiver = null;
 		}
-    }
+	}
 
 	@Override
 	protected void onPause() {

@@ -23,72 +23,71 @@ public class Helper {
 	 * Tag used for logging in the whole app
 	 */
 	public static final String TAG = "tagin!";
-	
+
 	public static final int NULL_RSSI = -999;
-	
+
 	private static Helper helper = null;
-	
+
 
 	/**
 	 * Create a new instance of this class or return one it it already exists
 	 * @return Helper
 	 */
 	public static Helper getInstance() {
-		if(helper == null) {
+		if (helper == null) {
 			return new Helper();
 		}
 		return helper;
 	}
-	
+
 	public static void showToast(Context context, String msg) {
 		Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
 	}
 
 	public int getMaxRSSIEver(Context context) {
 		// We need an Editor object to make preference changes.
-        // All objects are from android.context.Context
+		// All objects are from android.context.Context
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getInt("MAX_RSSI_EVER", NULL_RSSI);
+		return prefs.getInt("MAX_RSSI_EVER", NULL_RSSI);
 	}
 
 	public void saveMaxRSSIEver(Context context, int maxRSSIEver) {
 		// We need an Editor object to make preference changes.
-        // All objects are from android.context.Context
+		// All objects are from android.context.Context
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt("MAX_RSSI_EVER", maxRSSIEver);
-        // Commit the edit!
-        editor.commit();
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt("MAX_RSSI_EVER", maxRSSIEver);
+		// Commit the edit!
+		editor.commit();
 	}
-	
+
 	/**
 	 * @return time in Hours: Minutes: Seconds as string
 	 */
-	public String getTime(){
+	public String getTime() {
 		Date date = new Date();
 		String time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 		return time;
 	}
-	
+
 	public int getMinRSSIEver(Context context) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getInt("MIN_RSSI_EVER", NULL_RSSI);
+		return prefs.getInt("MIN_RSSI_EVER", NULL_RSSI);
 	}
-	
+
 	public void saveMinRSSIEver(Context context, int minRSSIEver) {
 		// We need an Editor object to make preference changes.
-        // All objects are from android.context.Context
+		// All objects are from android.context.Context
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt("MIN_RSSI_EVER", minRSSIEver);
-        // Commit the edit!
-        editor.commit();
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt("MIN_RSSI_EVER", minRSSIEver);
+		// Commit the edit!
+		editor.commit();
 	}
-	
-	public String getDeviceId(Context context){
+
+	public String getDeviceId(Context context) {
 		return Secure.getString(context.getContentResolver(),
-                Secure.ANDROID_ID); 
+				Secure.ANDROID_ID); 
 	}
-	
-	
+
 }
