@@ -45,7 +45,7 @@ public class Logger extends Activity {
 	private ToggleButton mToggleButton;
 	private Button mStopButton;
 	private ImageView mLoading;
-	private Fingerprint mSavedFP; //Used to backup fp for calculating rank 
+	private Fingerprint mSavedFP; // Used to backup fp for calculating rank 
 	private Helper mHelper;
 	private Handler mHandler;
 	private AnimationDrawable loadAnimation;
@@ -53,10 +53,8 @@ public class Logger extends Activity {
 	private static BufferedWriter out;
 	private final String mLogHeader = "FINGERPRINT_APS, RANK_DISTANCE_TO_PREVIOUS, In-place/Moving";
 
-	//Strings for storing previous and current fingerprint details
+	// Strings for storing previous and current fingerprint details
 	private String cTime, pAP, cAP, pTime = "-Infinity";
-
-	//private StringBuffer LogBuffer = new StringBuffer(); //Buffer used to backup the log data.
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -68,9 +66,8 @@ public class Logger extends Activity {
 
 		mHelper = Helper.getInstance();
 		mHandler = new Handler();
-		//LogBuffer.append("Log View" + "\n" + LogHeader + "\n");
 
-		//Textviews to monitor logging process
+		// Textviews to monitor logging process
 		mMonitor1 = (TextView) findViewById(R.id.Dialog_TextView01);
 		mMonitor2 = (TextView) findViewById(R.id.Dialog_TextView02);
 		mMonitor3 = (TextView) findViewById(R.id.Dialog_TextView03);
@@ -97,8 +94,7 @@ public class Logger extends Activity {
 			public void onClick(View v) {
 				if (mToggleButton.isChecked()) {
 					Helper.showToast(Logger.this, "Click again to toggle to Moving");
-				}
-				else {	
+				} else {	
 					Helper.showToast(Logger.this, "Click again to toggle to IN PLACE");
 				}
 			}
@@ -133,7 +129,6 @@ public class Logger extends Activity {
 			out = new BufferedWriter(logWriter);
 			out.write("Logged at" + mHelper.getTime() + "\n");
 			out.write(mLogHeader + "\n");
-			out.close();
 			Log.d(Helper.TAG, mLogHeader);
 		}
 	}
@@ -145,8 +140,7 @@ public class Logger extends Activity {
 			intent.putExtra(Fingerprinter.EXTRA_SCANS_PER_FINGERPRINT, 5);
 			startService(intent);
 			//TODO: Add number of WiFi scans as intent extra
-		}
-		else if (status == STOP) {
+		} else if (status == STOP) {
 			stopService(new Intent(Fingerprinter.INTENT_STOP_SERVICE));
 			Helper.showToast(this, "To view the complete log, check taginLog file in sdcard.");
 		}
@@ -165,10 +159,10 @@ public class Logger extends Activity {
 				printFP(lastFP);
 				cTime = lastFP.getTime(); // Getting the time current Fingerprint was taken
 				cAP = Integer.toString(lastFP.getBeacons().size());
-				if (mSavedFP != null){	
+				if (mSavedFP != null) {	
 					pTime = mSavedFP.getTime();
-					logItem =  cAP + "," + measureRankDistance(mSavedFP,lastFP) +
-							"," + mToggleButton.isChecked() +"\n" ;
+					logItem =  cAP + "," + measureRankDistance(mSavedFP,lastFP) + "," + 
+							   mToggleButton.isChecked() +"\n" ;
 					pAP = Integer.toString(mSavedFP.getBeacons().size());
 					Log.d(Helper.TAG, logItem);
 					writeToFile(logItem); // Writing pairs of Rank Distance and Inside/Outside to log file.
@@ -204,13 +198,12 @@ public class Logger extends Activity {
 	}
 
 	@Override
-	public void onDestroy () {
+	public void onDestroy() {
 		super.onDestroy();
 		if (mReceiver != null) {
 			unregisterReceiver(mReceiver);
 			mReceiver = null;
 		}
-		fileFlush();
 		stopService(new Intent(Fingerprinter.INTENT_START_SERVICE));
 	}
 
@@ -233,7 +226,7 @@ public class Logger extends Activity {
 		super.onResume();
 	}
 
-	private void startLoading(){
+	private void startLoading() {
 		mHandler.post(mLoader); // Posts the runnable to the message queue thread
 	}
 
