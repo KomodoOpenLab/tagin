@@ -25,6 +25,8 @@ public class Helper {
 	public static final String TAG = "tagin!";
 
 	public static final int NULL_RSSI = -999;
+	public static final String MAX_RSSI_EVER = "MAX_RSSI_EVER";
+	public static final String MIN_RSSI_EVER = "MIN_RSSI_EVER";
 
 	private static Helper helper = null;
 
@@ -45,19 +47,14 @@ public class Helper {
 	}
 
 	public int getMaxRSSIEver(Context context) {
-		// We need an Editor object to make preference changes.
-		// All objects are from android.context.Context
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		return prefs.getInt("MAX_RSSI_EVER", NULL_RSSI);
+		return prefs.getInt(MAX_RSSI_EVER, NULL_RSSI);
 	}
 
 	public void saveMaxRSSIEver(Context context, int maxRSSIEver) {
-		// We need an Editor object to make preference changes.
-		// All objects are from android.context.Context
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		SharedPreferences.Editor editor = prefs.edit();
-		editor.putInt("MAX_RSSI_EVER", maxRSSIEver);
-		// Commit the edit!
+		editor.putInt(MAX_RSSI_EVER, maxRSSIEver);
 		editor.commit();
 	}
 
@@ -72,16 +69,13 @@ public class Helper {
 
 	public int getMinRSSIEver(Context context) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		return prefs.getInt("MIN_RSSI_EVER", NULL_RSSI);
+		return prefs.getInt(MIN_RSSI_EVER, NULL_RSSI);
 	}
 
 	public void saveMinRSSIEver(Context context, int minRSSIEver) {
-		// We need an Editor object to make preference changes.
-		// All objects are from android.context.Context
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		SharedPreferences.Editor editor = prefs.edit();
-		editor.putInt("MIN_RSSI_EVER", minRSSIEver);
-		// Commit the edit!
+		editor.putInt(MIN_RSSI_EVER, minRSSIEver);
 		editor.commit();
 	}
 

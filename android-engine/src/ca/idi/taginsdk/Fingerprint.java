@@ -59,18 +59,16 @@ public class Fingerprint {
 												movingRSSIAvg(Helper.NULL_RSSI, beacon.getRSSI(), n), 
 												maxRSSIEver));
 		}
-
+		
+		Integer rssi;
 		for (ScanResult scanResult: scanResults) {
+			rssi = Helper.NULL_RSSI;
 			if (beacons.containsKey(scanResult.BSSID)) {
-				Beacon b = beacons.get(scanResult.BSSID);
-				beacons.put(scanResult.BSSID, new Beacon(scanResult.BSSID,
-													movingRSSIAvg(b.getRSSI(), scanResult.level, n),
-													maxRSSIEver));
-			} else {
-				beacons.put(scanResult.BSSID, new Beacon(scanResult.BSSID, 
-													movingRSSIAvg(Helper.NULL_RSSI, scanResult.level, n),
-													maxRSSIEver));
+				rssi = beacons.get(scanResult.BSSID).getRSSI();
 			}
+			beacons.put(scanResult.BSSID, new Beacon(scanResult.BSSID,
+													movingRSSIAvg(rssi, scanResult.level, n),
+													maxRSSIEver));
 		}
 		mBeacons = new ArrayList<Beacon>(beacons.values());
 		mTime = mHelper.getTime();

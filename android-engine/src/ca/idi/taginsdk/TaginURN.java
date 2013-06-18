@@ -8,7 +8,9 @@ package ca.idi.taginsdk;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import android.app.Service;
@@ -137,13 +139,10 @@ public class TaginURN extends Service implements Runnable {
 	 */
 	private void mergeFingerprint(Fingerprint fp, long urnId) {
 		Fingerprint newFingerprint = getFingerprint(urnId);
-		//Log.d(Helper.TAG, "Before Merging - 1:- " + printFP(newFingerprint));
-		//Log.d(Helper.TAG, "Before Merging - 2:- " + printFP(fp));
 		newFingerprint.merge(fp);
-		//Log.d(Helper.TAG, "After merging:- " + printFP(newFingerprint));
 		List<Beacon> changeVector = calculateChangeVector(urnId, newFingerprint);
 		updateURN(urnId, newFingerprint);
-		pushFingerprint(urnId, changeVector); // Pushing Away the overLapping Neighbours		
+		pushFingerprint(urnId, changeVector); // Pushing Away the overlapping Neighbours		
 	}
 
 	/**
@@ -172,32 +171,25 @@ public class TaginURN extends Service implements Runnable {
 	 */
 	private List<Beacon> calculateChangeVector(Long urnId, Fingerprint fp) {
 		Fingerprint oldFp = getFingerprint(urnId);
-		List<Beacon> oldBeacons = oldFp.getBeacons();
-		List<Beacon> newBeacons = fp.getBeacons();
-		ArrayList<Beacon> cBeacons = new ArrayList<Beacon>();
-		int oldLength = oldBeacons.size();
-		int newLength = newBeacons.size();
-		int i, j;
-		Boolean dupFound;
-		for (i = 0; i < newLength; i++) {
-			j = 0; 
-			dupFound = false; // To check if dup was found for this beacon in new fingerprint
-			Beacon vector = new Beacon();
-			while (!dupFound && (j < oldLength)) {
-				if (newBeacons.get(i).getBSSID().equals(oldBeacons.get(j).getBSSID())) {
-					// The beacon was present in both fingerprints and change is calculated.
-					vector.setBSSID(newBeacons.get(i).getBSSID());
-					vector.setRank(newBeacons.get(i).getRank() - oldBeacons.get(j).getRank());
-					cBeacons.add(vector);
-					dupFound = true;  
-				}
-				j++;
-			}
-			if (!dupFound) {
-				cBeacons.add(newBeacons.get(i));
+		Map<String,Beacon> beacons = new HashMap<String,Beacon>();
+		ArrayList<Beacon> result = new ArrayList<Beacon>();
+		
+		for (Beacon beacon : oldFp.getBeacons()) {
+			beacons.put(beacon.getBSSID(), beacon);
+		}
+		
+		for (Beacon beacon : fp.getBeacons()) {
+			if (beacons.containsKey(beacon.getBSSID())) {
+				Beacon b = beacons.get(beacon.getBSSID());
+				Beacon v = new Beacon();
+				v.setBSSID(beacon.getBSSID());
+				v.setRank(beacon.getRank() - b.getRank());
+				result.add(v);
+			} else {
+				result.add(beacon);
 			}
 		}
-		return cBeacons;
+		return result;
 	}
 
 	/**
@@ -276,32 +268,31 @@ public class TaginURN extends Service implements Runnable {
 	 */
 	private List<Neighbour> getNeighbours(Fingerprint fp) {
 		ArrayList<Neighbour> neighbours = new ArrayList<Neighbour>();
-		long urn_id;
+		long urnId;
 		Double rankDistance;
 		Cursor c = null;
 		Cursor fpc = null;
 		List<Beacon> beacons = fp.getBeacons();
 		String where = TaginDatabase.BSSID + "=" + "?";
 		try {
-			for (int i = 0; i < beacons.size(); i++) {
+			for (Beacon beacon : beacons) {
 				c = cr.query(TaginProvider.URN_BEACONS_URI, TaginProvider.BEACON_PROJECTION, where, 
-						new String[]{beacons.get(i).getBSSID()}, null);
+						new String[]{beacon.getBSSID()}, null);
 				if (c.moveToFirst()) {
 					long rowId = c.getLong(c.getColumnIndexOrThrow(TaginDatabase._ID));
 					fpc = cr.query(TaginProvider.URN_FINGERPRINTS_DETAIL_URI, TaginProvider.FINGERPRINT_ID_PROJECTION,
 								   TaginDatabase.BEACON_ID + "=" + rowId, null, null);
 					if (fpc.moveToFirst()) {
 						do {				
-							urn_id =  fpc.getLong(fpc.getColumnIndexOrThrow(TaginDatabase.FINGERPRINT_ID));
-							if (notAlreadyExistsURN(urn_id, neighbours)) {
-								Fingerprint temp_fp = getFingerprint(urn_id);
+							urnId =  fpc.getLong(fpc.getColumnIndexOrThrow(TaginDatabase.FINGERPRINT_ID));
+							if (notAlreadyExistsURN(urnId, neighbours)) {
+								Fingerprint temp_fp = getFingerprint(urnId);
 								rankDistance = fp.rankDistanceTo(temp_fp);
-								neighbours.add(new Neighbour(urn_id, rankDistance));
+								neighbours.add(new Neighbour(urnId, rankDistance));
 							}
 						} while(fpc.moveToNext());	
 					}
-				}
-				else
+				} else
 					continue;
 			}
 		} catch (Exception e) { 

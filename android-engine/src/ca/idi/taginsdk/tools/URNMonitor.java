@@ -36,11 +36,7 @@ public class URNMonitor extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if (Helper.DEBUG) android.os.Debug.waitForDebugger();
-
-		//android.os.Debug.startMethodTracing("tagin");
-
 		setContentView(R.layout.simple);
-
 		registerReceiver(mReceiver, new IntentFilter(TaginURN.ACTION_URN_READY));
 
 		mGetURNButton = (Button) findViewById(R.id.U_Button01);
@@ -88,14 +84,13 @@ public class URNMonitor extends ListActivity {
 
 	private void fillData() {
 		// Get all of the rows from the database and create the URN list
-		Cursor mCursor = getContentResolver().query(TaginProvider.URN_FINGERPRINTS_URI,
-													null, null, null, null);
-		startManagingCursor(mCursor);
-
+		Cursor cursor = getContentResolver().query(TaginProvider.URN_FINGERPRINTS_URI,
+											null, null, null, null);
+		startManagingCursor(cursor);
 		String[] from = new String[]{TaginDatabase._ID, TaginDatabase.MODIFIED, TaginDatabase.URN};
 		int[] to = new int[]{R.id.Row_TextView01, R.id.Row_TextView02, R.id.Row_TextView03};
 
-		SimpleCursorAdapter urns = new SimpleCursorAdapter(this, R.layout.row, mCursor, from, to);
+		SimpleCursorAdapter urns = new SimpleCursorAdapter(this, R.layout.row, cursor, from, to);
 		setListAdapter(urns);
 	}
 
@@ -107,7 +102,6 @@ public class URNMonitor extends ListActivity {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		//android.os.Debug.stopMethodTracing();
 		stopService(new Intent(TaginURN.INTENT_STOP_SERVICE));
 		if (mReceiver != null) {
 			unregisterReceiver(mReceiver);
