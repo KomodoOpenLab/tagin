@@ -34,9 +34,7 @@ import android.util.Log;
 public class TaginURN extends Service implements Runnable {
 
 	public static final String ACTION_URN_READY = "ca.idi.taginsdk.action.URN_READY";
-	//TODO: Is it okay to have the two values same, START and STOP?
-	public static final String INTENT_START_SERVICE = "ca.idi.taginsdk.TaginURN";
-	public static final String INTENT_STOP_SERVICE = "ca.idi.taginsdk.TaginURN";
+	public static final String INTENT_URN_SERVICE = "ca.idi.taginsdk.TaginURN";
 
 	public static final String EXTRA_RUN_INTERVAL = "ca.idi.taginsdk.extra.RUN_INTERVAL";
 	public static final String EXTRA_NUMBER_OF_RUNS = "ca.idi.taginsdk.NUMBER_OF_RUNS";

@@ -25,7 +25,7 @@ public class TaginProvider extends ContentProvider {
 	private static final String TAG ="ca.idi.tagin.TaginProvider";
 
 	private static final String SCHEME = "content://";
-	private static final String AUTHORITY = "ca.idi.tagin.taginprovider";
+	private static final String AUTHORITY = "ca.idi.taginsdk.taginprovider";
 	private static final String PATH_RAW = "/raw/";
 	private static final String PATH_URN = "/urn/";
 	

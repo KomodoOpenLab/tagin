@@ -108,7 +108,7 @@ public class Main extends Activity {
 		noOfNeededUpdate = tempTagListMinusTagList.size();
 		if (noOfNeededUpdate == 0)
 			return;
-		if (noOfNeededUpdate>noOfPossibleUpdate){ //we also need to add some new Tags
+		if (noOfNeededUpdate>noOfPossibleUpdate) { //we also need to add some new Tags
 			//do all the possible updates
 			for (int i = 0; i < noOfPossibleUpdate; i++){
 				mTagCloudView.Replace(tempTagListMinusTagList.get(i),
@@ -121,13 +121,13 @@ public class Main extends Activity {
 						tagListMinusTempTagList.get(i).getText());
 			}
 			//add the remaining as new tags
-			for (int i = noOfPossibleUpdate; i < noOfNeededUpdate; i++){
+			for (int i = noOfPossibleUpdate; i < noOfNeededUpdate; i++) {
 				mTagCloudView.addTag(tempTagListMinusTagList.get(i));
 				tagList.add(tempTagListMinusTagList.get(i));
 			}
-		} else{ //no need to add any new tag
+		} else { //no need to add any new tag
 			//do all updates:
-			for (int i = 0; i < noOfNeededUpdate; i++){
+			for (int i = 0; i < noOfNeededUpdate; i++) {
 				mTagCloudView.Replace(	tempTagListMinusTagList.get(i),
 										tagListMinusTempTagList.get(i).getText());
 				//update the RGB value and scaled textSize of the tag
@@ -143,7 +143,7 @@ public class Main extends Activity {
 
 	public void Replace(Tag newTag, String oldTagText){
 		for (int i=0; i< tagList.size(); i++)
-			if ( oldTagText.equalsIgnoreCase(tagList.get(i).getText())){
+			if (oldTagText.equalsIgnoreCase(tagList.get(i).getText())) {
 				tagList.get(i).setPopularity(newTag.getPopularity());
 				tagList.get(i).setText(newTag.getText());
 				tagList.get(i).setUrl(newTag.getUrl());
@@ -221,7 +221,7 @@ public class Main extends Activity {
 
 	@Override
 	protected void onStop() {
-		stopService(new Intent(TaginURN.INTENT_STOP_SERVICE));
+		stopService(new Intent(TaginURN.INTENT_URN_SERVICE));
 		super.onStop();
 	}
 
@@ -248,7 +248,7 @@ public class Main extends Activity {
 	 * engine
 	 */
 	private void startURNFetchService() {
-		Intent intent = new Intent(TaginURN.INTENT_START_SERVICE);
+		Intent intent = new Intent(TaginURN.INTENT_URN_SERVICE);
 		//Pass the number of runs and interval between runs as extras.
 		startService(intent); 
 	}
@@ -265,7 +265,7 @@ public class Main extends Activity {
 				if (!tagCloudCreated) { // first time:: stop splash and create TagCloud
 					stopSplashScreen();
 					createTagCloud(tempTagList);
-				} else{ // after initial creation of Tag Cloud, just update it
+				} else { // after initial creation of Tag Cloud, just update it
 					updateTagCloud(tempTagList);
 				}
 			}
@@ -276,7 +276,7 @@ public class Main extends Activity {
 		//in order to make the Tag URL point to Google search for that		
 		Cursor c1, c2;
 		c1 = tDb.fetchTagId(urn);
-		if (c1 == null){
+		if (c1 == null) {
 			Log.d(Helper.TAG, "No TAGS present");
 			return null;
 		}

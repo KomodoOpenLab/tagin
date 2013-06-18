@@ -1,4 +1,4 @@
-package ca.idi.taginsdk.tools;
+package ca.idi.tagin.tools;
 
 /**
  * Komodo Lab: Tagin! Project: 3D Tag Cloud
@@ -6,8 +6,6 @@ package ca.idi.taginsdk.tools;
  * @authors Jorge Silva and Primal Pappachan
  */
 
-import ca.idi.taginsdk.Helper;
-import ca.idi.taginsdk.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
@@ -21,6 +19,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
+
+import ca.idi.taginsdk.Helper;
 
 public class LoggerHelp extends Activity {
 

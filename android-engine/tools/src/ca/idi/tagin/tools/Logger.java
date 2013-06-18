@@ -1,4 +1,4 @@
-package ca.idi.taginsdk.tools;
+package ca.idi.tagin.tools;
 
 /**
  * Komodo Lab: Tagin! Project: 3D Tag Cloud
@@ -10,13 +10,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
-
-import ca.idi.taginsdk.R;
-import ca.idi.taginsdk.Beacon;
-import ca.idi.taginsdk.Fingerprint;
-import ca.idi.taginsdk.Fingerprinter;
-import ca.idi.taginsdk.Helper;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -34,6 +27,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import ca.idi.taginsdk.Beacon;
+import ca.idi.taginsdk.Fingerprint;
+import ca.idi.taginsdk.Fingerprinter;
+import ca.idi.taginsdk.Helper;
 
 
 public class Logger extends Activity {

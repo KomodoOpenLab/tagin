@@ -1,4 +1,4 @@
-package ca.idi.taginsdk.tools;
+package ca.idi.tagin.tools;
 
 /**
  * Komodo Lab: Tagin! Project: 3D Tag Cloud
@@ -21,8 +21,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+
 import ca.idi.taginsdk.Helper;
-import ca.idi.taginsdk.R;
 import ca.idi.taginsdk.TaginDatabase;
 import ca.idi.taginsdk.TaginProvider;
 import ca.idi.taginsdk.TaginURN;
@@ -54,7 +54,7 @@ public class URNMonitor extends ListActivity {
 	private void fetchURN() {
 		if (isWiFiEnabled()) {
 			showDialog("Please wait");
-			startService(new Intent(TaginURN.INTENT_START_SERVICE));
+			startService(new Intent(TaginURN.INTENT_URN_SERVICE));
 		} else {
 			Helper.showToast(this, "Please enable WiFi and try again");
 		}
@@ -102,7 +102,7 @@ public class URNMonitor extends ListActivity {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		stopService(new Intent(TaginURN.INTENT_STOP_SERVICE));
+		stopService(new Intent(TaginURN.INTENT_URN_SERVICE));
 		if (mReceiver != null) {
 			unregisterReceiver(mReceiver);
 			mReceiver = null;
