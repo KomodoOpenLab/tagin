@@ -11,14 +11,18 @@ import com.google.appengine.api.datastore.Key;
 @Entity
 public class Beacon implements Comparable<Beacon> {
 
+	public static final Integer NULL_RSSI = -999;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Key key;
+
 	@Basic
 	private String id; // represented by BSSID + frequency
+
 	@Basic
 	private Integer rssi;
+
 	@Basic
 	private Double rank;
 
@@ -28,17 +32,17 @@ public class Beacon implements Comparable<Beacon> {
 		this.rank = null;
 	}
 
-	public Beacon(String bssid, Integer frequency, Integer rssi, int maxRSSIEver) {
+	public Beacon(String bssid, Integer frequency, Integer rssi, Integer maxRssi) {
 		this.id = bssid + ";" + frequency;
 		this.rssi = rssi;
-		this.rank = Util.calculateRank(rssi, maxRSSIEver);
+		this.rank = Util.calculateRank(rssi, maxRssi);
 	}
 
 	public void setId(String bssid, Integer frequency) {
 		this.id = bssid + ";" + frequency;
 	}
 
-	public void setRSSI(Integer rssi) {
+	public void setRssi(Integer rssi) {
 		this.rssi = rssi;
 	}
 
@@ -54,19 +58,19 @@ public class Beacon implements Comparable<Beacon> {
 		return id;
 	}
 
-	public Integer getRSSI() {
+	public Integer getRssi() {
 		return rssi;
 	}
 
 	@Override
 	public int compareTo(Beacon beacon) {
-		return beacon.getRSSI() - getRSSI();
+		return beacon.getRssi() - getRssi();
 	}
 
 	public String toString() {
 		return getClass().getName() + "[" + 
 				"ID: " + getId() + 
-				", RSSI: " + getRSSI() + 
+				", RSSI: " + getRssi() + 
 				", rank: " + getRank() + "]";
 	}
 

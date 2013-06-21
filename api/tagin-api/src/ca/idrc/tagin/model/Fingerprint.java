@@ -11,7 +11,7 @@ import com.google.appengine.api.datastore.Key;
 public class Fingerprint {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) 
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Key key;
 	private Pattern pattern;
 
