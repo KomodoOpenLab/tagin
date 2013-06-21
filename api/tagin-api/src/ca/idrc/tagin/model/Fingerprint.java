@@ -8,41 +8,27 @@ import javax.persistence.Id;
 import com.google.appengine.api.datastore.Key;
 
 @Entity
-public class Fingerprint implements Comparable<Fingerprint> {
+public class Fingerprint {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	private Key key;
-	private Pattern mPattern;
-	private Double mRank;
-	
+	private Pattern pattern;
+
 	public Fingerprint() {
-		
+
 	}
-	
+
 	public Key getKey() {
 		return key;
 	}
 
 	public Pattern getPattern() {
-		return mPattern;
+		return pattern;
 	}
 
-	public void setPattern(Pattern mPattern) {
-		this.mPattern = mPattern;
-	}
-
-	public Double getRank() {
-		return mRank;
-	}
-
-	public void setRank(Double mRank) {
-		this.mRank = mRank;
-	}
-	
-	@Override
-	public int compareTo(Fingerprint f) {
-		return 0;
+	public void setPattern(Pattern pattern) {
+		this.pattern = pattern;
 	}
 
 }

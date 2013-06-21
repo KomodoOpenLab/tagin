@@ -3,10 +3,8 @@ package ca.idrc.tagin.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.Basic;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,23 +15,26 @@ import com.google.appengine.api.datastore.Key;
 public class Pattern {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) 
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Key key;
 	
-	@Basic(fetch = FetchType.EAGER)
 	@ElementCollection
-	private Map<String,Integer> beacons; // BSSID / RSSI pairs
+	private Map<String,Beacon> beacons;
 	
 	public Pattern() {
-		beacons = new HashMap<String,Integer>();
+		beacons = new HashMap<String,Beacon>();
 	}
 	
 	public Key getKey() {
 		return key;
 	}
-	
-	public Map<String,Integer> getBeacons() {
+
+	public Map<String,Beacon> getBeacons() {
 		return beacons;
+	}
+
+	public void setBeacons(Map<String,Beacon> beacons) {
+		this.beacons = beacons;
 	}
 	
 	public String toString() {

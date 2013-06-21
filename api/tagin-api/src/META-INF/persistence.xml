@@ -13,7 +13,9 @@
             <property name="datanucleus.singletonEMFForName" value="true"/>
             <property name="javax.persistence.query.timeout" value="5000" />
             <property name="datanucleus.datastoreWriteTimeout" value="10000" />
+            <property name="datanucleus.appengine.datastoreEnableXGTransactions" value="true"/>
         </properties>
+        <class>ca.idrc.tagin.model.Beacon</class>
         <class>ca.idrc.tagin.model.Pattern</class>
         <class>ca.idrc.tagin.model.Fingerprint</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>

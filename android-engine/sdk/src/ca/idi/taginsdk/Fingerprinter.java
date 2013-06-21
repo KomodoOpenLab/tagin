@@ -122,6 +122,7 @@ public class Fingerprinter extends Service implements Runnable {
 			if (action.equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
 				if (mFingerprintRequested) {
 					mScanCount++;
+					Log.d(Helper.TAG, "FREQ: " + mWifiManager.getScanResults().get(0).frequency);
 					if (mScanCount == 1) {
 						mFP.setBeaconsFromScanResult(mWifiManager.getScanResults(), mHelper.getMaxRSSIEver(Fingerprinter.this));
 					} else {
