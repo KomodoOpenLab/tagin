@@ -11,7 +11,7 @@ import com.google.appengine.api.datastore.Key;
 @Entity
 public class Beacon implements Comparable<Beacon> {
 
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Key key;
