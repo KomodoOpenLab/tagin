@@ -68,7 +68,9 @@ public class Beacon implements Comparable<Beacon> {
 
 	@Override
 	public int compareTo(Beacon beacon) {
-		return (int) (beacon.getRssi() - getRssi());
+		if (beacon.getRssi() > getRssi()) return 1;
+		if (beacon.getRssi() < getRssi()) return -1;
+		return 0;
 	}
 
 	public String toString() {
