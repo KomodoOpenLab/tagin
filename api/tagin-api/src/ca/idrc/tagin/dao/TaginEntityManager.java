@@ -55,7 +55,10 @@ public class TaginEntityManager implements TaginDao {
 
 	@Override
 	public Fingerprint getFingerprint(Long id) {
-		return mEntityManager.find(Fingerprint.class, id);
+		Fingerprint fp = mEntityManager.find(Fingerprint.class, id);
+		if (fp != null)
+			fp.getPattern().getBeacons(); // Forces eager-loading
+		return fp;
 	}
 
 	@Override
