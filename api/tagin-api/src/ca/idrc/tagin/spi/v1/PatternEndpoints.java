@@ -29,6 +29,21 @@ public class PatternEndpoints {
 		em.close();
 		return new URN(urn);
 	}
+	
+	@ApiMethod(
+			name = "patterns.test",
+			path = "patterns/test",
+			httpMethod = HttpMethod.POST
+	)
+	public URN addPatterns() {
+		TaginEntityManager em = new TaginEntityManager();
+		Pattern p = new Pattern();
+		p.put("bssid1", 2400, -65);
+		p.put("bssid2", 2600, -70);
+		String urn = em.save(p);
+		em.close();
+		return new URN(urn);
+	}
 
 	@ApiMethod(
 			name = "patterns.list",
