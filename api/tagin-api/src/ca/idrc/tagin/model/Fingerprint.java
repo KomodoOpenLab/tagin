@@ -14,9 +14,15 @@ public class Fingerprint {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Key key;
 	private Pattern pattern;
+	private String urn;
 
 	public Fingerprint() {
 
+	}
+	
+	public Fingerprint(Pattern pattern) {
+		this.pattern = pattern;
+		this.urn = null;
 	}
 
 	public Key getKey() {
@@ -31,4 +37,13 @@ public class Fingerprint {
 		this.pattern = pattern;
 	}
 
+	public String getUrn() {
+		return urn;
+	}
+
+	public void setUrn(String urn) {
+		this.urn = urn;
+	}
+
+	
 }
