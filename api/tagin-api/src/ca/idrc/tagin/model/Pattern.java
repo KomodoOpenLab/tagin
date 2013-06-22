@@ -1,5 +1,7 @@
 package ca.idrc.tagin.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +25,7 @@ public class Pattern {
 	private Map<String,Beacon> beacons;
 
 	@Basic
-	private Integer maxRssi;
+	private Double maxRssi;
 
 	public Pattern() {
 		this.beacons = new HashMap<String,Beacon>();
@@ -38,15 +40,21 @@ public class Pattern {
 		return beacons;
 	}
 
-	public Integer getMaxRssi() {
+	public Double getMaxRssi() {
 		return maxRssi;
 	}
 
-	public void put(String bssid, Integer frequency, Integer rssi) {
-		Beacon beacon = new Beacon(bssid, frequency, rssi, maxRssi);
+	public void put(String bssid, Integer frequency, Integer dbm) {
+		Beacon beacon = new Beacon(bssid, frequency, dbm);
 		beacons.put(beacon.getId(), beacon);
-		if (beacon.getRssi() > maxRssi) {
-			maxRssi = beacon.getRssi();
+	}
+	
+	public void updateRanks() {
+		ArrayList<Beacon> values = new ArrayList<Beacon>(beacons.values());
+		Collections.sort(values);
+		maxRssi = values.get(0).getRssi();
+		for (Beacon beacon : beacons.values()) {
+			beacon.updateRank(maxRssi);
 		}
 	}
 

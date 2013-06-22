@@ -9,13 +9,12 @@ public class Util {
 	 * @param maxRssi - Maximum RSSI ever recorded by this device
 	 * @return Normalized rank value in the range [0, 1]
 	 */
-	public static Double calculateRank(int rssi, int maxRssi) {
-		Double maxPower = dBm2Power(maxRssi);
-		return Math.pow(dBm2Power(rssi) / maxPower, 0.25);
+	public static Double calculateRank(Double rssi, Double maxRssi) {
+		return Math.pow(rssi / maxRssi, 0.25);
 	}
 
-	public static double dBm2Power(int rssi) {
-		return Math.pow(10.0, Double.valueOf(rssi - 30) / 10.0);
+	public static double dBm2Power(int dbm) {
+		return Math.pow(10.0, Double.valueOf(dbm - 30) / 10.0);
 	}
 
 	public static int power2dBm(double power) {
