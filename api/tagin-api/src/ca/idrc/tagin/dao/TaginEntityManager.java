@@ -22,7 +22,11 @@ public class TaginEntityManager implements TaginDao {
 		Fingerprint fp = new Fingerprint(pattern);
 		URNManager.generateURN(fp);
 		String urn = fp.getUrn();
+		mEntityManager.getTransaction().begin();
 		mEntityManager.persist(fp);
+		mEntityManager.flush();
+		pattern.setId(pattern.getKey().getId());
+		mEntityManager.getTransaction().commit();
 		return urn;
 	}
 
@@ -44,12 +48,18 @@ public class TaginEntityManager implements TaginDao {
 		List<Fingerprint> fingerprints = query.getResultList();
 		return fingerprints;
 	}
-
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Pattern getPattern(Long id) {
-		Pattern p = mEntityManager.find(Pattern.class, id);
-		if (p != null) 
-			p.getBeacons(); // Forces eager-loading
+		Pattern p = null;
+		Query query = mEntityManager.createQuery("select p from Pattern p where p.id = " + id);
+		List<Pattern> result = query.getResultList();
+		if (result.size() > 0) {
+			p = result.get(0);
+			if (p != null) 
+				p.getBeacons(); // Forces eager-loading
+		}
 		return p;
 	}
 

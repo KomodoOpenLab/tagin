@@ -8,14 +8,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
-import com.google.appengine.api.datastore.Key;
-
 @Entity
 public class Fingerprint {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Key key;
+	private Long id;
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	private Pattern pattern;
@@ -32,8 +30,8 @@ public class Fingerprint {
 		this.urn = null;
 	}
 
-	public Key getKey() {
-		return key;
+	public Long getId() {
+		return id;
 	}
 
 	public Pattern getPattern() {
@@ -50,6 +48,13 @@ public class Fingerprint {
 
 	public void setUrn(String urn) {
 		this.urn = urn;
+	}
+	
+	public String toString() {
+		return getClass().getName() +
+				"[ID: " + getId() +
+				", URN: " + getUrn() +
+				", pattern: " + getPattern().toString() + "]";
 	}
 
 	

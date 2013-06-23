@@ -41,6 +41,10 @@ public class Beacon implements Comparable<Beacon> {
 	public void updateRank(Double maxRssi) {
 		this.rank = Util.calculateRank(rssi, maxRssi);
 	}
+	
+	public Key getKey() {
+		return key;
+	}
 
 	public void setId(String bssid, Integer frequency) {
 		this.id = bssid + ";" + frequency;

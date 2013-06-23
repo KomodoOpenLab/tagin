@@ -20,6 +20,9 @@ public class Pattern {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Key key;
+	
+	@Basic
+	private Long id;
 
 	@ElementCollection
 	private Map<String,Beacon> beacons;
@@ -28,12 +31,21 @@ public class Pattern {
 	private Double maxRssi;
 
 	public Pattern() {
+		this.id = null;
 		this.beacons = new HashMap<String,Beacon>();
 		this.maxRssi = Beacon.NULL_RSSI;
 	}
 
 	public Key getKey() {
 		return key;
+	}
+	
+	public Long getId() {
+		return id;
+	}
+	
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public Map<String,Beacon> getBeacons() {
