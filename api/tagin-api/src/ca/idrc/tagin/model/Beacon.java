@@ -78,7 +78,7 @@ public class Beacon implements Comparable<Beacon> {
 	}
 
 	public String toString() {
-		return getClass().getName() + "[" + 
+		return getClass().getSimpleName() + "[" + 
 				"ID: " + getId() + 
 				", RSSI: " + getRssi() + 
 				", rank: " + getRank() + "]";

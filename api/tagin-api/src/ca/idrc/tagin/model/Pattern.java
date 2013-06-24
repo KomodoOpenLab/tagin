@@ -61,6 +61,10 @@ public class Pattern {
 		beacons.put(beacon.getId(), beacon);
 	}
 	
+	public boolean contains(String bssid, Integer frequency) {
+		return beacons.containsKey(bssid + ";" + frequency);
+	}
+	
 	public void updateRanks() {
 		ArrayList<Beacon> values = new ArrayList<Beacon>(beacons.values());
 		Collections.sort(values);
@@ -71,7 +75,7 @@ public class Pattern {
 	}
 
 	public String toString() {
-		return getClass().getName() +
+		return getClass().getSimpleName() +
 				"[Key: " + getKey() +
 				", maxRSSI: " + getMaxRssi() +
 				", beacons: " + getBeacons().toString() + "]";

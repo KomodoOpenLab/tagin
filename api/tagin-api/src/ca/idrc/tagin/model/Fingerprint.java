@@ -51,7 +51,7 @@ public class Fingerprint {
 	}
 	
 	public String toString() {
-		return getClass().getName() +
+		return getClass().getSimpleName() +
 				"[ID: " + getId() +
 				", URN: " + getUrn() +
 				", pattern: " + getPattern().toString() + "]";
