@@ -17,6 +17,8 @@ public interface TaginDao {
 	
 	public Fingerprint getFingerprint(Long id);
 	
+	public List<Fingerprint> findNeighbours(Fingerprint fp);
+	
 	public <T> void remove(Class<T> clazz, Long id);
 	
 	public void close();

@@ -1,10 +1,12 @@
 package ca.idrc.tagin.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import ca.idrc.tagin.model.Beacon;
 import ca.idrc.tagin.model.Fingerprint;
 import ca.idrc.tagin.model.Pattern;
 import ca.idrc.tagin.spi.v1.URNManager;
@@ -69,6 +71,23 @@ public class TaginEntityManager implements TaginDao {
 		if (fp != null)
 			fp.getPattern().getBeacons(); // Forces eager-loading
 		return fp;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Fingerprint> findNeighbours(Fingerprint fp) {
+		List<Fingerprint> neighbours = new ArrayList<Fingerprint>();
+		for (Beacon b : fp.getPattern().getBeacons().values()) {
+			Query query = mEntityManager.createQuery("select b from Beacon b where b.id = '" + b.getId() + "'");
+			List<Beacon> beacons = query.getResultList();
+			if (beacons.size() > 0) {
+				Beacon beacon = beacons.get(0);
+				Fingerprint f = mEntityManager.find(Fingerprint.class, 
+						beacon.getKey().getParent().getParent());
+				neighbours.add(f);
+			}
+		}
+		return neighbours;
 	}
 
 	@Override

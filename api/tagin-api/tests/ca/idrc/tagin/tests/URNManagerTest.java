@@ -66,7 +66,7 @@ public class URNManagerTest {
 		p.put("id4", 2200, -50);
 		p.updateRanks();
 		Fingerprint fp = new Fingerprint(p);
-		fingerprints = URNManager.getNeighbours(fp);
+		fingerprints = URNManager.findNeighbours(fp);
 		Assert.assertTrue(fingerprints.get(0).getPattern().contains("id3", 2400));
 	}
 
