@@ -8,6 +8,7 @@ import javax.persistence.Query;
 
 import ca.idrc.tagin.model.Beacon;
 import ca.idrc.tagin.model.Fingerprint;
+import ca.idrc.tagin.model.Neighbour;
 import ca.idrc.tagin.model.Pattern;
 import ca.idrc.tagin.spi.v1.URNManager;
 
@@ -75,8 +76,8 @@ public class TaginEntityManager implements TaginDao {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Fingerprint> findNeighbours(Fingerprint fp) {
-		List<Fingerprint> neighbours = new ArrayList<Fingerprint>();
+	public List<Neighbour> getNeighbours(Fingerprint fp) {
+		List<Neighbour> neighbours = new ArrayList<Neighbour>();
 		for (Beacon b : fp.getPattern().getBeacons().values()) {
 			Query query = mEntityManager.createQuery("select b from Beacon b where b.id = '" + b.getId() + "'");
 			List<Beacon> beacons = query.getResultList();
@@ -84,7 +85,8 @@ public class TaginEntityManager implements TaginDao {
 				Beacon beacon = beacons.get(0);
 				Fingerprint f = mEntityManager.find(Fingerprint.class, 
 						beacon.getKey().getParent().getParent());
-				neighbours.add(f);
+				f.getPattern().getBeacons(); // Forces eager-loading
+				neighbours.add(new Neighbour(f, fp.rankDistanceTo(f)));
 			}
 		}
 		return neighbours;

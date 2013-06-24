@@ -5,21 +5,20 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import junit.framework.Assert;
-
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import ca.idrc.tagin.dao.EMFService;
 import ca.idrc.tagin.model.Fingerprint;
+import ca.idrc.tagin.model.Neighbour;
 import ca.idrc.tagin.model.Pattern;
-import ca.idrc.tagin.spi.v1.URNManager;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
-public class URNManagerTest {
+public class FingerprintTest {
 	
 	private final LocalServiceTestHelper helper =
 			new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()
@@ -56,18 +55,19 @@ public class URNManagerTest {
 		helper.tearDown();
 		// TODO: clear datastore
 	}
-	
 
 	@Test
 	public void testGetNeighbours() {
-		List<Fingerprint> fingerprints = new ArrayList<Fingerprint>();
-		Pattern p = new Pattern();
-		p.put("id3", 2400, -70);
-		p.put("id4", 2200, -50);
-		p.updateRanks();
-		Fingerprint fp = new Fingerprint(p);
-		fingerprints = URNManager.findNeighbours(fp);
-		Assert.assertTrue(fingerprints.get(0).getPattern().contains("id3", 2400));
+		List<Neighbour> neighbours = new ArrayList<Neighbour>();
+		Pattern pattern = new Pattern();
+		pattern.put("id3", 2400, -70);
+		pattern.put("id4", 2200, -50);
+		pattern.updateRanks();
+		Fingerprint fp = new Fingerprint(pattern);
+		neighbours = fp.getNeighbours();
+		
+		Fingerprint neighbour = neighbours.get(0).getFingerprint();
+		Assert.assertTrue(neighbour.getPattern().contains("id3", 2400));
 	}
 
 }

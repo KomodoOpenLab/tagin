@@ -3,6 +3,7 @@ package ca.idrc.tagin.dao;
 import java.util.List;
 
 import ca.idrc.tagin.model.Fingerprint;
+import ca.idrc.tagin.model.Neighbour;
 import ca.idrc.tagin.model.Pattern;
 
 public interface TaginDao {
@@ -17,7 +18,7 @@ public interface TaginDao {
 	
 	public Fingerprint getFingerprint(Long id);
 	
-	public List<Fingerprint> findNeighbours(Fingerprint fp);
+	public List<Neighbour> getNeighbours(Fingerprint fp);
 	
 	public <T> void remove(Class<T> clazz, Long id);
 	
