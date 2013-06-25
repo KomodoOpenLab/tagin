@@ -51,6 +51,10 @@ public class Pattern {
 	public Map<String,Beacon> getBeacons() {
 		return beacons;
 	}
+	
+	public void setBeacons(Map<String, Beacon> beacons) {
+		this.beacons = beacons;
+	}
 
 	public Double getMaxRssi() {
 		return maxRssi;

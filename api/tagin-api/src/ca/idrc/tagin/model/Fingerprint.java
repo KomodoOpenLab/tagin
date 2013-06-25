@@ -84,6 +84,27 @@ public class Fingerprint {
 		}
 		return Math.sqrt(d) / Math.sqrt(maxD);
 	}
+	
+
+	public void merge(Fingerprint fp) {
+		Map<String,Beacon> beacons = new HashMap<String,Beacon>();
+		for (Beacon beacon : this.getPattern().getBeacons().values()) {
+			beacon.setRank(beacon.getRank() / 2);
+			beacons.put(beacon.getId(), beacon);
+		}
+
+		for (Beacon beacon : fp.getPattern().getBeacons().values()) {
+			if (beacons.containsKey(beacon.getId())) {
+				Beacon b = beacons.get(beacon.getId());
+				b.setRank(b.getRank() + (beacon.getRank() / 2));
+				beacons.put(b.getId(), b);
+			} else {
+				beacon.setRank(beacon.getRank() / 2);
+				beacons.put(beacon.getId(), beacon);
+			}
+		}
+		this.getPattern().setBeacons(beacons);
+	}
 
 	public Long getId() {
 		return id;

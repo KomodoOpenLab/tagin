@@ -24,13 +24,7 @@ public class TaginEntityManager implements TaginDao {
 	public String save(Pattern pattern) {
 		Fingerprint fp = new Fingerprint(pattern);
 		URNManager.generateURN(fp);
-		String urn = fp.getUrn();
-		mEntityManager.getTransaction().begin();
-		mEntityManager.persist(fp);
-		mEntityManager.flush();
-		pattern.setId(pattern.getKey().getId());
-		mEntityManager.getTransaction().commit();
-		return urn;
+		return fp.getUrn();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -97,10 +91,28 @@ public class TaginEntityManager implements TaginDao {
 		T entity = mEntityManager.find(clazz, id);
 		mEntityManager.remove(entity);
 	}
+	
+	public void persistFingerprint(Fingerprint fp) {
+		mEntityManager.getTransaction().begin();
+		mEntityManager.persist(fp);
+		mEntityManager.flush();
+		fp.getPattern().setId(fp.getPattern().getKey().getId());
+		mEntityManager.getTransaction().commit();
+	}
 
 	@Override
 	public void close() {
 		mEntityManager.close();
+	}
+	
+	@Override
+	public void beginTransaction() {
+		mEntityManager.getTransaction().begin();
+	}
+	
+	@Override
+	public void commitTransaction() {
+		mEntityManager.getTransaction().commit();
 	}
 
 }
