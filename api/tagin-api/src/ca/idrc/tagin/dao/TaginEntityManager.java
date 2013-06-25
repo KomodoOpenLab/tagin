@@ -21,7 +21,7 @@ public class TaginEntityManager implements TaginDao {
 	}
 
 	@Override
-	public String save(Pattern pattern) {
+	public String persistPattern(Pattern pattern) {
 		Fingerprint fp = new Fingerprint(pattern);
 		URNManager.generateURN(fp);
 		return fp.getUrn();
@@ -46,17 +46,11 @@ public class TaginEntityManager implements TaginDao {
 		return fingerprints;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public Pattern getPattern(Long id) {
-		Pattern p = null;
-		Query query = mEntityManager.createQuery("select p from Pattern p where p.id = " + id);
-		List<Pattern> result = query.getResultList();
-		if (result.size() > 0) {
-			p = result.get(0);
-			if (p != null) 
-				p.getBeacons(); // Forces eager-loading
-		}
+		Pattern p = findPattern(id);
+		if (p != null)
+			p.getBeacons(); // Forces eager-loading
 		return p;
 	}
 
@@ -85,13 +79,25 @@ public class TaginEntityManager implements TaginDao {
 		}
 		return neighbours;
 	}
-
+	
 	@Override
-	public <T> void remove(Class<T> clazz, Long id) {
-		T entity = mEntityManager.find(clazz, id);
-		mEntityManager.remove(entity);
+	public void removePattern(Long id) {
+		Pattern p = findPattern(id);
+		mEntityManager.remove(p);
 	}
 	
+	@SuppressWarnings("unchecked")
+	private Pattern findPattern(Long id) {
+		Pattern p = null;
+		Query query = mEntityManager.createQuery("select p from Pattern p where p.id = " + id);
+		List<Pattern> result = query.getResultList();
+		if (result.size() > 0) {
+			p = result.get(0);
+		}
+		return p;
+	}
+	
+	@Override
 	public void persistFingerprint(Fingerprint fp) {
 		mEntityManager.getTransaction().begin();
 		mEntityManager.persist(fp);

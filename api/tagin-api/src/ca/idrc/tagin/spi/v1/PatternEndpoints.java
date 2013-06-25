@@ -26,7 +26,7 @@ public class PatternEndpoints {
 	)
 	public URN addPattern(Pattern pattern) {
 		TaginDao dao = new TaginEntityManager();
-		String urn = dao.save(pattern);
+		String urn = dao.persistPattern(pattern);
 		dao.close();
 		return new URN(urn);
 	}
@@ -48,11 +48,11 @@ public class PatternEndpoints {
 		p2.updateRanks();
 		
 		TaginDao dao = new TaginEntityManager();
-		String urn1 = dao.save(p1);
+		String urn1 = dao.persistPattern(p1);
 		dao.close();
 		
 		dao = new TaginEntityManager();
-		String urn2 = dao.save(p2);
+		String urn2 = dao.persistPattern(p2);
 		dao.close();
 		
 		System.out.println("URN1: " + urn1);
@@ -91,7 +91,7 @@ public class PatternEndpoints {
 	)
 	public void removePattern(@Named("pattern_id") Long id) {
 		TaginDao dao = new TaginEntityManager();
-		dao.remove(Pattern.class, id);
+		dao.removePattern(id);
 		dao.close();
 	}
 	
