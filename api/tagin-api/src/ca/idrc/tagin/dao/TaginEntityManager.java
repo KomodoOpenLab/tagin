@@ -86,8 +86,7 @@ public class TaginEntityManager implements TaginDao {
 				if (p.contains(b.getId())) {
 					Fingerprint f = mEntityManager.find(Fingerprint.class, p.getKey().getParent());
 					if (f.getId() != fp.getId()) {
-						f.getPattern().getBeacons(); // Forces eager-loading
-						neighbours.add(new Neighbour(f, fp.rankDistanceTo(f)));
+						neighbours.add(new Neighbour(f.getId(), fp.rankDistanceTo(f)));
 					}
 				}
 			}

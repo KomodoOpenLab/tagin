@@ -1,8 +1,5 @@
 package ca.idrc.tagin.tests;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -62,14 +59,13 @@ public class FingerprintTest {
 
 	@Test
 	public void testGetNeighbours() {
-		List<Neighbour> neighbours = new ArrayList<Neighbour>();
 		TaginDao dao = new TaginEntityManager();
 		Fingerprint f1 = dao.getFingerprint(p1.getKey().getParent().getId());
-		neighbours = f1.getNeighbours();
-		
-		Fingerprint neighbour = neighbours.get(0).getFingerprint();
-		Assert.assertTrue(neighbour.getPattern().contains("id2", 2600));
-		Assert.assertTrue(neighbour.getPattern().contains("id3", 2400));
+		Neighbour neighbour = f1.getNeighbours().get(0);
+		Fingerprint f2 = dao.getFingerprint(neighbour.getFingerprintId());
+		Assert.assertTrue(f2.getPattern().contains("id2", 2600));
+		Assert.assertTrue(f2.getPattern().contains("id3", 2400));
+		dao.close();
 	}
 	
 	@Test
@@ -78,6 +74,7 @@ public class FingerprintTest {
 		Fingerprint f2 = dao.getFingerprint(p2.getKey().getParent().getId());
 		Fingerprint f3 = dao.getFingerprint(p3.getKey().getParent().getId());
 		Assert.assertEquals(1.0, f2.rankDistanceTo(f3).doubleValue(), 0.0);
+		dao.close();
 	}
 
 }

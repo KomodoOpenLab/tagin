@@ -17,7 +17,7 @@ public class URNManager {
 			fp.setUrn(urn.toString());
 			dao.persistFingerprint(fp);
 		} else {
-			Fingerprint neighbourFp = dao.getFingerprint(neighbour.getFingerprint().getId());
+			Fingerprint neighbourFp = dao.getFingerprint(neighbour.getFingerprintId());
 			neighbourFp.merge(fp);
 			fp.setUrn(neighbourFp.getUrn());
 			// TODO: push away overlapping neighbours

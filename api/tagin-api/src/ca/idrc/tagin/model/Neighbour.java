@@ -2,41 +2,41 @@ package ca.idrc.tagin.model;
 
 public class Neighbour implements Comparable<Neighbour> {
 
-	private Fingerprint mFingerprint;
-	private Double mRankDistance;
+	private Long fingerprintId;
+	private Double rankDistance;
 	
-	public Neighbour(Fingerprint fingerprint, Double rankDistance) {
-		mFingerprint = fingerprint;
-		mRankDistance = rankDistance;
+	public Neighbour(Long fingerprintId, Double rankDistance) {
+		this.fingerprintId = fingerprintId;
+		this.rankDistance = rankDistance;
 	}
 
-	public Fingerprint getFingerprint() {
-		return mFingerprint;
+	public Long getFingerprintId() {
+		return fingerprintId;
 	}
 
-	public void setFingerprint(Fingerprint fingerprint) {
-		mFingerprint = fingerprint;
+	public void setFingerprint(Long fingerprintId) {
+		this.fingerprintId = fingerprintId;
 	}
 
 	public Double getRankDistance() {
-		return mRankDistance;
+		return rankDistance;
 	}
 
 	public void setRankDistance(Double rankDistance) {
-		mRankDistance = rankDistance;
+		this.rankDistance = rankDistance;
 	}
 	
 	@Override
 	public int compareTo(Neighbour n) {
-		if (n.getRankDistance() > mRankDistance) return -1;
-		if (n.getRankDistance() < mRankDistance) return 1;
+		if (n.getRankDistance() > rankDistance) return -1;
+		if (n.getRankDistance() < rankDistance) return 1;
 		return 0;
 	}
 
 	public String toString() {
 		return getClass().getSimpleName() +
 				"[rankDistance: " + getRankDistance() +
-				", fingerprint: " + getFingerprint() + "]";
+				", fingerprintId: " + getFingerprintId() + "]";
 	}
 	
 }
