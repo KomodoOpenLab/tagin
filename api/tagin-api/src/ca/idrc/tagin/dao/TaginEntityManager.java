@@ -27,6 +27,15 @@ public class TaginEntityManager implements TaginDao {
 		return fp.getUrn();
 	}
 
+	@Override
+	public void persistFingerprint(Fingerprint fp) {
+		mEntityManager.getTransaction().begin();
+		mEntityManager.persist(fp);
+		mEntityManager.flush();
+		fp.getPattern().setId(fp.getPattern().getKey().getId());
+		mEntityManager.getTransaction().commit();
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Pattern> listPatterns() {
@@ -80,12 +89,6 @@ public class TaginEntityManager implements TaginDao {
 		return neighbours;
 	}
 	
-	@Override
-	public void removePattern(Long id) {
-		Pattern p = findPattern(id);
-		mEntityManager.remove(p);
-	}
-	
 	@SuppressWarnings("unchecked")
 	private Pattern findPattern(Long id) {
 		Pattern p = null;
@@ -98,12 +101,10 @@ public class TaginEntityManager implements TaginDao {
 	}
 	
 	@Override
-	public void persistFingerprint(Fingerprint fp) {
-		mEntityManager.getTransaction().begin();
-		mEntityManager.persist(fp);
-		mEntityManager.flush();
-		fp.getPattern().setId(fp.getPattern().getKey().getId());
-		mEntityManager.getTransaction().commit();
+	public void removePattern(Long id) {
+		Pattern p = findPattern(id);
+		Fingerprint parent = mEntityManager.find(Fingerprint.class, p.getKey().getParent());
+		mEntityManager.remove(parent);
 	}
 
 	@Override
