@@ -32,6 +32,11 @@ public class Neighbour implements Comparable<Neighbour> {
 		if (n.getRankDistance() < mRankDistance) return 1;
 		return 0;
 	}
-	
+
+	public String toString() {
+		return getClass().getSimpleName() +
+				"[rankDistance: " + getRankDistance() +
+				", fingerprint: " + getFingerprint() + "]";
+	}
 	
 }

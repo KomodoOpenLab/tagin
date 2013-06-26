@@ -6,11 +6,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.Basic;
-import javax.persistence.ElementCollection;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import com.google.appengine.api.datastore.Key;
 
@@ -24,7 +25,8 @@ public class Pattern {
 	@Basic
 	private Long id;
 
-	@ElementCollection
+	//@ElementCollection
+	@OneToMany(cascade = CascadeType.ALL)
 	private Map<String,Beacon> beacons;
 
 	@Basic
@@ -67,6 +69,10 @@ public class Pattern {
 	
 	public boolean contains(String bssid, Integer frequency) {
 		return beacons.containsKey(bssid + ";" + frequency);
+	}
+	
+	public boolean contains(String id) {
+		return beacons.containsKey(id);
 	}
 	
 	public void updateRanks() {

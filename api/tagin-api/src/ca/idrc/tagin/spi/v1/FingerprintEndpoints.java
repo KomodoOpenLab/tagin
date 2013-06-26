@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.inject.Named;
 
+import ca.idrc.tagin.dao.TaginDao;
 import ca.idrc.tagin.dao.TaginEntityManager;
 import ca.idrc.tagin.model.Fingerprint;
 
@@ -24,9 +25,9 @@ public class FingerprintEndpoints {
 			httpMethod = HttpMethod.GET
 	)
 	public List<Fingerprint> listFingerprints() {
-		TaginEntityManager em = new TaginEntityManager();
-		List<Fingerprint> fingerprints = em.listFingerprints();
-		em.close();
+		TaginDao dao = new TaginEntityManager();
+		List<Fingerprint> fingerprints = dao.listFingerprints();
+		dao.close();
 		return fingerprints;
 	}
 
@@ -36,9 +37,9 @@ public class FingerprintEndpoints {
 			httpMethod = HttpMethod.GET
 	)
 	public Fingerprint getFingerprint(@Named("fingerprint_id") Long id) {
-		TaginEntityManager em = new TaginEntityManager();
-		Fingerprint fp = em.getFingerprint(id);
-		em.close();
+		TaginDao dao = new TaginEntityManager();
+		Fingerprint fp = dao.getFingerprint(id);
+		dao.close();
 		return fp;
 	}
 

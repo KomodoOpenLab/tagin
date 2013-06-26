@@ -76,14 +76,20 @@ public class TaginEntityManager implements TaginDao {
 	public List<Neighbour> getNeighbours(Fingerprint fp) {
 		List<Neighbour> neighbours = new ArrayList<Neighbour>();
 		for (Beacon b : fp.getPattern().getBeacons().values()) {
-			Query query = mEntityManager.createQuery("select b from Beacon b where b.id = '" + b.getId() + "'");
-			List<Beacon> beacons = query.getResultList();
-			if (beacons.size() > 0) {
-				Beacon beacon = beacons.get(0);
-				Fingerprint f = mEntityManager.find(Fingerprint.class, 
-						beacon.getKey().getParent().getParent());
-				f.getPattern().getBeacons(); // Forces eager-loading
-				neighbours.add(new Neighbour(f, fp.rankDistanceTo(f)));
+			// TODO use this query instead when KEY() method is implemented in Google Datanucleus JPQL
+			//Query query = mEntityManager.createQuery("select p from Pattern p join p.beacons b where KEY(b) = :bId");
+			//query.setParameter("bId", "'" + b.getId() + "'");
+			Query query = mEntityManager.createQuery("select p from Pattern p");
+			List<Pattern> patterns = query.getResultList();
+
+			for (Pattern p : patterns) {
+				if (p.contains(b.getId())) {
+					Fingerprint f = mEntityManager.find(Fingerprint.class, p.getKey().getParent());
+					if (f.getId() != fp.getId()) {
+						f.getPattern().getBeacons(); // Forces eager-loading
+						neighbours.add(new Neighbour(f, fp.rankDistanceTo(f)));
+					}
+				}
 			}
 		}
 		return neighbours;

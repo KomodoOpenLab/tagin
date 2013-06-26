@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import ca.idrc.tagin.dao.TaginDao;
 import ca.idrc.tagin.dao.TaginEntityManager;
 
 @Entity
@@ -42,9 +43,9 @@ public class Fingerprint {
 	
 	public List<Neighbour> getNeighbours() {
 		List<Neighbour> neighbours = new ArrayList<Neighbour>();
-		TaginEntityManager em = new TaginEntityManager();
-		neighbours = em.getNeighbours(this);
-		em.close();
+		TaginDao dao = new TaginEntityManager();
+		neighbours = dao.getNeighbours(this);
+		dao.close();
 		return neighbours;
 	}
 	
