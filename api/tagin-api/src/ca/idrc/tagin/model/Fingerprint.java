@@ -49,14 +49,18 @@ public class Fingerprint {
 		return neighbours;
 	}
 	
-	public Neighbour getClosestNeighbour() {
-		Neighbour neighbour = null;
+	public List<Neighbour> getCloseNeighbours() {
+		List<Neighbour> closeNeighbours = new ArrayList<Neighbour>();
 		List<Neighbour> neighbours = getNeighbours();
-		if (neighbours.isEmpty())
-			return neighbour;
 		Collections.sort(neighbours);
-		neighbour = neighbours.get(0);
-		return neighbour.getRankDistance() < THRESHOLD ? neighbour : null;
+		for (Neighbour n : neighbours) {
+			if (n.getRankDistance() < THRESHOLD) {
+				closeNeighbours.add(n);
+			} else {
+				break;
+			}
+		}
+		return closeNeighbours;
 	}
 	
 	/**

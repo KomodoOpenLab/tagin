@@ -1,5 +1,6 @@
 package ca.idrc.tagin.spi.v1;
 
+import java.util.List;
 import java.util.UUID;
 
 import ca.idrc.tagin.dao.TaginDao;
@@ -8,16 +9,17 @@ import ca.idrc.tagin.model.Fingerprint;
 import ca.idrc.tagin.model.Neighbour;
 
 public class URNManager {
-
+	
 	public static void generateURN(Fingerprint fp) {
 		TaginDao dao = new TaginEntityManager();
-		Neighbour neighbour = fp.getClosestNeighbour();
-		if (neighbour == null) {
+		List<Neighbour> neighbours = fp.getCloseNeighbours();
+		if (neighbours.isEmpty()) {
 			UUID urn = java.util.UUID.randomUUID();
 			fp.setUrn(urn.toString());
 			dao.persistFingerprint(fp);
 		} else {
-			Fingerprint neighbourFp = dao.getFingerprint(neighbour.getFingerprintId());
+			Neighbour n = neighbours.get(0);
+			Fingerprint neighbourFp = dao.getFingerprint(n.getFingerprintId());
 			neighbourFp.merge(fp);
 			fp.setUrn(neighbourFp.getUrn());
 			// TODO: push away overlapping neighbours

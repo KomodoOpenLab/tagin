@@ -108,8 +108,10 @@ public class TaginEntityManager implements TaginDao {
 	@Override
 	public void removePattern(Long id) {
 		Pattern p = findPattern(id);
-		Fingerprint parent = mEntityManager.find(Fingerprint.class, p.getKey().getParent());
-		mEntityManager.remove(parent);
+		if (p != null) {
+			Fingerprint parent = mEntityManager.find(Fingerprint.class, p.getKey().getParent());
+			mEntityManager.remove(parent);
+		}
 	}
 
 	@Override
