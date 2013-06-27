@@ -45,6 +45,10 @@ public class Beacon implements Comparable<Beacon> {
 	public Key getKey() {
 		return key;
 	}
+	
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public void setId(String bssid, Integer frequency) {
 		this.id = bssid + ";" + frequency;

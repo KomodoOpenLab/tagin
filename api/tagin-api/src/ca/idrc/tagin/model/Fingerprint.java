@@ -25,22 +25,22 @@ public class Fingerprint {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@OneToOne(cascade = CascadeType.ALL)
 	private Pattern pattern;
-	
+
 	@Basic
 	private String urn;
 
 	public Fingerprint() {
 
 	}
-	
+
 	public Fingerprint(Pattern pattern) {
 		this.pattern = pattern;
 		this.urn = null;
 	}
-	
+
 	public List<Neighbour> getNeighbours() {
 		List<Neighbour> neighbours = new ArrayList<Neighbour>();
 		TaginDao dao = new TaginEntityManager();
@@ -48,7 +48,7 @@ public class Fingerprint {
 		dao.close();
 		return neighbours;
 	}
-	
+
 	public List<Neighbour> getCloseNeighbours() {
 		List<Neighbour> closeNeighbours = new ArrayList<Neighbour>();
 		List<Neighbour> neighbours = getNeighbours();
@@ -62,7 +62,7 @@ public class Fingerprint {
 		}
 		return closeNeighbours;
 	}
-	
+
 	/**
 	 * Calculates the relative distance between two fingerprints.
 	 * The value is between 0 and 1 and is maximal when two fingerprints
@@ -89,7 +89,6 @@ public class Fingerprint {
 		}
 		return Math.sqrt(d) / Math.sqrt(maxD);
 	}
-	
 
 	public void merge(Fingerprint fp) {
 		Map<String,Beacon> beacons = new HashMap<String,Beacon>();
@@ -108,7 +107,26 @@ public class Fingerprint {
 				beacons.put(beacon.getId(), beacon);
 			}
 		}
-		this.getPattern().setBeacons(beacons);
+		pattern.setBeacons(beacons);
+	}
+	
+	public void displaceBy(List<Beacon> changeVector) {
+		Map<String,Beacon> beacons = new HashMap<String,Beacon>();
+		for (Beacon beacon : this.getPattern().getBeacons().values()) {
+			beacons.put(beacon.getId(), beacon);
+		}
+
+		for (Beacon beacon : changeVector) {
+			if (beacons.containsKey(beacon.getId())) {
+				Beacon b = beacons.get(beacon.getId());
+				b.setRank(b.getRank() + beacon.getRank());
+				beacons.put(beacon.getId(), b);
+			} else {
+				beacons.put(beacon.getId(), beacon);
+			}
+		}
+		pattern.setBeacons(beacons);
+
 	}
 
 	public Long getId() {
@@ -130,12 +148,12 @@ public class Fingerprint {
 	public void setUrn(String urn) {
 		this.urn = urn;
 	}
-	
+
 	public String toString() {
 		return getClass().getSimpleName() +
 				"[ID: " + getId() +
 				", URN: " + getUrn() +
 				", pattern: " + getPattern().toString() + "]";
 	}
-	
+
 }

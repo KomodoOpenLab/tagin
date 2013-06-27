@@ -3,6 +3,7 @@ package ca.idrc.tagin.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Basic;
@@ -82,6 +83,27 @@ public class Pattern {
 		for (Beacon beacon : beacons.values()) {
 			beacon.updateRank(maxRssi);
 		}
+	}
+	
+	public List<Beacon> calculateChangeVector(Pattern p) {
+		Map<String,Beacon> beacons = new HashMap<String,Beacon>();
+		ArrayList<Beacon> result = new ArrayList<Beacon>();
+		for (Beacon beacon : this.getBeacons().values()) {
+			beacons.put(beacon.getId(), beacon);
+		}
+		
+		for (Beacon beacon : p.getBeacons().values()) {
+			if (beacons.containsKey(beacon.getId())) {
+				Beacon b = beacons.get(beacon.getId());
+				Beacon v = new Beacon();
+				v.setId(beacon.getId());
+				v.setRank(beacon.getRank() - b.getRank());
+				result.add(v);
+			} else {
+				result.add(beacon);
+			}
+		}
+		return result;
 	}
 
 	public String toString() {
