@@ -20,6 +20,8 @@ public interface TaginDao {
 	
 	public Fingerprint getFingerprint(Long id);
 	
+	public Fingerprint getFingerprint(String urn);
+	
 	public List<Neighbour> getNeighbours(Fingerprint fp);
 	
 	public void beginTransaction();

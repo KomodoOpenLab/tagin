@@ -5,7 +5,9 @@ import java.util.List;
 
 import javax.inject.Named;
 
-import ca.idrc.tagin.model.DoubleContainer;
+import ca.idrc.tagin.dao.TaginDao;
+import ca.idrc.tagin.dao.TaginEntityManager;
+import ca.idrc.tagin.model.Distance;
 import ca.idrc.tagin.model.Fingerprint;
 
 import com.google.api.server.spi.config.Api;
@@ -23,10 +25,15 @@ public class URNEndpoints {
 			path = "urns/{URN1}/distanceto/{URN2}",
 			httpMethod = HttpMethod.GET
 	)
-	public DoubleContainer getDistanceTo(@Named("URN1") String urn1, @Named("URN2") String urn2) {
-		//TODO implement functionality
-		DoubleContainer d = new DoubleContainer();
-		d.setDouble(0.0);
+	public Distance getDistanceTo(@Named("URN1") String urn1, @Named("URN2") String urn2) {
+		Distance d = new Distance();
+		TaginDao dao = new TaginEntityManager();
+		Fingerprint f1 = dao.getFingerprint(urn1);
+		Fingerprint f2 = dao.getFingerprint(urn2);
+		if (f1 != null && f2 != null) {
+			d.setValue(f1.rankDistanceTo(f2));
+		}
+		dao.close();
 		return d;
 	}
 

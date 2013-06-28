@@ -73,6 +73,18 @@ public class TaginEntityManager implements TaginDao {
 	
 	@SuppressWarnings("unchecked")
 	@Override
+	public Fingerprint getFingerprint(String urn) {
+		Fingerprint fp = null;
+		Query query = mEntityManager.createQuery("select f from Fingerprint f where f.urn = '" + urn + "'");
+		List<Fingerprint> result = query.getResultList();
+		if (result.size() > 0) {
+			fp = result.get(0);
+		}
+		return fp;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
 	public List<Neighbour> getNeighbours(Fingerprint fp) {
 		List<Neighbour> neighbours = new ArrayList<Neighbour>();
 		for (Beacon b : fp.getPattern().getBeacons().values()) {

@@ -19,7 +19,7 @@ public class URNManager {
 		List<Neighbour> neighbours = fp.getCloseNeighbours();
 		if (neighbours.isEmpty()) {
 			UUID urn = UUID.randomUUID();
-			fp.setUrn(urn.toString());
+			fp.setUrn(urn.toString().replace("-", ""));
 			dao.persistFingerprint(fp);
 		} else {
 			Neighbour n = neighbours.get(0);
