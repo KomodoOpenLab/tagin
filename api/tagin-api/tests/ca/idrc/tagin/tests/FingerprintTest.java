@@ -86,6 +86,15 @@ public class FingerprintTest {
 	}
 	
 	@Test
+	public void testRankDistanceToNeighbour() {
+		TaginDao dao = new TaginEntityManager();
+		Fingerprint f1 = dao.getFingerprint(p1.getKey().getParent().getId());
+		Fingerprint f3 = dao.getFingerprint(p3.getKey().getParent().getId());
+		Assert.assertTrue(f1.rankDistanceTo(f3) > Fingerprint.THRESHOLD);
+		dao.close();
+	}
+	
+	@Test
 	public void testRankDistanceToNotNeighbour() {
 		TaginDao dao = new TaginEntityManager();
 		Fingerprint f1 = dao.getFingerprint(p1.getKey().getParent().getId());

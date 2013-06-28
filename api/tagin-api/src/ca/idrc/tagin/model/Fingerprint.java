@@ -20,7 +20,7 @@ import ca.idrc.tagin.dao.TaginEntityManager;
 @Entity
 public class Fingerprint {
 
-	private static final Double THRESHOLD = 0.25;
+	public static final Double THRESHOLD = 0.25;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

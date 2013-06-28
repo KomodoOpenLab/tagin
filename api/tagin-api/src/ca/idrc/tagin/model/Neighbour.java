@@ -3,10 +3,12 @@ package ca.idrc.tagin.model;
 public class Neighbour implements Comparable<Neighbour> {
 
 	private Long fingerprintId;
+	private String urn;
 	private Double rankDistance;
 	
-	public Neighbour(Long fingerprintId, Double rankDistance) {
+	public Neighbour(Long fingerprintId, String urn, Double rankDistance) {
 		this.fingerprintId = fingerprintId;
+		this.urn = urn;
 		this.rankDistance = rankDistance;
 	}
 
@@ -16,6 +18,14 @@ public class Neighbour implements Comparable<Neighbour> {
 
 	public void setFingerprint(Long fingerprintId) {
 		this.fingerprintId = fingerprintId;
+	}
+	
+	public String getUrn() {
+		return urn;
+	}
+	
+	public void setUrn(String urn) {
+		this.urn = urn;
 	}
 
 	public Double getRankDistance() {
@@ -36,6 +46,7 @@ public class Neighbour implements Comparable<Neighbour> {
 	public String toString() {
 		return getClass().getSimpleName() +
 				"[rankDistance: " + getRankDistance() +
+				", URN: " + getUrn() +
 				", fingerprintId: " + getFingerprintId() + "]";
 	}
 	
