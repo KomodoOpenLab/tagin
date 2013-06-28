@@ -23,7 +23,7 @@ public class TaginEntityManager implements TaginDao {
 	@Override
 	public String persistPattern(Pattern pattern) {
 		Fingerprint fp = new Fingerprint(pattern);
-		URNManager.generateURN(fp);
+		URNManager.generateURN(this, fp);
 		return fp.getUrn();
 	}
 
@@ -70,17 +70,10 @@ public class TaginEntityManager implements TaginDao {
 			fp.getPattern().getBeacons(); // Forces eager-loading
 		return fp;
 	}
-	
-	@SuppressWarnings("unchecked")
+
 	@Override
 	public Fingerprint getFingerprint(String urn) {
-		Fingerprint fp = null;
-		Query query = mEntityManager.createQuery("select f from Fingerprint f where f.urn = '" + urn + "'");
-		List<Fingerprint> result = query.getResultList();
-		if (result.size() > 0) {
-			fp = result.get(0);
-		}
-		return fp;
+		return findFingerprint(urn);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -117,6 +110,17 @@ public class TaginEntityManager implements TaginDao {
 		return p;
 	}
 	
+	@SuppressWarnings("unchecked")
+	private Fingerprint findFingerprint(String urn) {
+		Fingerprint fp = null;
+		Query query = mEntityManager.createQuery("select f from Fingerprint f where f.urn = '" + urn + "'");
+		List<Fingerprint> result = query.getResultList();
+		if (result.size() > 0) {
+			fp = result.get(0);
+		}
+		return fp;
+	}
+	
 	@Override
 	public void removePattern(Long id) {
 		Pattern p = findPattern(id);
@@ -124,6 +128,13 @@ public class TaginEntityManager implements TaginDao {
 			Fingerprint parent = mEntityManager.find(Fingerprint.class, p.getKey().getParent());
 			mEntityManager.remove(parent);
 		}
+	}
+	
+	@Override
+	public void removeFingerprint(String urn) {
+		Fingerprint fp = findFingerprint(urn);
+		if (fp != null)
+			mEntityManager.remove(fp);
 	}
 
 	@Override

@@ -30,6 +30,8 @@ public interface TaginDao {
 	
 	public void removePattern(Long id);
 	
+	public void removeFingerprint(String urn);
+	
 	public void close();
 
 }

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import ca.idrc.tagin.dao.TaginDao;
-import ca.idrc.tagin.dao.TaginEntityManager;
 import ca.idrc.tagin.model.Beacon;
 import ca.idrc.tagin.model.Fingerprint;
 import ca.idrc.tagin.model.Neighbour;
@@ -14,8 +13,8 @@ public class URNManager {
 	
 	private static TaginDao dao;
 	
-	public static void generateURN(Fingerprint fp) {
-		dao = new TaginEntityManager();
+	public static void generateURN(TaginDao taginDao, Fingerprint fp) {
+		dao = taginDao;
 		List<Neighbour> neighbours = fp.getCloseNeighbours();
 		if (neighbours.isEmpty()) {
 			UUID urn = UUID.randomUUID();
@@ -32,7 +31,6 @@ public class URNManager {
 			List<Beacon> changeVector = p1.calculateChangeVector(existingFp.getPattern());
 			pushAwayNeighbours(n.getFingerprintId(), changeVector);
 		}
-		dao.close();
 	}
 	
 	private static void pushAwayNeighbours(Long id, List<Beacon> changeVector) {

@@ -64,9 +64,10 @@ public class URNEndpoints {
 			path = "urns/{URN}",
 			httpMethod = HttpMethod.DELETE
 	)
-	public Fingerprint removeURN(@Named("URN") String urn) {
-		//TODO implement functionality
-		return new Fingerprint();
+	public void removeURN(@Named("URN") String urn) {
+		TaginDao dao = new TaginEntityManager();
+		dao.removeFingerprint(urn);
+		dao.close();
 	}
 	
 }
