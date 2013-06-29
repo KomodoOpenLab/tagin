@@ -25,10 +25,10 @@ public class URNEndpoints {
 
 	@ApiMethod(
 			name = "urns.distanceto",
-			path = "urns/{URN1}/distanceto/{URN2}",
+			path = "urns/{urn1}/distanceto/{urn2}",
 			httpMethod = HttpMethod.GET
 	)
-	public Distance getDistanceTo(@Named("URN1") String urn1, @Named("URN2") String urn2) {
+	public Distance getDistanceTo(@Named("urn1") String urn1, @Named("urn2") String urn2) {
 		Distance d = null;
 		TaginDao dao = new TaginEntityManager();
 		Fingerprint f1 = dao.getFingerprint(urn1);
@@ -42,10 +42,10 @@ public class URNEndpoints {
 
 	@ApiMethod(
 			name = "urns.neighbours",
-			path = "urns/{URN}/neighbours",
+			path = "urns/{urn}/neighbours",
 			httpMethod = HttpMethod.GET
 	)
-	public List<URN> getNeighbours(@Named("URN") String urn, @Nullable @Named("max_count") Integer maxCount) {
+	public List<URN> getNeighbours(@Named("urn") String urn, @Nullable @Named("max_count") Integer maxCount) {
 		List<URN> neighbours = new ArrayList<URN>();
 		TaginDao dao = new TaginEntityManager();
 		Fingerprint fp = dao.getFingerprint(urn);
@@ -61,10 +61,10 @@ public class URNEndpoints {
 
 	@ApiMethod(
 			name = "urns.remove",
-			path = "urns/{URN}",
+			path = "urns/{urn}",
 			httpMethod = HttpMethod.DELETE
 	)
-	public void removeURN(@Named("URN") String urn) {
+	public void removeURN(@Named("urn") String urn) {
 		TaginDao dao = new TaginEntityManager();
 		dao.removeFingerprint(urn);
 		dao.close();

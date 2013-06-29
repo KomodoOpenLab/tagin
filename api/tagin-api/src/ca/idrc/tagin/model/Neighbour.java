@@ -16,7 +16,7 @@ public class Neighbour implements Comparable<Neighbour> {
 		return fingerprintId;
 	}
 
-	public void setFingerprint(Long fingerprintId) {
+	public void setFingerprintId(Long fingerprintId) {
 		this.fingerprintId = fingerprintId;
 	}
 	

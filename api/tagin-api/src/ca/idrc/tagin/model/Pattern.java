@@ -26,7 +26,6 @@ public class Pattern {
 	@Basic
 	private Long id;
 
-	//@ElementCollection
 	@OneToMany(cascade = CascadeType.ALL)
 	private Map<String,Beacon> beacons;
 

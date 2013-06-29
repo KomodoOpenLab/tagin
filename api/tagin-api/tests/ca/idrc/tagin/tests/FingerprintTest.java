@@ -78,7 +78,7 @@ public class FingerprintTest {
 	public void testGetNeighbours() {
 		TaginDao dao = new TaginEntityManager();
 		Fingerprint f1 = dao.getFingerprint(p1.getKey().getParent().getId());
-		Neighbour neighbour = f1.getNeighbours().get(0);
+		Neighbour neighbour = f1.findNeighbours().get(0);
 		Fingerprint fp = dao.getFingerprint(neighbour.getFingerprintId());
 		Assert.assertTrue(fp.getPattern().contains("id2", 2600));
 		Assert.assertTrue(fp.getPattern().contains("id4", 2400));

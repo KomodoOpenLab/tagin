@@ -15,7 +15,7 @@ public class URNManager {
 	
 	public static void generateURN(TaginDao taginDao, Fingerprint fp) {
 		dao = taginDao;
-		List<Neighbour> neighbours = fp.getCloseNeighbours();
+		List<Neighbour> neighbours = fp.findCloseNeighbours();
 		if (neighbours.isEmpty()) {
 			UUID urn = UUID.randomUUID();
 			fp.setUrn(urn.toString().replace("-", ""));
@@ -35,7 +35,7 @@ public class URNManager {
 	
 	private static void pushAwayNeighbours(Long id, List<Beacon> changeVector) {
 		Fingerprint fp = dao.getFingerprint(id);
-		List<Neighbour> neighbours = fp.getCloseNeighbours();
+		List<Neighbour> neighbours = fp.findCloseNeighbours();
 		for (Neighbour n : neighbours) {
 			Fingerprint fn = dao.getFingerprint(n.getFingerprintId());
 			fn.displaceBy(changeVector);

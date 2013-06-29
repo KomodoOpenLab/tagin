@@ -41,7 +41,7 @@ public class Fingerprint {
 		this.urn = null;
 	}
 
-	public List<Neighbour> getNeighbours() {
+	public List<Neighbour> findNeighbours() {
 		List<Neighbour> neighbours = new ArrayList<Neighbour>();
 		TaginDao dao = new TaginEntityManager();
 		neighbours = dao.getNeighbours(this);
@@ -49,9 +49,9 @@ public class Fingerprint {
 		return neighbours;
 	}
 
-	public List<Neighbour> getCloseNeighbours() {
+	public List<Neighbour> findCloseNeighbours() {
 		List<Neighbour> closeNeighbours = new ArrayList<Neighbour>();
-		List<Neighbour> neighbours = getNeighbours();
+		List<Neighbour> neighbours = findNeighbours();
 		Collections.sort(neighbours);
 		for (Neighbour n : neighbours) {
 			if (n.getRankDistance() < THRESHOLD) {
