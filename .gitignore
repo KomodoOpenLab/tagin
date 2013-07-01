@@ -3,5 +3,7 @@ bin/
 gen/
 *.class
 *.api
+*.discovery
 appengine-generated/
+endpoint-libs/
 classes/
