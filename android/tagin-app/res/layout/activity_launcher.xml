@@ -20,6 +20,7 @@
         android:id="@+id/requestURN"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Request URN"/>
+        android:text="Request URN"
+        android:onClick="onRequestURN"/>
 
 </LinearLayout>
