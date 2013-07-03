@@ -49,6 +49,7 @@ public class LauncherActivity extends Activity {
 		protected URN doInBackground(Void... params) {
 			URN urn = null;
 			if (mWifiManager.isWifiEnabled()) {
+				mWifiManager.startScan();
 				Pattern pattern = new Pattern();
 				for (ScanResult sr : mWifiManager.getScanResults()) {
 					pattern.put(sr.BSSID, sr.frequency, sr.level);
