@@ -21,6 +21,9 @@ package com.google.api.services.tagin.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+
+import android.net.wifi.ScanResult;
 
 /**
  * Model definition for Pattern.
@@ -137,6 +140,18 @@ public final class Pattern extends com.google.api.client.json.GenericJson {
 		for (Object o : beacons.values()) {
 			Beacon beacon = (Beacon) o;
 			beacon.updateRank(maxRssi);
+		}
+	}
+
+	public void addBeaconsFromScanResult(List<ScanResult> scanResults) {
+		for (ScanResult scanResult: scanResults) {
+			String id = scanResult.BSSID + ";" + scanResult.frequency;
+			if (beacons.containsKey(id)) {
+				Beacon b = (Beacon) beacons.get(id);
+				b.setRssi((b.getRssi() + Util.dBm2Power(scanResult.level)) / 2);
+			} else {
+				put(scanResult.BSSID, scanResult.frequency, scanResult.level);
+			}
 		}
 	}
 
