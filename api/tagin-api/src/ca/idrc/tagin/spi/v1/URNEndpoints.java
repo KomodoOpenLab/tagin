@@ -51,11 +51,12 @@ public class URNEndpoints {
 		Fingerprint fp = dao.getFingerprint(urn);
 		
 		for (Neighbour n : dao.getNeighbours(fp)) {
-			if (n.getUrn() != null)
-				neighbours.add(new URN(n.getUrn()));
+			if (n.getFingerprint().getUrn() != null)
+				neighbours.add(new URN(n.getFingerprint().getUrn()));
 			if (maxCount != null && neighbours.size() >= maxCount)
 				break;
 		}
+		dao.close();
 		return neighbours;
 	}
 

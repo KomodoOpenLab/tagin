@@ -22,27 +22,26 @@ public class URNManager {
 			dao.persistFingerprint(fp);
 		} else {
 			Neighbour n = neighbours.get(0);
-			Fingerprint existingFp = dao.getFingerprint(n.getFingerprintId());
+			Fingerprint existingFp = n.getFingerprint();
 			Pattern p1 = existingFp.getPattern();
 			existingFp.merge(fp);
 			fp.setUrn(existingFp.getUrn());
 			
 			// Push away any neighbour that has now become too close
 			List<Beacon> changeVector = p1.calculateChangeVector(existingFp.getPattern());
-			pushAwayNeighbours(n.getFingerprintId(), changeVector);
+			pushAwayNeighbours(n.getFingerprint(), changeVector);
 		}
 	}
 	
-	private static void pushAwayNeighbours(Long id, List<Beacon> changeVector) {
-		Fingerprint fp = dao.getFingerprint(id);
+	private static void pushAwayNeighbours(Fingerprint fp, List<Beacon> changeVector) {
 		List<Neighbour> neighbours = fp.findCloseNeighbours();
 		for (Neighbour n : neighbours) {
-			Fingerprint fn = dao.getFingerprint(n.getFingerprintId());
+			Fingerprint fn = n.getFingerprint();
 			fn.displaceBy(changeVector);
 		}
 		// Propagate changes
 		for (Neighbour n : neighbours) {
-			pushAwayNeighbours(n.getFingerprintId(), changeVector);
+			pushAwayNeighbours(n.getFingerprint(), changeVector);
 		}
 	}
 	
