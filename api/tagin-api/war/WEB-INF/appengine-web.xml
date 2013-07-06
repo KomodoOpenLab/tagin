@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-  <application>tagin-api</application>
-  <version>1</version>
+	<application>tagin-api</application>
+	<version>1</version>
 
-  <!--
-    Allows App Engine to send multiple requests to one instance in parallel:
-  -->
-  <threadsafe>true</threadsafe>
+	<!-- Allows App Engine to send multiple requests to one instance in parallel: -->
+	<threadsafe>true</threadsafe>
 
-  <!-- Configure java.util.logging -->
-  <system-properties>
-    <property name="java.util.logging.config.file" value="WEB-INF/classes/log4j.properties"/>
-    <!-- <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/> -->
-  </system-properties>
+	<!-- Configure java.util.logging -->
+	<system-properties>
+		<property name="java.util.logging.config.file" value="WEB-INF/classes/log4j.properties" />
+		<!-- <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/> -->
+	</system-properties>
+
+	<admin-console>
+		<page name="Appstats" url="/appstats" />
+	</admin-console>
 
   <!--
     HTTP Sessions are disabled by default. To enable HTTP sessions specify:
