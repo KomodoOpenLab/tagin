@@ -16,8 +16,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.json.gson.GsonFactory;
+import ca.idrc.tagin.lib.TaginService;
+
 import com.google.api.services.tagin.Tagin;
 import com.google.api.services.tagin.model.Pattern;
 import com.google.api.services.tagin.model.URN;
@@ -41,9 +41,7 @@ public class LauncherActivity extends Activity {
 		mWifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
 		mRequestButton = (Button) findViewById(R.id.requestURN);
 		mHandler = new Handler();
-
-		Tagin.Builder builder = new Tagin.Builder(AndroidHttp.newCompatibleTransport(), new GsonFactory(), null);
-		mTaginService = builder.build();
+		mTaginService = TaginService.newInstance();
 		registerReceiver(mReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 	}
 
