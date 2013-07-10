@@ -22,10 +22,17 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name="ca.idrc.tagin.lib.TaginService"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter 
+                android:name="ca.idrc.tagin.lib.ACTION_URN_READY" >
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

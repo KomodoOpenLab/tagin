@@ -18,6 +18,7 @@
 
 package com.google.api.services.tagin.model;
 
+
 /**
  * Model definition for URN.
  *
