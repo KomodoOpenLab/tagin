@@ -44,7 +44,7 @@ public class LauncherActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals(TaginService.ACTION_URN_READY)) {
-				String urn = intent.getStringExtra(TaginService.EXTRA_RESULT);
+				String urn = intent.getStringExtra(TaginService.EXTRA_URN_RESULT);
 				if (urn != null) {
 					mRequestButton.setText(urn);
 				} else {
