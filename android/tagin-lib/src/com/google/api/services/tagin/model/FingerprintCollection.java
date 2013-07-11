@@ -31,6 +31,7 @@ package com.google.api.services.tagin.model;
 @SuppressWarnings("javadoc")
 public final class FingerprintCollection extends com.google.api.client.json.GenericJson {
 
+
   /**
    * The value may be {@code null}.
    */

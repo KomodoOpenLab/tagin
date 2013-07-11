@@ -29,8 +29,9 @@
             android:name="ca.idrc.tagin.lib.TaginService"
             android:enabled="true"
             android:exported="true" >
-            <intent-filter 
-                android:name="ca.idrc.tagin.lib.ACTION_URN_READY" >
+            <intent-filter>
+                <action android:name="ca.idrc.tagin.lib.ACTION_URN_READY" />
+                <action android:name="ca.idrc.tagin.lib.ACTION_FINGERPRINTS_READY" />
             </intent-filter>
         </service>
     </application>

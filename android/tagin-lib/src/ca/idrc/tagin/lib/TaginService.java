@@ -13,9 +13,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.tagin.Tagin;
+import com.google.api.services.tagin.model.FingerprintCollection;
 import com.google.api.services.tagin.model.Pattern;
 import com.google.api.services.tagin.model.URN;
 
@@ -24,22 +23,28 @@ public class TaginService extends Service {
 	private Tagin mTagin;
 	private WifiManager mWifiManager;
 	private Handler mHandler;
-	
 	private Pattern mPattern;
+	
 	private int mScanIterations;
 	private final int MAX_SCANS = 3;
 	private final int SCAN_INTERVAL = 1000;
 	
-	public static final String ACTION_REQUEST_URN = "ca.idrc.tagin.lib.ACTION_REQUEST_URN";
+	// API requests
+	public static final String REQUEST_LIST_FINGERPRINTS = "ca.idrc.tagin.lib.REQUEST_LIST_FINGERPRINTS";
+	public static final String REQUEST_URN = "ca.idrc.tagin.lib.REQUEST_URN";
+	
+	// On-receive actions
+	public static final String ACTION_FINGERPRINTS_READY = "ca.idrc.tagin.lib.ACTION_FINGERPRINTS_READY";
 	public static final String ACTION_URN_READY = "ca.idrc.tagin.lib.ACTION_URN_READY";
+	
+	// Extras
 	public static final String EXTRA_TYPE = "ca.idrc.tagin.lib.EXTRA_TYPE";
-	public static final String EXTRA_URN_RESULT = "ca.idrc.tagin.lib.EXTRA_URN_RESULT";
+	public static final String EXTRA_QUERY_RESULT = "ca.idrc.tagin.lib.EXTRA_QUERY_RESULT";
 	
 	@Override
 	public void onCreate() {
-		Tagin.Builder builder = new Tagin.Builder(AndroidHttp.newCompatibleTransport(), new GsonFactory(), null);
-		mTagin = builder.build();
 		mWifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+		mTagin = TaginManager.getService();
 		mHandler = new Handler();
 		registerReceiver(mReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 	}
@@ -47,10 +52,12 @@ public class TaginService extends Service {
 	@Override
 	public int onStartCommand(final Intent intent, int flags, int startId) {
 		String type = intent.getStringExtra(EXTRA_TYPE);
-		if (type.equals(ACTION_REQUEST_URN)) {
+		if (type.equals(REQUEST_URN)) {
 			mScanIterations = 0;
 			mPattern = new Pattern();
 			mHandler.post(mScanRunnable);
+		} else if (type.equals(REQUEST_LIST_FINGERPRINTS)) {
+			new ListFingerprintsNTask().execute();
 		}
 		return START_NOT_STICKY;
 	}
@@ -95,12 +102,36 @@ public class TaginService extends Service {
 		
 		@Override
 		protected void onPostExecute(Void param) {
-			Intent broadcastIntent = new Intent();
-			broadcastIntent.setAction(ACTION_URN_READY);
-			broadcastIntent.putExtra(EXTRA_URN_RESULT, result);
-			sendBroadcast(broadcastIntent);
+			broadcastResult(ACTION_URN_READY, result);
 		}
 	};
+	
+	private class ListFingerprintsNTask extends AsyncTask<Void, Integer, Void> {
+		
+		private FingerprintCollection result = null;
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			try {
+				result = mTagin.fingerprints().list().execute();
+			} catch (IOException e) {
+				Log.e("tagin!", "Failed to list fingerprints: " + e.getMessage());
+			}
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void param) {
+			broadcastResult(ACTION_FINGERPRINTS_READY, result.toString());
+		}
+	};
+	
+	private void broadcastResult(String action, String result) {
+		Intent broadcastIntent = new Intent();
+		broadcastIntent.setAction(action);
+		broadcastIntent.putExtra(EXTRA_QUERY_RESULT, result);
+		sendBroadcast(broadcastIntent);
+	}
 	
 	@Override
 	public void onDestroy() {

@@ -1,5 +1,8 @@
 package ca.idrc.tagin.app;
 
+import com.google.api.services.tagin.model.FingerprintCollection;
+import com.google.gson.Gson;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -16,15 +19,18 @@ import ca.idrc.tagin.lib.TaginService;
 public class LauncherActivity extends Activity {
 
 	private TaginManager mTaginManager;
-	private Button mRequestButton;
+	private Button mURNRequestButton;
+	private Button mListFingerprintsButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_launcher);
-		mRequestButton = (Button) findViewById(R.id.requestURN);
+		mURNRequestButton = (Button) findViewById(R.id.requestURN);
+		mListFingerprintsButton = (Button) findViewById(R.id.listFingerprints);
 		mTaginManager = new TaginManager(this);
 		registerReceiver(mReceiver, new IntentFilter(TaginService.ACTION_URN_READY));
+		registerReceiver(mReceiver, new IntentFilter(TaginService.ACTION_FINGERPRINTS_READY));
 	}
 
 	@Override
@@ -34,8 +40,13 @@ public class LauncherActivity extends Activity {
 	}
 
 	public void onRequestURN(View view) {
-		mRequestButton.setText("Requesting URN...");
-		mTaginManager.requestURN();
+		mURNRequestButton.setText("Requesting URN...");
+		mTaginManager.apiRequest(TaginService.REQUEST_URN);
+	}
+	
+	public void onListFingerprints(View view) {
+		mListFingerprintsButton.setText("Requesting fingerprints list...");
+		mTaginManager.apiRequest(TaginService.REQUEST_LIST_FINGERPRINTS);
 	}
 	
 
@@ -44,11 +55,19 @@ public class LauncherActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals(TaginService.ACTION_URN_READY)) {
-				String urn = intent.getStringExtra(TaginService.EXTRA_URN_RESULT);
+				String urn = intent.getStringExtra(TaginService.EXTRA_QUERY_RESULT);
 				if (urn != null) {
-					mRequestButton.setText(urn);
+					mURNRequestButton.setText(urn);
 				} else {
-					mRequestButton.setText("Failed to acquire URN");
+					mURNRequestButton.setText("Failed to acquire URN");
+				}
+			} else if (intent.getAction().equals(TaginService.ACTION_FINGERPRINTS_READY)) {
+				String str = intent.getStringExtra(TaginService.EXTRA_QUERY_RESULT);
+				FingerprintCollection fps = new Gson().fromJson(str, FingerprintCollection.class);
+				if (fps != null) {
+					mListFingerprintsButton.setText(fps.getItems().toString());
+				} else {
+					mListFingerprintsButton.setText("Failed to list fingerprints");
 				}
 			}
 		}
