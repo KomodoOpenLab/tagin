@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import ca.idrc.tagin.lib.TaginManager;
 import ca.idrc.tagin.lib.TaginService;
 
@@ -22,8 +23,11 @@ import com.google.api.services.tagin.model.FingerprintCollection;
 public class LauncherActivity extends Activity {
 
 	private TaginManager mTaginManager;
+	
 	private Button mURNRequestButton;
 	private Button mListFingerprintsButton;
+	private Button mFindNeighboursButton;
+	private EditText mEditText;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +35,12 @@ public class LauncherActivity extends Activity {
 		setContentView(R.layout.activity_launcher);
 		mURNRequestButton = (Button) findViewById(R.id.requestURN);
 		mListFingerprintsButton = (Button) findViewById(R.id.listFingerprints);
+		mFindNeighboursButton = (Button) findViewById(R.id.findButton);
+		mEditText = (EditText) findViewById(R.id.editText);
+		
 		mTaginManager = new TaginManager(this);
 		registerReceiver(mReceiver, new IntentFilter(TaginService.ACTION_URN_READY));
+		registerReceiver(mReceiver, new IntentFilter(TaginService.ACTION_NEIGHBOURS_READY));
 		registerReceiver(mReceiver, new IntentFilter(TaginService.ACTION_FINGERPRINTS_READY));
 	}
 
@@ -50,6 +58,11 @@ public class LauncherActivity extends Activity {
 	public void onListFingerprints(View view) {
 		mListFingerprintsButton.setText("Requesting fingerprints list...");
 		mTaginManager.apiRequest(TaginService.REQUEST_LIST_FINGERPRINTS);
+	}
+	
+	public void onFindNeighbours(View view) {
+		mFindNeighboursButton.setText("Searching for nearby neighbours...");
+		mTaginManager.apiRequest(TaginService.REQUEST_NEIGHBOURS, mEditText.getText().toString(), null);
 	}
 	
 
@@ -77,11 +90,18 @@ public class LauncherActivity extends Activity {
 				if (fps != null) {
 					StringBuffer items = new StringBuffer();
 					for (Fingerprint fp : fps.getItems()) {
-						items.append(fp.getId() + " : " + fp.getUrn() + "\n\n");
+						items.append("ID: " + fp.getId() + "\nURN: " + fp.getUrn() + "\n\n");
 					}
 					mListFingerprintsButton.setText(items.toString());
 				} else {
 					mListFingerprintsButton.setText("Failed to list fingerprints");
+				}
+			} else if (intent.getAction().equals(TaginService.ACTION_NEIGHBOURS_READY)) {
+				String str = intent.getStringExtra(TaginService.EXTRA_QUERY_RESULT);
+				if (str != null) {
+					mFindNeighboursButton.setText(str);
+				} else {
+					mFindNeighboursButton.setText("Could not find neighbours");
 				}
 			}
 		}

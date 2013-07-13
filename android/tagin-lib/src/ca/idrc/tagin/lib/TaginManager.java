@@ -11,6 +11,8 @@ public class TaginManager {
 	
 	private Context mContext;
 	private static Tagin mTagin;
+	
+	public static final String TAG = "tagin-lib";
 
 	public TaginManager(Context context) {
 		Tagin.Builder builder = new Tagin.Builder(AndroidHttp.newCompatibleTransport(), new GsonFactory(), null);
@@ -21,6 +23,14 @@ public class TaginManager {
 	public void apiRequest(String request) {
 		Intent intent = new Intent(mContext, TaginService.class);
 		intent.putExtra(TaginService.EXTRA_TYPE, request);
+		mContext.startService(intent);
+	}
+	
+	public void apiRequest(String request, String param1, String param2) {
+		Intent intent = new Intent(mContext, TaginService.class);
+		intent.putExtra(TaginService.EXTRA_TYPE, request);
+		intent.putExtra(TaginService.EXTRA_PARAM_1, param1);
+		intent.putExtra(TaginService.EXTRA_PARAM_2, param2);
 		mContext.startService(intent);
 	}
 	
