@@ -115,12 +115,13 @@ public class TaginService extends Service {
 	
 	private class ListFingerprintsTask extends AsyncTask<Void, Integer, Void> {
 		
-		private FingerprintCollection result = null;
+		private String result = null;
 
 		@Override
 		protected Void doInBackground(Void... params) {
 			try {
-				result = mTagin.fingerprints().list().execute();
+				FingerprintCollection fps = mTagin.fingerprints().list().execute();
+				result = fps.toString();
 			} catch (IOException e) {
 				Log.e(TaginManager.TAG, "Failed to list fingerprints: " + e.getMessage());
 			}
@@ -129,18 +130,19 @@ public class TaginService extends Service {
 		
 		@Override
 		protected void onPostExecute(Void param) {
-			broadcastResult(ACTION_FINGERPRINTS_READY, result.toString());
+			broadcastResult(ACTION_FINGERPRINTS_READY, result);
 		}
 	};
 	
 	private class FindNeighboursTask extends AsyncTask<String, Integer, Void> {
 		
-		private URNCollection result = null;
+		private String result = null;
 
 		@Override
 		protected Void doInBackground(String... params) {
 			try {
-				result = mTagin.urns().neighbours(params[0]).execute();
+				URNCollection urns = mTagin.urns().neighbours(params[0]).execute();
+				result = urns.toString();
 			} catch (IOException e) {
 				Log.e(TaginManager.TAG, "Failed to find neighbours: " + e.getMessage());
 			}
@@ -149,7 +151,7 @@ public class TaginService extends Service {
 		
 		@Override
 		protected void onPostExecute(Void param) {
-			broadcastResult(ACTION_NEIGHBOURS_READY, result.toString());
+			broadcastResult(ACTION_NEIGHBOURS_READY, result);
 		}
 	};
 	

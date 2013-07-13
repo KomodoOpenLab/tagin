@@ -1,7 +1,9 @@
 package ca.idrc.tagin.spi.v1;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 import javax.inject.Named;
@@ -46,18 +48,19 @@ public class URNEndpoints {
 			httpMethod = HttpMethod.GET
 	)
 	public List<URN> getNeighbours(@Named("urn") String urn, @Nullable @Named("max_count") Integer maxCount) {
-		List<URN> neighbours = new ArrayList<URN>();
+		Map<String,URN> neighbours = new LinkedHashMap<String,URN>();
 		TaginDao dao = new TaginEntityManager();
 		Fingerprint fp = dao.getFingerprint(urn);
 		
 		for (Neighbour n : dao.getNeighbours(fp)) {
-			if (n.getFingerprint().getUrn() != null)
-				neighbours.add(new URN(n.getFingerprint().getUrn()));
+			String key = n.getFingerprint().getUrn();
+			if (n.getFingerprint().getUrn() != null && !neighbours.containsKey(key))
+				neighbours.put(key, new URN(key));
 			if (maxCount != null && neighbours.size() >= maxCount)
 				break;
 		}
 		dao.close();
-		return neighbours;
+		return new ArrayList<URN>(neighbours.values());
 	}
 
 	@ApiMethod(
