@@ -1,7 +1,6 @@
 package ca.idrc.tagin.app;
 
-import com.google.api.services.tagin.model.FingerprintCollection;
-import com.google.gson.Gson;
+import java.io.IOException;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -9,12 +8,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-
 import ca.idrc.tagin.lib.TaginManager;
 import ca.idrc.tagin.lib.TaginService;
+
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.tagin.model.Fingerprint;
+import com.google.api.services.tagin.model.FingerprintCollection;
 
 public class LauncherActivity extends Activity {
 
@@ -63,9 +66,20 @@ public class LauncherActivity extends Activity {
 				}
 			} else if (intent.getAction().equals(TaginService.ACTION_FINGERPRINTS_READY)) {
 				String str = intent.getStringExtra(TaginService.EXTRA_QUERY_RESULT);
-				FingerprintCollection fps = new Gson().fromJson(str, FingerprintCollection.class);
+				FingerprintCollection fps = null;
+				
+				try {
+					fps = new GsonFactory().fromString(str, FingerprintCollection.class);
+				} catch (IOException e) {
+					Log.e("tagin!", "Deserialization error: " + e.getMessage());
+				}
+				
 				if (fps != null) {
-					mListFingerprintsButton.setText(fps.getItems().toString());
+					StringBuffer items = new StringBuffer();
+					for (Fingerprint fp : fps.getItems()) {
+						items.append(fp.getId() + " : " + fp.getUrn() + "\n\n");
+					}
+					mListFingerprintsButton.setText(items.toString());
 				} else {
 					mListFingerprintsButton.setText("Failed to list fingerprints");
 				}

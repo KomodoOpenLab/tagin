@@ -1,11 +1,11 @@
 package ca.idrc.tagin.lib;
 
+import android.content.Context;
+import android.content.Intent;
+
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.tagin.Tagin;
-
-import android.content.Context;
-import android.content.Intent;
 
 public class TaginManager {
 	
