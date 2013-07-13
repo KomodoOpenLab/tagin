@@ -1,7 +1,5 @@
 package ca.idrc.tagin.lib;
 
-import java.io.IOException;
-
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,13 +9,14 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
+
+import ca.idrc.tagin.lib.requests.FindNeighboursRequest;
+import ca.idrc.tagin.lib.requests.ListFingerprintsRequest;
+import ca.idrc.tagin.lib.requests.TaginApiCall;
+import ca.idrc.tagin.lib.requests.URNRequest;
 
 import com.google.api.services.tagin.Tagin;
-import com.google.api.services.tagin.model.FingerprintCollection;
 import com.google.api.services.tagin.model.Pattern;
-import com.google.api.services.tagin.model.URN;
-import com.google.api.services.tagin.model.URNCollection;
 
 public class TaginService extends Service {
 	
@@ -62,9 +61,9 @@ public class TaginService extends Service {
 			mPattern = new Pattern();
 			mHandler.post(mScanRunnable);
 		} else if (type.equals(REQUEST_LIST_FINGERPRINTS)) {
-			new ListFingerprintsTask().execute();
+			new ApiRequestTask().execute(new ListFingerprintsRequest(mTagin));
 		} else if (type.equals(REQUEST_NEIGHBOURS)) {
-			new FindNeighboursTask().execute(intent.getStringExtra(EXTRA_PARAM_1));
+			new ApiRequestTask().execute(new FindNeighboursRequest(mTagin, intent.getStringExtra(EXTRA_PARAM_1)));
 		}
 		return START_NOT_STICKY;
 	}
@@ -85,73 +84,25 @@ public class TaginService extends Service {
 					mPattern.addBeaconsFromScanResult(mWifiManager.getScanResults());
 					mHandler.postDelayed(mScanRunnable, SCAN_INTERVAL);
 				} else {
-					new FetchURNTask().execute();
+					new ApiRequestTask().execute(new URNRequest(mTagin, mPattern));
 				}
 			}
 		}
 	};
 
-	private class FetchURNTask extends AsyncTask<Void, Integer, Void> {
+	private class ApiRequestTask extends AsyncTask<TaginApiCall, Void, String> {
 		
-		private String result = null;
+		private TaginApiCall apiCall = null;
 
 		@Override
-		protected Void doInBackground(Void... params) {
-			mPattern.updateRanks();
-			try {
-				URN urn = mTagin.patterns().add(mPattern).execute();
-				result = urn.getValue();
-			} catch (IOException e) {
-				Log.e(TaginManager.TAG, "Failed to submit fingerprint: " + e.getMessage());
-			}
-			return null;
+		protected String doInBackground(TaginApiCall... params) {
+			apiCall = params[0];
+			return apiCall.execute();
 		}
 		
 		@Override
-		protected void onPostExecute(Void param) {
-			broadcastResult(ACTION_URN_READY, result);
-		}
-	};
-	
-	private class ListFingerprintsTask extends AsyncTask<Void, Integer, Void> {
-		
-		private String result = null;
-
-		@Override
-		protected Void doInBackground(Void... params) {
-			try {
-				FingerprintCollection fps = mTagin.fingerprints().list().execute();
-				result = fps.toString();
-			} catch (IOException e) {
-				Log.e(TaginManager.TAG, "Failed to list fingerprints: " + e.getMessage());
-			}
-			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(Void param) {
-			broadcastResult(ACTION_FINGERPRINTS_READY, result);
-		}
-	};
-	
-	private class FindNeighboursTask extends AsyncTask<String, Integer, Void> {
-		
-		private String result = null;
-
-		@Override
-		protected Void doInBackground(String... params) {
-			try {
-				URNCollection urns = mTagin.urns().neighbours(params[0]).execute();
-				result = urns.toString();
-			} catch (IOException e) {
-				Log.e(TaginManager.TAG, "Failed to find neighbours: " + e.getMessage());
-			}
-			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(Void param) {
-			broadcastResult(ACTION_NEIGHBOURS_READY, result);
+		protected void onPostExecute(String result) {
+			broadcastResult(apiCall.getBroadcastAction(), result);
 		}
 	};
 	
