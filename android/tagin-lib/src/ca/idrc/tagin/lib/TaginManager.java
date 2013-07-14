@@ -21,9 +21,11 @@ public class TaginManager {
 	}
 	
 	public void apiRequest(String request) {
-		Intent intent = new Intent(mContext, TaginService.class);
-		intent.putExtra(TaginService.EXTRA_TYPE, request);
-		mContext.startService(intent);
+		apiRequest(request, null, null);
+	}
+	
+	public void apiRequest(String request, String param) {
+		apiRequest(request, param, null);
 	}
 	
 	public void apiRequest(String request, String param1, String param2) {

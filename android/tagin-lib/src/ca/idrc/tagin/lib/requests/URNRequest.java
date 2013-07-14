@@ -28,7 +28,7 @@ public class URNRequest implements TaginApiCall {
 			URN urn = mTagin.patterns().add(mPattern).execute();
 			result = urn.getValue();
 		} catch (IOException e) {
-			Log.e(TaginManager.TAG, "Failed to submit fingerprint: " + e.getMessage());
+			Log.d(TaginManager.TAG, "Failed to submit fingerprint: " + e.getMessage());
 		}
 		return result;
 	}

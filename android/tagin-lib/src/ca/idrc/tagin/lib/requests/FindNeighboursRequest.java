@@ -26,7 +26,7 @@ public class FindNeighboursRequest implements TaginApiCall {
 			URNCollection urns = mTagin.urns().neighbours(mUrn).execute();
 			result = urns.toString();
 		} catch (IOException e) {
-			Log.e(TaginManager.TAG, "Failed to find neighbours: " + e.getMessage());
+			Log.d(TaginManager.TAG, "Failed to find neighbours: " + e.getMessage());
 		}
 		return result;
 	}

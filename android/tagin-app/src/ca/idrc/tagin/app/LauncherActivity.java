@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 import ca.idrc.tagin.lib.TaginManager;
 import ca.idrc.tagin.lib.TaginService;
 
@@ -61,8 +62,12 @@ public class LauncherActivity extends Activity {
 	}
 	
 	public void onFindNeighbours(View view) {
-		mFindNeighboursButton.setText("Searching for nearby neighbours...");
-		mTaginManager.apiRequest(TaginService.REQUEST_NEIGHBOURS, mEditText.getText().toString(), null);
+		if (mEditText.getText().length() != 32) {
+			Toast.makeText(this, "Invalid URN", Toast.LENGTH_SHORT).show();
+		} else {
+			mFindNeighboursButton.setText("Searching for nearby neighbours...");
+			mTaginManager.apiRequest(TaginService.REQUEST_NEIGHBOURS, mEditText.getText().toString());
+		}
 	}
 	
 

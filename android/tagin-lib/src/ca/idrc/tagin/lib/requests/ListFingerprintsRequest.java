@@ -25,7 +25,7 @@ public class ListFingerprintsRequest implements TaginApiCall {
 			FingerprintCollection fps = mTagin.fingerprints().list().execute();
 			result = fps.toString();
 		} catch (IOException e) {
-			Log.e(TaginManager.TAG, "Failed to list fingerprints: " + e.getMessage());
+			Log.d(TaginManager.TAG, "Failed to list fingerprints: " + e.getMessage());
 		}
 		return result;
 	}
