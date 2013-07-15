@@ -1,6 +1,7 @@
 package ca.idrc.tagin.app;
 
 import java.io.IOException;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -93,11 +94,14 @@ public class LauncherActivity extends Activity {
 				}
 				
 				if (fps != null) {
-					StringBuffer items = new StringBuffer();
-					for (Fingerprint fp : fps.getItems()) {
-						items.append("ID: " + fp.getId() + "\nURN: " + fp.getUrn() + "\n\n");
+					StringBuffer sb = new StringBuffer();
+					List<Fingerprint> items = fps.getItems();
+					if (items != null) {
+						for (Fingerprint fp : items) {
+							sb.append("ID: " + fp.getId() + "\nURN: " + fp.getUrn() + "\n\n");
+						}
 					}
-					mListFingerprintsButton.setText(items.toString());
+					mListFingerprintsButton.setText(sb.toString());
 				} else {
 					mListFingerprintsButton.setText("Failed to list fingerprints");
 				}
