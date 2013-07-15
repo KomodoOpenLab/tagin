@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical" >
 
         <Button
@@ -30,6 +30,14 @@
             android:onClick="onListFingerprints"
             android:text="fingerprints.list()"
             android:textSize="12sp" />
+        
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@android:color/transparent"
+            android:focusable="true"
+            android:focusableInTouchMode="true" >
+        </LinearLayout>
 
         <EditText
             android:id="@+id/editText"
@@ -38,6 +46,7 @@
             android:layout_marginTop="40dp"
             android:ems="18"
             android:hint="Find neighbours of URN"
+            android:inputType="textFilter"
             android:textSize="12sp" >
         </EditText>
 
