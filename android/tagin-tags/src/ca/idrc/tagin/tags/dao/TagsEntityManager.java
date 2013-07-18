@@ -2,6 +2,8 @@ package ca.idrc.tagin.tags.dao;
 
 import javax.persistence.EntityManager;
 
+import ca.idrc.tagin.tags.model.Tag;
+
 public class TagsEntityManager implements TagsDao {
 
 	private EntityManager mEntityManager;
@@ -11,7 +13,8 @@ public class TagsEntityManager implements TagsDao {
 	}
 	
 	public void assignLabel(String urn, String label) {
-		// TODO
+		Tag tag = new Tag(urn, label);
+		mEntityManager.persist(tag);
 	}
 
 	@Override

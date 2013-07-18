@@ -16,6 +16,7 @@ public class TagsServlet extends HttpServlet {
 		String urn = req.getParameter("urn");
 		String label = req.getParameter("label");
 		dao.assignLabel(urn, label);
+		dao.close();
 		
 		resp.setContentType("application/json");
 		resp.getWriter().println(label);
