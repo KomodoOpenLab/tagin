@@ -10,15 +10,15 @@ import ca.idrc.tagin.tags.dao.TagsEntityManager;
 public class TagsServlet extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
-		System.out.println("Creating new tag");
-		
-		TagsDao dao = new TagsEntityManager();
 		String urn = req.getParameter("urn");
 		String label = req.getParameter("label");
-		dao.assignLabel(urn, label);
-		dao.close();
-		
-		resp.setContentType("application/json");
-		resp.getWriter().println(label);
+
+		if (urn != null && label != null && !urn.isEmpty() && !label.isEmpty()) {
+			TagsDao dao = new TagsEntityManager();
+			dao.assignLabel(urn, label);
+			dao.close();
+			resp.setContentType("application/json");
+			resp.getWriter().println(label);
+		}
 	}
 }
