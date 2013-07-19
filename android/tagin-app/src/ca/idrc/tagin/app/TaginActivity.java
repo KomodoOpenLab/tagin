@@ -38,7 +38,7 @@ public class TaginActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_launcher);
+		setContentView(R.layout.activity_tagin);
 		mURNRequestButton = (Button) findViewById(R.id.requestURN);
 		mListFingerprintsButton = (Button) findViewById(R.id.listFingerprints);
 		mFindNeighboursButton = (Button) findViewById(R.id.findButton);
