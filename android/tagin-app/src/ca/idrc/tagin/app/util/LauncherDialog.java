@@ -36,7 +36,7 @@ public class LauncherDialog extends AlertDialog {
 			super(context);
 			CharSequence[] items = {"tagin-api", "tagin-tags"};
 
-			setCancelable(false);
+			setCancelable(true);
 			setTitle("Select your desired service");
 			setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
 				
@@ -52,6 +52,15 @@ public class LauncherDialog extends AlertDialog {
 					default:
 						break;
 					}
+				}
+			});
+			
+			setOnCancelListener(new OnCancelListener() {
+				
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					mContext.finish();
+					dismiss();
 				}
 			});
 		}
