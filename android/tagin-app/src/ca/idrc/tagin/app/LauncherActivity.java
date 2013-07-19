@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import ca.idrc.tagin.lib.TaginManager;
 import ca.idrc.tagin.lib.TaginService;
@@ -29,7 +30,10 @@ public class LauncherActivity extends Activity {
 	private Button mURNRequestButton;
 	private Button mListFingerprintsButton;
 	private Button mFindNeighboursButton;
-	private EditText mEditText;
+	
+	private TextView mURNTextView;
+	private TextView mListFPTextView;
+	private EditText mNeighboursEditText;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +42,9 @@ public class LauncherActivity extends Activity {
 		mURNRequestButton = (Button) findViewById(R.id.requestURN);
 		mListFingerprintsButton = (Button) findViewById(R.id.listFingerprints);
 		mFindNeighboursButton = (Button) findViewById(R.id.findButton);
-		mEditText = (EditText) findViewById(R.id.editText);
+		mURNTextView = (TextView) findViewById(R.id.textView1);
+		mListFPTextView = (TextView) findViewById(R.id.textView2);
+		mNeighboursEditText = (EditText) findViewById(R.id.editText3);
 		
 		mTaginManager = new TaginManager(this);
 		registerReceiver(mReceiver, new IntentFilter(TaginService.ACTION_URN_READY));
@@ -63,11 +69,11 @@ public class LauncherActivity extends Activity {
 	}
 	
 	public void onFindNeighbours(View view) {
-		if (mEditText.getText().length() != 32) {
+		if (mURNTextView.getText().length() != 32) {
 			Toast.makeText(this, "Invalid URN", Toast.LENGTH_SHORT).show();
 		} else {
 			mFindNeighboursButton.setText("Searching for nearby neighbours...");
-			mTaginManager.apiRequest(TaginService.REQUEST_NEIGHBOURS, mEditText.getText().toString());
+			mTaginManager.apiRequest(TaginService.REQUEST_NEIGHBOURS, mURNTextView.getText().toString());
 		}
 	}
 	
@@ -78,43 +84,58 @@ public class LauncherActivity extends Activity {
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals(TaginService.ACTION_URN_READY)) {
 				String urn = intent.getStringExtra(TaginService.EXTRA_QUERY_RESULT);
-				if (urn != null) {
-					mURNRequestButton.setText(urn);
-				} else {
-					mURNRequestButton.setText("Failed to acquire URN");
-				}
+				handleURNResponse(urn);
 			} else if (intent.getAction().equals(TaginService.ACTION_FINGERPRINTS_READY)) {
 				String str = intent.getStringExtra(TaginService.EXTRA_QUERY_RESULT);
-				FingerprintCollection fps = null;
-				
-				try {
-					fps = new GsonFactory().fromString(str, FingerprintCollection.class);
-				} catch (IOException e) {
-					Log.e("tagin!", "Deserialization error: " + e.getMessage());
-				}
-				
-				if (fps != null) {
-					StringBuffer sb = new StringBuffer();
-					List<Fingerprint> items = fps.getItems();
-					if (items != null) {
-						for (Fingerprint fp : items) {
-							sb.append("ID: " + fp.getId() + "\nURN: " + fp.getUrn() + "\n\n");
-						}
-					}
-					mListFingerprintsButton.setText(sb.toString());
-				} else {
-					mListFingerprintsButton.setText("Failed to list fingerprints");
-				}
+				handleFingerprintsResponse(str);
 			} else if (intent.getAction().equals(TaginService.ACTION_NEIGHBOURS_READY)) {
 				String str = intent.getStringExtra(TaginService.EXTRA_QUERY_RESULT);
-				if (str != null) {
-					mFindNeighboursButton.setText(str);
-				} else {
-					mFindNeighboursButton.setText("Could not find neighbours");
-				}
+				handleNeighboursResponse(str);
 			}
 		}
 	};
+	
+	private void handleFingerprintsResponse(String result) {
+		FingerprintCollection fps = null;
+		
+		try {
+			fps = new GsonFactory().fromString(result, FingerprintCollection.class);
+		} catch (IOException e) {
+			Log.e("tagin!", "Deserialization error: " + e.getMessage());
+		}
+		
+		if (fps != null) {
+			StringBuffer sb = new StringBuffer();
+			List<Fingerprint> items = fps.getItems();
+			if (items != null) {
+				for (Fingerprint fp : items) {
+					sb.append("ID:     " + fp.getId() + "\nURN:   " + fp.getUrn() + "\n\n");
+				}
+			}
+			mListFPTextView.setText(sb.toString());
+		} else {
+			mListFPTextView.setText("Failed to list fingerprints");
+		}
+		mListFingerprintsButton.setText("fingerprints.list()");
+	}
+	
+	private void handleURNResponse(String urn) {
+		if (urn != null) {
+			mURNTextView.setText(urn);
+		} else {
+			mURNTextView.setText("Failed to acquire URN");
+		}
+		mURNRequestButton.setText("Request URN");
+	}
+	
+	private void handleNeighboursResponse(String result) {
+		if (result != null) {
+			mNeighboursEditText.setText(result);
+		} else {
+			mNeighboursEditText.setText("Could not find neighbours");
+		}
+		mFindNeighboursButton.setText("Find neighbours");
+	}
 	
 	@Override
 	protected void onDestroy() {
