@@ -1,17 +1,17 @@
 package ca.idrc.tagin.app;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -19,14 +19,11 @@ import org.apache.http.message.BasicNameValuePair;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import com.google.gson.Gson;
 
 public class TagsActivity extends Activity {
 	
@@ -70,25 +67,31 @@ public class TagsActivity extends Activity {
 		@Override
 		protected String doInBackground(Void... params) {
 			String urn = mURNText1.getText().toString();
-			String result = null;
-			InputStream input;
+			String result = "";
+			HttpClient client = new DefaultHttpClient();
+			HttpGet request = new HttpGet("http://tagin-tags.appspot.com/tagin-tags?urn=" + urn);
 			try {
-				input = new URL("http://tagin-tags.appspot.com/tagin-tags?urn=" + urn).openStream();
-				Reader reader = new InputStreamReader(input, "UTF-8");
-				result = new Gson().fromJson(reader, String.class);
-				Log.d("tagin-app", "Result: " + result);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+				HttpResponse response = client.execute(request);
+				BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+				String line = "";
+				while ((line = reader.readLine()) != null) {
+					result += line;
+				}
+			} catch (ClientProtocolException e1) {
+				e1.printStackTrace();
+				return null;
+			} catch (IOException e1) {
+				e1.printStackTrace();
+				return null;
 			}
 			return result;
 		}
 		
 		@Override
 		protected void onPostExecute(String result) {
-			if (result != null)
+			if (result != null) {
 				mLabelView.setText(result);
+			}
 		}
 		
 	}	
@@ -108,14 +111,6 @@ public class TagsActivity extends Activity {
 				nameValuePairs.add(new BasicNameValuePair("label", label));
 				post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 				client.execute(post);
-
-				/*HttpResponse response = client.execute(post);
-				BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-				String line = "";
-				while ((line = rd.readLine()) != null) {
-					System.out.println(line);
-				}*/
-
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
