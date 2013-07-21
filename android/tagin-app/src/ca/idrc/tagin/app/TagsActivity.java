@@ -17,6 +17,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -24,8 +25,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class TagsActivity extends Activity {
+	
+	private Context mContext;
 	
 	private EditText mURNText1;
 	private EditText mURNText2;
@@ -35,10 +39,13 @@ public class TagsActivity extends Activity {
 	private Button mSetLabelButton;
 	private Button mGetLabelButton;
 	
+	private final String APP_URL = "http://tagin-tags.appspot.com/tagin-tags";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_tags);
+		mContext = this;
 		
 		mURNText1 = (EditText) findViewById(R.id.tags_urn1_edit);
 		mURNText2 = (EditText) findViewById(R.id.tags_urn2_edit);
@@ -55,10 +62,12 @@ public class TagsActivity extends Activity {
 	}
 	
 	public void onGetLabel(View view) {
+		mGetLabelButton.setText("Fetching label...");
 		new GetLabelTask().execute();
 	}
 	
 	public void onSetLabel(View view) {
+		mSetLabelButton.setText("Saving tag...");
 		new SetLabelTask().execute();
 	}
 	
@@ -69,7 +78,7 @@ public class TagsActivity extends Activity {
 			String urn = mURNText1.getText().toString();
 			String result = "";
 			HttpClient client = new DefaultHttpClient();
-			HttpGet request = new HttpGet("http://tagin-tags.appspot.com/tagin-tags?urn=" + urn);
+			HttpGet request = new HttpGet(APP_URL + "?urn=" + urn);
 			try {
 				HttpResponse response = client.execute(request);
 				BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
@@ -92,19 +101,20 @@ public class TagsActivity extends Activity {
 			if (result != null) {
 				mLabelView.setText(result);
 			}
+			mGetLabelButton.setText("Get label");
 		}
 		
 	}	
 	
-	private class SetLabelTask extends AsyncTask<Void, Void, Void> {
+	private class SetLabelTask extends AsyncTask<Void, Void, Boolean> {
 
 		@Override
-		protected Void doInBackground(Void... params) {
+		protected Boolean doInBackground(Void... params) {
 			String urn = mURNText2.getText().toString();
 			String label = mLabelText.getText().toString();
 
 			HttpClient client = new DefaultHttpClient();
-			HttpPost post = new HttpPost("http://tagin-tags.appspot.com/tagin-tags");
+			HttpPost post = new HttpPost(APP_URL);
 			try {
 				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 				nameValuePairs.add(new BasicNameValuePair("urn", urn));
@@ -113,14 +123,21 @@ public class TagsActivity extends Activity {
 				client.execute(post);
 			} catch (IOException e) {
 				e.printStackTrace();
+				return false;
 			}
-			return null;
+			return true;
 		}
 		
 		@Override
-		protected void onPostExecute(Void param) {
+		protected void onPostExecute(Boolean isSuccessful) {
 			mURNText2.setText("");
 			mLabelText.setText("");
+			mSetLabelButton.setText("Set label");
+			if (isSuccessful) {
+				Toast.makeText(mContext, "Tag successfully saved", Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(mContext, "Failed to save tag", Toast.LENGTH_SHORT).show();
+			}
 		}
 		
 	}
