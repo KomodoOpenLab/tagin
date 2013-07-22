@@ -31,7 +31,7 @@ public class TagAdder extends Activity {
 		setContentView(R.layout.addtag);
 		
 		Intent intent = getIntent();
-		urn  = intent.getStringExtra(Main.EXTRA_URN);
+		urn  = intent.getStringExtra(MainActivity.EXTRA_URN);
 		
 		tDatabase = new TagsDatabase(this);
 		tDatabase.open();
@@ -60,8 +60,8 @@ public class TagAdder extends Activity {
 	private void addTag(){
 		tDatabase.addTag(tag_id, urn);
 		Intent intent = new Intent();
-		intent.putExtra(Main.EXTRA_TAG_NAME, tag_name);
-		intent.putExtra(Main.EXTRA_TAG_POPULARITY, popularity);
+		intent.putExtra(MainActivity.EXTRA_TAG_NAME, tag_name);
+		intent.putExtra(MainActivity.EXTRA_TAG_POPULARITY, popularity);
 		setResult(1, intent);
 		finish();
 	}
