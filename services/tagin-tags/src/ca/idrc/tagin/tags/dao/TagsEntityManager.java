@@ -30,15 +30,5 @@ public class TagsEntityManager implements TagsDao {
 	public void close() {
 		mEntityManager.close();
 	}
-	
-	@Override
-	public void beginTransaction() {
-		mEntityManager.getTransaction().begin();
-	}
-	
-	@Override
-	public void commitTransaction() {
-		mEntityManager.getTransaction().commit();
-	}
 
 }
