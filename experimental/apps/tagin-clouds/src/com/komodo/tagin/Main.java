@@ -200,21 +200,23 @@ public class Main extends Activity {
 		switch (requestCode) {
 		case TAG_ADDED: // this is the case when user has just added a new Tag to DB
 			//Getting the tag name and popularity
-			String tag_name = data.getStringExtra(EXTRA_TAG_NAME); 
-			int popularity = data.getIntExtra(EXTRA_TAG_POPULARITY, 10);
-			Tag tempTag= new Tag(tag_name, popularity, SEARCH_TEXT + tag_name );			
-			if (!tagCloudCreated) { // first time:: stop splash and create TagCloud
-				List<Tag> tempTagList= new ArrayList<Tag>();
-				tempTagList.add(tempTag);
-				stopSplashScreen();
-				createTagCloud(tempTagList);
-			} else{ // after initial creation of Tag Cloud, just update it
-				List<Tag> tempTagList = new ArrayList<Tag>(tagList);
-				tempTagList.add(tempTag);
-				updateTagCloud(tempTagList);
+			if (data != null) {
+				String tag_name = data.getStringExtra(EXTRA_TAG_NAME); 
+				int popularity = data.getIntExtra(EXTRA_TAG_POPULARITY, 10);
+				Tag tempTag= new Tag(tag_name, popularity, SEARCH_TEXT + tag_name );			
+				if (!tagCloudCreated) { // first time:: stop splash and create TagCloud
+					List<Tag> tempTagList= new ArrayList<Tag>();
+					tempTagList.add(tempTag);
+					stopSplashScreen();
+					createTagCloud(tempTagList);
+				} else{ // after initial creation of Tag Cloud, just update it
+					List<Tag> tempTagList = new ArrayList<Tag>(tagList);
+					tempTagList.add(tempTag);
+					updateTagCloud(tempTagList);
+				}
+				registerReceiver(mReceiver, new IntentFilter(TaginURN.ACTION_URN_READY));
+				startURNFetchService();
 			}
-			registerReceiver(mReceiver, new IntentFilter(TaginURN.ACTION_URN_READY));
-			startURNFetchService();
 			break;
 		}
 	}
