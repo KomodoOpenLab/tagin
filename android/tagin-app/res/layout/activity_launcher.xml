@@ -12,24 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
-
-        <Button
-            android:id="@+id/requestURN"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:onClick="onRequestURN"
-            android:text="Request URN"
-            android:textSize="12sp" />
-
-        <Button
-            android:id="@+id/listFingerprints"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:onClick="onListFingerprints"
-            android:text="fingerprints.list()"
-            android:textSize="12sp" />
         
         <LinearLayout
             android:layout_width="0dp"
@@ -39,21 +21,59 @@
             android:focusableInTouchMode="true" >
         </LinearLayout>
 
+        <Button
+            android:id="@+id/requestURN"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:onClick="onRequestURN"
+            android:text="Request URN"
+            android:textSize="12sp" />
+        
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:ems="18"
+            android:textIsSelectable="true"
+            android:hint="Received URN"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/listFingerprints"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:onClick="onListFingerprints"
+            android:text="fingerprints.list()"
+            android:textSize="12sp" />
+        
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:ems="18"
+            android:textIsSelectable="true"
+            android:hint="List all fingerprints"
+            android:textSize="12sp" />
+
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/editText3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:ems="18"
             android:hint="Find neighbours of URN"
             android:inputType="textFilter"
-            android:textSize="12sp" >
-        </EditText>
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/findButton"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:onClick="onFindNeighbours"
             android:text="Find neighbours"
             android:textSize="12sp" />
