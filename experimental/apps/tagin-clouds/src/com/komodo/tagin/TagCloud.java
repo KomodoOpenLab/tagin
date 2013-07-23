@@ -173,9 +173,9 @@ public class TagCloud implements Iterable<Tag> {
 		phi = Math.random() * Math.PI;
 		theta = Math.random() * (2 * Math.PI);
 		// coordinate conversion:
-		newTag.setLocX((int) (mRadius * Math.cos(theta) * Math.sin(phi)));
-		newTag.setLocY((int) (mRadius * Math.sin(theta) * Math.sin(phi)));
-		newTag.setLocZ((int) (mRadius * Math.cos(phi)));
+		newTag.setX((int) (mRadius * Math.cos(theta) * Math.sin(phi)));
+		newTag.setY((int) (mRadius * Math.sin(theta) * Math.sin(phi)));
+		newTag.setZ((int) (mRadius * Math.cos(phi)));
 	}
 	
 	private void positionAll(boolean distrEven) {
@@ -193,9 +193,9 @@ public class TagCloud implements Iterable<Tag> {
 			}
 			
 			//coordinate conversion:			
-			mTags.get(i-1).setLocX((int) ((mRadius * Math.cos(theta) * Math.sin(phi))));
-			mTags.get(i-1).setLocY((int) (mRadius * Math.sin(theta) * Math.sin(phi)));
-			mTags.get(i-1).setLocZ((int) (mRadius * Math.cos(phi)));
+			mTags.get(i-1).setX((int) ((mRadius * Math.cos(theta) * Math.sin(phi))));
+			mTags.get(i-1).setY((int) (mRadius * Math.sin(theta) * Math.sin(phi)));
+			mTags.get(i-1).setZ((int) (mRadius * Math.cos(phi)));
 		}		
 	}	
 	
@@ -205,11 +205,11 @@ public class TagCloud implements Iterable<Tag> {
 		for (int j = 0; j < max; j++) {
 			// There exists two options for this part:
 			// multiply positions by a x-rotation matrix
-			float rx1 = (mTags.get(j).getLocX());
-			float ry1 = (mTags.get(j).getLocY()) * cos_mAngleX +
-						 mTags.get(j).getLocZ() * -sin_mAngleX;
-			float rz1 = (mTags.get(j).getLocY()) * sin_mAngleX +
-						 mTags.get(j).getLocZ() * cos_mAngleX;						
+			float rx1 = (mTags.get(j).getX());
+			float ry1 = (mTags.get(j).getY()) * cos_mAngleX +
+						 mTags.get(j).getZ() * -sin_mAngleX;
+			float rz1 = (mTags.get(j).getY()) * sin_mAngleX +
+						 mTags.get(j).getZ() * cos_mAngleX;						
 			// multiply new positions by a y-rotation matrix
 			float rx2 = rx1 * cos_mAngleY + rz1 * sin_mAngleY;
 			float ry2 = ry1;
@@ -219,16 +219,16 @@ public class TagCloud implements Iterable<Tag> {
 			float ry3 = rx2 * sin_mAngleZ + ry2 * cos_mAngleZ;
 			float rz3 = rz2;
 			// set arrays to new positions
-			mTags.get(j).setLocX(rx3);
-			mTags.get(j).setLocY(ry3);
-			mTags.get(j).setLocZ(rz3);
+			mTags.get(j).setX(rx3);
+			mTags.get(j).setY(ry3);
+			mTags.get(j).setZ(rz3);
 
 			// add perspective
 			int diameter = 2 * mRadius;
 			float per = diameter / (diameter + rz3);
 			// let's set position, scale, alpha for the tag;
-			mTags.get(j).setLoc2DX((int) (rx3 * per));
-			mTags.get(j).setLoc2DY((int) (ry3 * per));
+			mTags.get(j).setX2D((int) (rx3 * per));
+			mTags.get(j).setY2D((int) (ry3 * per));
 			mTags.get(j).setScale(per);
 			mTags.get(j).setAlpha(per / 2);
 		}	

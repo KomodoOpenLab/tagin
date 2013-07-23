@@ -23,6 +23,7 @@ public class TagCloudView extends RelativeLayout {
 	
 	private final float TOUCH_SCALE_FACTOR = .8f;
 	private final float TRACKBALL_SCALE_FACTOR = 10;
+	
 	private float mScrollSpeed;
 	private float mAngleX = 0;
 	private float mAngleY = 0;
@@ -43,7 +44,7 @@ public class TagCloudView extends RelativeLayout {
 				int textSizeMin, int textSizeMax, int scrollSpeed) {
 
 		super(context);
-		this.mContext= context;
+		this.mContext = context;
 		
 		mScrollSpeed = scrollSpeed;
        
@@ -77,7 +78,7 @@ public class TagCloudView extends RelativeLayout {
 		mTextView = new ArrayList<TextView>();
 		mParams = new ArrayList<RelativeLayout.LayoutParams>();
 		// Now Draw the 3D objects: for all the tags in the TagCloud
-    	Iterator it=mTagCloud.iterator();
+    	Iterator<Tag> it = mTagCloud.iterator();
     	Tag tempTag;
     	int i=0;
     	
@@ -95,8 +96,8 @@ public class TagCloudView extends RelativeLayout {
     		mParams.get(i).addRule(RelativeLayout.ALIGN_PARENT_LEFT);
     		mParams.get(i).addRule(RelativeLayout.ALIGN_PARENT_TOP);
     		mParams.get(i).setMargins(	
-    									(int) (centerX -shiftLeft + tempTag.getLoc2DX()), 
-    									(int) (centerY + tempTag.getLoc2DY()), 
+    									(int) (centerX -shiftLeft + tempTag.getX2D()), 
+    									(int) (centerY + tempTag.getY2D()), 
     									0, 
     									0);
     		mTextView.get(i).setLayoutParams(mParams.get(i));
@@ -109,7 +110,7 @@ public class TagCloudView extends RelativeLayout {
     		mTextView.get(i).setTextColor(mergedColor);
     		mTextView.get(i).setTextSize((int)(tempTag.getTextSize() * tempTag.getScale()));
     		addView(mTextView.get(i));
-    		mTextView.get(i).setOnClickListener(OnTagClickListener(tempTag.getUrl()));
+    		mTextView.get(i).setOnClickListener(onTagClickListener(tempTag.getUrl()));
     		i++;
     	}
 	}
@@ -127,8 +128,8 @@ public class TagCloudView extends RelativeLayout {
 													LayoutParams.WRAP_CONTENT));  
 		mParams.get(i).addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 		mParams.get(i).addRule(RelativeLayout.ALIGN_PARENT_TOP);
-		mParams.get(i).setMargins((int) (centerX -shiftLeft + newTag.getLoc2DX()), 
-								  (int) (centerY + newTag.getLoc2DY()), 0, 0);
+		mParams.get(i).setMargins((int) (centerX -shiftLeft + newTag.getX2D()), 
+								  (int) (centerY + newTag.getY2D()), 0, 0);
 		mTextView.get(i).setLayoutParams(mParams.get(i));
 
 		mTextView.get(i).setSingleLine(true);
@@ -139,7 +140,7 @@ public class TagCloudView extends RelativeLayout {
 		mTextView.get(i).setTextColor(mergedColor);
 		mTextView.get(i).setTextSize((int)(newTag.getTextSize() * newTag.getScale()));
 		addView(mTextView.get(i));
-		mTextView.get(i).setOnClickListener(OnTagClickListener(newTag.getUrl()));		
+		mTextView.get(i).setOnClickListener(onTagClickListener(newTag.getUrl()));		
 	}
 	
 	public void setTagRGBT(Tag tagToBeUpdated, int popularity) {
@@ -150,13 +151,13 @@ public class TagCloudView extends RelativeLayout {
 		boolean result = false;
 		int j = mTagCloud.replace(newTag, oldTagText);
 		if (j >= 0) { //then oldTagText was found and replaced with newTag data			
-	    	Iterator it = mTagCloud.iterator();
+	    	Iterator<Tag> it = mTagCloud.iterator();
 	    	Tag tempTag;
 	    	while (it.hasNext()) {
 	    		tempTag= (Tag) it.next();              
 	    		mParams.get(tempTag.getParamNo()).setMargins(	
-	    								(int) (centerX -shiftLeft + tempTag.getLoc2DX()), 
-	    								(int) (centerY + tempTag.getLoc2DY()), 
+	    								(int) (centerX -shiftLeft + tempTag.getX2D()), 
+	    								(int) (centerY + tempTag.getY2D()), 
 	    								0, 
 	    								0);
 	    		mTextView.get(tempTag.getParamNo()).setText(tempTag.getText());
@@ -177,13 +178,13 @@ public class TagCloudView extends RelativeLayout {
 	public void reset() {
 		mTagCloud.reset();
 
-    	Iterator it = mTagCloud.iterator();
+    	Iterator<Tag> it = mTagCloud.iterator();
     	Tag tempTag;
     	while (it.hasNext()) {
     		tempTag = (Tag) it.next();              
     		mParams.get(tempTag.getParamNo()).setMargins(	
-    								(int) (centerX -shiftLeft+ tempTag.getLoc2DX()), 
-    								(int) (centerY + tempTag.getLoc2DY()), 
+    								(int) (centerX -shiftLeft+ tempTag.getX2D()), 
+    								(int) (centerY + tempTag.getY2D()), 
     								0, 
     								0);
     		mTextView.get(tempTag.getParamNo()).setTextSize((int)(tempTag.getTextSize() * tempTag.getScale()));
@@ -208,13 +209,13 @@ public class TagCloudView extends RelativeLayout {
     	mTagCloud.setAngleY(mAngleY);
     	mTagCloud.update();
     	
-    	Iterator it = mTagCloud.iterator();
+    	Iterator<Tag> it = mTagCloud.iterator();
     	Tag tempTag;
     	while (it.hasNext()) {
     		tempTag= (Tag) it.next();              
     		mParams.get(tempTag.getParamNo()).setMargins(	
-    								(int) (centerX -shiftLeft+ tempTag.getLoc2DX()), 
-    								(int) (centerY + tempTag.getLoc2DY()), 
+    								(int) (centerX -shiftLeft+ tempTag.getX2D()), 
+    								(int) (centerY + tempTag.getY2D()), 
     								0, 
     								0);
     		mTextView.get(tempTag.getParamNo()).setTextSize((int)(tempTag.getTextSize() * tempTag.getScale()));
@@ -245,13 +246,13 @@ public class TagCloudView extends RelativeLayout {
 	    	mTagCloud.setAngleY(mAngleY);
 	    	mTagCloud.update();
 	    	
-	    	Iterator it = mTagCloud.iterator();
+	    	Iterator<Tag> it = mTagCloud.iterator();
 	    	Tag tempTag;
 	    	while (it.hasNext()) {
 	    		tempTag = (Tag) it.next();              
 	    		mParams.get(tempTag.getParamNo()).setMargins(	
-						(int) (centerX -shiftLeft + tempTag.getLoc2DX()), 
-						(int) (centerY + tempTag.getLoc2DY()), 0, 0);
+						(int) (centerX -shiftLeft + tempTag.getX2D()), 
+						(int) (centerY + tempTag.getY2D()), 0, 0);
 				mTextView.get(tempTag.getParamNo()).setTextSize((int)(tempTag.getTextSize() * tempTag.getScale()));
 				int mergedColor = Color.argb((int) (tempTag.getAlpha() * 255),
 											 (int) (tempTag.getColorR() * 255),
@@ -284,8 +285,8 @@ public class TagCloudView extends RelativeLayout {
 		//current implementation is O(n^2) but since the number of tags are not that many,
 		//it is acceptable.
 		List<Tag> tempTagList = new ArrayList();
-	    Iterator itr = tagList.iterator();
-	    Iterator itrInternal;
+	    Iterator<Tag> itr = tagList.iterator();
+	    Iterator<Tag> itrInternal;
 	    Tag tempTag1, tempTag2;	    
 	    //for all elements of TagList
 	    while (itr.hasNext()) {
@@ -308,7 +309,7 @@ public class TagCloudView extends RelativeLayout {
 	
 	//for handling the click on the tags
 	//onclick open the tag url in a new window. Back button will bring you back to TagCloud
-	View.OnClickListener OnTagClickListener(final String url) {
+	private View.OnClickListener onTagClickListener(final String url) {
 		return new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

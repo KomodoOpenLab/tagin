@@ -9,146 +9,180 @@ package com.komodo.tagin;
  * Tag class:
  * For now tags are just cubes. Later they will be replaced by real texts!
  */
-public class Tag implements Comparable<Tag>{
+public class Tag implements Comparable<Tag> {
+
+	private String mText;
+	private String mURL;
+	private int mPopularity;  //this is the importance/popularity of the Tag 
+	private int mTextSize;
+	private float x, y, z; //the center of the 3D Tag
+	private float x2D, y2D;
+	private float mScale;
+	private float colorR, colorG, colorB, alpha;
+    private static final int DEFAULT_POPULARITY = 1;
+    private int paramNo; //parameter that holds the setting for this Tag
+    
 	public Tag() {
 		this("", 0f, 0f, 0f, 1.0f, 0, "");
-	}	
+	}
+	
 	public Tag(String text, int popularity) {
 		this(text, 0f, 0f, 0f, 1.0f, popularity, "");
-	}	
+	}
+	
 	public Tag(String text, int popularity, String url) {
 		this(text, 0f, 0f, 0f, 1.0f, popularity, url);
-	}	
-	public Tag(String text,float locX, float locY, float locZ) {
-		this(text, locX, locY, locZ, 1.0f, DEFAULT_POPULARITY, "");
 	}
-	public Tag(String text,float locX, float locY, float locZ, float scale) {
-		this(text, locX, locY, locZ, scale, DEFAULT_POPULARITY, "");
+	
+	public Tag(String text,float x, float y, float z) {
+		this(text, x, y, z, 1.0f, DEFAULT_POPULARITY, "");
 	}
-	public Tag(String text,float locX, float locY, float locZ, float scale, int popularity,
-			   String url) {
-		this.text = text;
-    	this.locX = locX;
-    	this.locY = locY;
-    	this.locZ = locZ;
+	
+	public Tag(String text,float x, float y, float z, float scale) {
+		this(text, x, y, z, scale, DEFAULT_POPULARITY, "");
+	}
+	
+	public Tag(String text, float x, float y, float z, float scale, int popularity, String url) {
+		this.mText = text;
+    	this.x = x;
+    	this.y = y;
+    	this.z = z;
 
-    	this.loc2DX = 0;
-    	this.loc2DY=0;
+    	this.x2D = 0;
+    	this.y2D = 0;
     	
-    	this.colorR= 0.5f;
-    	this.colorG= 0.5f;
-    	this.colorB= 0.5f;
+    	this.colorR = 0.5f;
+    	this.colorG = 0.5f;
+    	this.colorB = 0.5f;
     	this.alpha = 1.0f;
     	
-    	this.scale = scale;
-    	this.popularity= popularity;
-    	this.url = url;
+    	this.mScale = scale;
+    	this.mPopularity = popularity;
+    	this.mURL = url;
     }	
 	
 	@Override
 	public int compareTo(Tag another) {
-		return (int)(another.locZ - locZ);
+		return (int)(another.z - z);
 	}
 	
-    public float getLocX() {
-		return locX;
+    public float getX() {
+		return x;
 	}
-	public void setLocX(float locX) {
-		this.locX = locX;
+    
+	public void setX(float x) {
+		this.x = x;
 	}
-	public float getLocY() {
-		return locY;
+	
+	public float getY() {
+		return y;
 	}
-	public void setLocY(float locY) {
-		this.locY = locY;
+	
+	public void setY(float y) {
+		this.y = y;
 	}
-	public float getLocZ() {
-		return locZ;
+	
+	public float getZ() {
+		return z;
 	}
-	public void setLocZ(float locZ) {
-		this.locZ = locZ;
+	
+	public void setZ(float z) {
+		this.z = z;
 	}
+	
 	public float getScale() {
-		return scale;
+		return mScale;
 	}
+	
 	public void setScale(float scale) {
-		this.scale = scale;
+		this.mScale = scale;
 	}
+	
 	public String getText() {
-		return text;
+		return mText;
 	}
+	
 	public void setText(String text) {
-		this.text = text;
+		this.mText = text;
 	}
+	
 	public float getColorR() {
 		return colorR;
 	}
+	
 	public void setColorR(float colorR) {
 		this.colorR = colorR;
 	}
+	
 	public float getColorG() {
 		return colorG;
 	}
+	
 	public void setColorG(float colorG) {
 		this.colorG = colorG;
 	}
+	
 	public float getColorB() {
 		return colorB;
 	}
+	
 	public void setColorB(float colorB) {
 		this.colorB = colorB;
 	}
+	
 	public float getAlpha() {
 		return alpha;
 	}
+	
 	public void setAlpha(float alpha) {
 		this.alpha = alpha;
 	}
+	
 	public int getPopularity() {
-		return popularity;
+		return mPopularity;
 	}
+	
 	public void setPopularity(int popularity) {
-		this.popularity = popularity;
+		this.mPopularity = popularity;
 	}
 	
 	public int getTextSize() {
-		return textSize;
+		return mTextSize;
 	}
+	
 	public void setTextSize(int textSize) {
-		this.textSize = textSize;
+		this.mTextSize = textSize;
 	}
-	public float getLoc2DX() {
-		return loc2DX;
+	
+	public float getX2D() {
+		return x2D;
 	}
-	public void setLoc2DX(float loc2dx) {
-		loc2DX = loc2dx;
+	
+	public void setX2D(float x2D) {
+		this.x2D = x2D;
 	}
-	public float getLoc2DY() {
-		return loc2DY;
+	
+	public float getY2D() {
+		return y2D;
 	}
-	public void setLoc2DY(float loc2dy) {
-		loc2DY = loc2dy;
+	
+	public void setY2D(float y2D) {
+		this.y2D = y2D;
 	}
+	
 	public int getParamNo() {
 		return paramNo;
 	}
+	
 	public void setParamNo(int paramNo) {
 		this.paramNo = paramNo;
 	}
+	
 	public String getUrl() {
-		return url;
+		return mURL;
 	}
+	
 	public void setUrl(String url) {
-		this.url = url;
+		this.mURL = url;
 	}
-
-	private String text, url;
-	private int popularity;  //this is the importance/popularity of the Tag 
-	private int textSize;
-	private float locX, locY, locZ; //the center of the 3D Tag
-	private float loc2DX, loc2DY;
-	private float scale;
-	private float colorR, colorG, colorB, alpha;
-    private static final int DEFAULT_POPULARITY = 1;
-    private int paramNo; //parameter that holds the setting for this Tag
 }
