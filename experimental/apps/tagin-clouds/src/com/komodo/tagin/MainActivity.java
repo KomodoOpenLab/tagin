@@ -38,6 +38,15 @@ public class MainActivity extends Activity {
 	public static final String EXTRA_URN = "Uniform Resource Name";
 	public static final String EXTRA_TAG_NAME = "tag_name";
 	public static final String EXTRA_TAG_POPULARITY = "popularity";
+	
+	private TagsDatabase tDb;
+	private TagCloudView mTagCloudView;
+	private String SEARCH_TEXT="http://www.google.com/m?hl=en&q=";
+	private List<Tag> tagList;
+	
+	private int width, height;
+	private boolean tagCloudCreated;
+	private static final int TAG_ADDED = 1;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -300,13 +309,4 @@ public class MainActivity extends Activity {
 		c1.close();
 		return tempList;
 	}
-	
-	
-	private boolean tagCloudCreated;
-	private int width, height;
-	private List<Tag> tagList;
-	private static final int TAG_ADDED = 1;
-	private TagsDatabase tDb;
-	private TagCloudView mTagCloudView;
-	private String SEARCH_TEXT="http://www.google.com/m?hl=en&q=";
 }

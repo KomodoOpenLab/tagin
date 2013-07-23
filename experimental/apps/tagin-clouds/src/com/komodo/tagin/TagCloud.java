@@ -11,16 +11,19 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import android.graphics.Color;
+
 public class TagCloud implements Iterable<Tag> {
 
-	private List<Tag> mTags;
-	private int mRadius;
 	private static final int DEFAULT_RADIUS = 3;
 	private static final int TEXT_SIZE_MAX = 30 , TEXT_SIZE_MIN = 4;
-	private static final float[] DEFAULT_COLOR1 = {0.886f, 0.725f, 0.188f, 1f};
-	private static final float[] DEFAULT_COLOR2 = {0.3f, 0.3f,  0.3f, 1f};
-	private float[] tagColor1;
-	private float[] tagColor2;
+	private static final int DEFAULT_COLOR1 = Color.argb(1, 226, 185, 48);
+	private static final int DEFAULT_COLOR2 = Color.argb(1, 76, 76,  76);
+	
+	private List<Tag> mTags;
+	private int mRadius;
+	private int tagColor1;
+	private int tagColor2;
 	private int textSizeMax, textSizeMin;
 	private float sin_mAngleX, cos_mAngleX, sin_mAngleY, cos_mAngleY, sin_mAngleZ, cos_mAngleZ;
 	private float mAngleZ = 0;
@@ -47,7 +50,7 @@ public class TagCloud implements Iterable<Tag> {
 		this(tags, radius, DEFAULT_COLOR1, DEFAULT_COLOR2, textSizeMin, textSizeMax);
 	}
 
-	public TagCloud(List<Tag> tags, int radius, float[] tagColor1, float[] tagColor2, 
+	public TagCloud(List<Tag> tags, int radius, int tagColor1, int tagColor2, 
 						int textSizeMin, int textSizeMax) {
 		this.mTags = tags;    // Java does the initialization and deep copying
 		this.mRadius = radius;
@@ -79,11 +82,8 @@ public class TagCloud implements Iterable<Tag> {
 			tempTag = mTags.get(i);
 			int j = tempTag.getPopularity();
 			float percentage = (smallest == largest) ? 1.0f : ((float)j-smallest) / ((float)largest-smallest);
-			float[] tempColor = getColorFromGradient(percentage); //(rgb Alpha)
 			int tempTextSize = getTextSizeGradient(percentage);
-			tempTag.setColorR(tempColor[0]);
-			tempTag.setColorG(tempColor[1]);
-			tempTag.setColorB(tempColor[2]);
+			tempTag.setColor(getColorFromGradient(percentage));
 			tempTag.setTextSize(tempTextSize);
 		}
 		
@@ -107,17 +107,14 @@ public class TagCloud implements Iterable<Tag> {
 	public void add(Tag newTag) {	
 		int j = newTag.getPopularity();
 		float percentage = (smallest == largest) ? 1.0f : ((float) j - smallest) / ((float) largest - smallest);
-		float[] tempColor = getColorFromGradient(percentage); //(rgb Alpha)
 		int tempTextSize = getTextSizeGradient(percentage);
-		newTag.setColorR(tempColor[0]);
-		newTag.setColorG(tempColor[1]);
-		newTag.setColorB(tempColor[2]);
+		newTag.setColor(getColorFromGradient(percentage));
 		newTag.setTextSize(tempTextSize);
 		position(distributeEvenly, newTag);
 		// now add the new tag to the tagCloud
 		mTags.add(newTag);
 		this.mSize = mTags.size();				
-		updateAll();		
+		updateAll();
 	}
 	
 	// to replace an existing tag with a new one
@@ -133,11 +130,8 @@ public class TagCloud implements Iterable<Tag> {
 				mTags.get(i).setUrl(newTag.getUrl());
 				int j = newTag.getPopularity();
 				float percentage =  (smallest == largest) ? 1.0f : ((float) j - smallest) / ((float) largest - smallest);
-				float[] tempColor = getColorFromGradient(percentage); //(rgb Alpha)
 				int tempTextSize = getTextSizeGradient(percentage);
-				mTags.get(i).setColorR(tempColor[0]);
-				mTags.get(i).setColorG(tempColor[1]);
-				mTags.get(i).setColorB(tempColor[2]);
+				mTags.get(i).setColor(getColorFromGradient(percentage));
 				mTags.get(i).setTextSize(tempTextSize);
 				newTag = mTags.get(i);
 				break;
@@ -151,11 +145,8 @@ public class TagCloud implements Iterable<Tag> {
 		float percentage = (smallest == largest) ? 
 								1.0f :
 								((float)popularity-smallest) / ((float)largest-smallest);
-		float[] tempColor = getColorFromGradient(percentage); //(rgb Alpha)
 		int tempTextSize = getTextSizeGradient(percentage);
-		tagToBeUpdated.setColorR(tempColor[0]);
-		tagToBeUpdated.setColorG(tempColor[1]);
-		tagToBeUpdated.setColorB(tempColor[2]);
+		tagToBeUpdated.setColor(getColorFromGradient(percentage));
 		tagToBeUpdated.setTextSize(tempTextSize);		
 	}
 	
@@ -230,7 +221,13 @@ public class TagCloud implements Iterable<Tag> {
 			mTags.get(j).setX2D((int) (rx3 * per));
 			mTags.get(j).setY2D((int) (ry3 * per));
 			mTags.get(j).setScale(per);
-			mTags.get(j).setAlpha(per / 2);
+			
+			int color = mTags.get(j).getColor();
+			int a = (int) ((per/2) * 255);
+			int r = Color.red(color);
+			int g = Color.green(color);
+			int b = Color.blue(color);
+			mTags.get(j).setColor(Color.argb(a, r, g, b));
 		}	
 		depthSort();
 	}	
@@ -241,13 +238,11 @@ public class TagCloud implements Iterable<Tag> {
 		Collections.sort(mTags);		
 	}
 	
-	private float[] getColorFromGradient(float perc) {
-		float[] tempRGB = new float[4];
-		tempRGB[0] = (perc * tagColor1[0]) + ((1-perc) * tagColor2[0]);
-		tempRGB[1] = (perc * tagColor1[1]) + ((1-perc) * tagColor2[1]);
-		tempRGB[2] = (perc * tagColor1[2]) + ((1-perc) * tagColor2[2]);
-		tempRGB[3] = 1;
- 		return tempRGB;
+	private int getColorFromGradient(float perc) {
+		int r = (int) ((perc * Color.red(tagColor1)) + ((1-perc) * Color.red(tagColor2)));
+		int g = (int) ((perc * Color.green(tagColor1)) + ((1-perc) * Color.green(tagColor2)));
+		int b = (int) ((perc * Color.blue(tagColor1)) + ((1-perc) * Color.blue(tagColor2)));
+ 		return Color.rgb(r, g, b);
 	}
 	
 	private int getTextSizeGradient(float perc) {
@@ -272,19 +267,19 @@ public class TagCloud implements Iterable<Tag> {
 		this.mRadius = radius;
 	}
 	
-	public float[] getTagColor1() {
+	public int getTagColor1() {
 		return tagColor1;
 	}
 	
-	public void setTagColor1(float[] tagColor) {
+	public void setTagColor1(int tagColor) {
 		this.tagColor1 = tagColor;
 	}
 	
-	public float[] getTagColor2() {
+	public int getTagColor2() {
 		return tagColor2;
 	}
 	
-	public void setTagColor2(float[] tagColor2) {
+	public void setTagColor2(int tagColor2) {
 		this.tagColor2 = tagColor2;
 	}
 	

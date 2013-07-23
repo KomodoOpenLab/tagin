@@ -1,4 +1,7 @@
 package com.komodo.tagin;
+
+import android.graphics.Color;
+
 /**
  * Komodo Lab: Tagin! Project: 3D Tag Cloud
  * Google Summer of Code 2011
@@ -11,6 +14,8 @@ package com.komodo.tagin;
  */
 public class Tag implements Comparable<Tag> {
 
+	private static final int DEFAULT_POPULARITY = 1;
+	
 	private String mText;
 	private String mURL;
 	private int mPopularity;  //this is the importance/popularity of the Tag 
@@ -18,8 +23,7 @@ public class Tag implements Comparable<Tag> {
 	private float x, y, z; //the center of the 3D Tag
 	private float x2D, y2D;
 	private float mScale;
-	private float colorR, colorG, colorB, alpha;
-    private static final int DEFAULT_POPULARITY = 1;
+	private int mColor;
     private int paramNo; //parameter that holds the setting for this Tag
     
 	public Tag() {
@@ -34,11 +38,11 @@ public class Tag implements Comparable<Tag> {
 		this(text, 0f, 0f, 0f, 1.0f, popularity, url);
 	}
 	
-	public Tag(String text,float x, float y, float z) {
+	public Tag(String text, float x, float y, float z) {
 		this(text, x, y, z, 1.0f, DEFAULT_POPULARITY, "");
 	}
 	
-	public Tag(String text,float x, float y, float z, float scale) {
+	public Tag(String text, float x, float y, float z, float scale) {
 		this(text, x, y, z, scale, DEFAULT_POPULARITY, "");
 	}
 	
@@ -51,10 +55,7 @@ public class Tag implements Comparable<Tag> {
     	this.x2D = 0;
     	this.y2D = 0;
     	
-    	this.colorR = 0.5f;
-    	this.colorG = 0.5f;
-    	this.colorB = 0.5f;
-    	this.alpha = 1.0f;
+    	mColor = Color.argb(255, 128, 128, 128);
     	
     	this.mScale = scale;
     	this.mPopularity = popularity;
@@ -106,36 +107,12 @@ public class Tag implements Comparable<Tag> {
 		this.mText = text;
 	}
 	
-	public float getColorR() {
-		return colorR;
+	public int getColor() {
+		return mColor;
 	}
 	
-	public void setColorR(float colorR) {
-		this.colorR = colorR;
-	}
-	
-	public float getColorG() {
-		return colorG;
-	}
-	
-	public void setColorG(float colorG) {
-		this.colorG = colorG;
-	}
-	
-	public float getColorB() {
-		return colorB;
-	}
-	
-	public void setColorB(float colorB) {
-		this.colorB = colorB;
-	}
-	
-	public float getAlpha() {
-		return alpha;
-	}
-	
-	public void setAlpha(float alpha) {
-		this.alpha = alpha;
+	public void setColor(int color) {
+		mColor = color;
 	}
 	
 	public int getPopularity() {
