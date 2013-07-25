@@ -13,7 +13,7 @@ import java.util.List;
 
 import android.graphics.Color;
 
-public class TagCloud implements Iterable<Tag> {
+public class TagCloud {
 
 	private static final int DEFAULT_RADIUS = 3;
 	private static final int TEXT_SIZE_MIN = 4 , TEXT_SIZE_MAX = 30;
@@ -140,11 +140,6 @@ public class TagCloud implements Iterable<Tag> {
 		tagToBeUpdated.setColor(getColorFromGradient(percentage));
 		tagToBeUpdated.setTextSize(tempTextSize);		
 	}
-	
-	@Override
-	public Iterator<Tag> iterator() {
-		return mTags.iterator();
-	}	
 
 	private void position(Tag newTag) {
 		double phi = 0;
@@ -283,5 +278,9 @@ public class TagCloud implements Iterable<Tag> {
 	
 	public void setAngleY(float angleY) {
 		this.mAngleY = angleY;
+	}
+	
+	public List<Tag> getTags() {
+		return mTags;
 	}
 }
