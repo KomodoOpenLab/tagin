@@ -58,15 +58,13 @@ public class TagCloudView extends RelativeLayout {
 		
 		// initialize the TagCloud from a list of tags
 		//Filter() func. screens tagList and ignores Tags with same text (Case Insensitive)
-		mTagCloud = new TagCloud(filter(tagList), (int) mRadius, 
-									textSizeMin, 
-									textSizeMax);
+		mTagCloud = new TagCloud(filter(tagList), (int) mRadius, textSizeMin, textSizeMax);
 		int tempColor1 = Color.argb(1, 240, 196, 51);
 		int tempColor2 = Color.argb(1, 255, 0, 0);
 		mTagCloud.setTagColor1(tempColor1); // higher color
 		mTagCloud.setTagColor2(tempColor2); // lower color
 		mTagCloud.setRadius((int) mRadius);
-		mTagCloud.create(true); // to put each Tag at its correct initial location
+		mTagCloud.create(); // to put each Tag at its correct initial location
 
 
     	// Update the transparency/scale of tags
@@ -155,22 +153,6 @@ public class TagCloudView extends RelativeLayout {
 			result = true;
 		} 
 		return result;
-	}
-
-	public void reset() {
-		mTagCloud.reset();
-
-    	Iterator<Tag> it = mTagCloud.iterator();
-    	Tag tempTag;
-    	while (it.hasNext()) {
-    		tempTag = (Tag) it.next();
-    		mParams.get(tempTag.getParamNo()).setMargins(	
-    								(int) (mCenterX -mShiftLeft+ tempTag.getX2D()), 
-    								(int) (mCenterY + tempTag.getY2D()), 0, 0);
-    		mTextView.get(tempTag.getParamNo()).setTextSize((int)(tempTag.getTextSize() * tempTag.getScale()));
-    		mTextView.get(tempTag.getParamNo()).setTextColor(tempTag.getColor());
-    		mTextView.get(tempTag.getParamNo()).bringToFront();
-    	}
 	}
 	
 	@Override
@@ -286,4 +268,20 @@ public class TagCloudView extends RelativeLayout {
 			}
 		};
 	}
+
+	/*public void reset() {
+		mTagCloud.reset();
+
+    	Iterator<Tag> it = mTagCloud.iterator();
+    	Tag tempTag;
+    	while (it.hasNext()) {
+    		tempTag = (Tag) it.next();
+    		mParams.get(tempTag.getParamNo()).setMargins(	
+    								(int) (mCenterX -mShiftLeft+ tempTag.getX2D()), 
+    								(int) (mCenterY + tempTag.getY2D()), 0, 0);
+    		mTextView.get(tempTag.getParamNo()).setTextSize((int)(tempTag.getTextSize() * tempTag.getScale()));
+    		mTextView.get(tempTag.getParamNo()).setTextColor(tempTag.getColor());
+    		mTextView.get(tempTag.getParamNo()).bringToFront();
+    	}
+	}*/
 }

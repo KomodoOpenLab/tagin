@@ -34,15 +34,15 @@ import ca.idi.taginsdk.TaginURN;
  */
 public class MainActivity extends Activity {
 	
-	public static String URN;
 	public static final String EXTRA_URN = "Uniform Resource Name";
 	public static final String EXTRA_TAG_NAME = "tag_name";
 	public static final String EXTRA_TAG_POPULARITY = "popularity";
+	private String SEARCH_TEXT = "http://www.google.com/m?hl=en&q=";
+	public static String URN;
 	
-	private TagsDatabase tDb;
-	private TagCloudView mTagCloudView;
-	private String SEARCH_TEXT="http://www.google.com/m?hl=en&q=";
 	private List<Tag> tagList;
+	private TagsDatabase db;
+	private TagCloudView mTagCloudView;
 	
 	private int width, height;
 	private boolean tagCloudCreated;
@@ -51,8 +51,8 @@ public class MainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		tDb = new TagsDatabase(this);
-		tDb.open();
+		db = new TagsDatabase(this);
+		db.open();
 
 		// Step1: register the receiver to get changes in your location using
 		// URN and start it:
@@ -89,7 +89,7 @@ public class MainActivity extends Activity {
 	private void createTagCloud(List<Tag> tempTagList) {
 		// create a TagCloudview and set it as the content of this Activity
 		tagList = tempTagList;
-		if (tempTagList == null || tempTagList.isEmpty()){
+		if (tempTagList == null || tempTagList.isEmpty()) {
 			Toast.makeText(this, "No Recorded Tag Exists.",
 					Toast.LENGTH_LONG).show();
 			Intent intent = new Intent(this, TagAdder.class);
@@ -97,36 +97,33 @@ public class MainActivity extends Activity {
 			startActivityForResult(intent, TAG_ADDED);
 			return;
 		}
-		mTagCloudView = new TagCloudView(this, width, height, tagList); // passing
-																		// current
-																		// context
+		
+		mTagCloudView = new TagCloudView(this, width, height, tagList);
 		setContentView(mTagCloudView);
 		mTagCloudView.requestFocus();
 		mTagCloudView.setFocusableInTouchMode(true);
 		tagCloudCreated = true;
 	}
 
-	private void updateTagCloud(List<Tag> tempTagList){
+	private void updateTagCloud(List<Tag> tempTagList) {
 		if (tempTagList == null)
 			return;
-		List<Tag> tagListMinusTempTagList,tempTagListMinusTagList;
-		tagListMinusTempTagList = listAMinuslistB(tagList, tempTagList);
-		tempTagListMinusTagList = listAMinuslistB(tempTagList, tagList);
-		int noOfPossibleUpdate, noOfNeededUpdate;
-		noOfPossibleUpdate = tagListMinusTempTagList.size();
-		noOfNeededUpdate = tempTagListMinusTagList.size();
+		List<Tag> tagListMinusTempTagList = listAMinuslistB(tagList, tempTagList);
+		List<Tag> tempTagListMinusTagList = listAMinuslistB(tempTagList, tagList);
+		int noOfPossibleUpdate = tagListMinusTempTagList.size();
+		int noOfNeededUpdate = tempTagListMinusTagList.size();
 		if (noOfNeededUpdate == 0)
 			return;
-		if (noOfNeededUpdate>noOfPossibleUpdate) { //we also need to add some new Tags
+		if (noOfNeededUpdate > noOfPossibleUpdate) { //we also need to add some new Tags
 			//do all the possible updates
-			for (int i = 0; i < noOfPossibleUpdate; i++){
+			for (int i = 0; i < noOfPossibleUpdate; i++) {
 				mTagCloudView.replace(tempTagListMinusTagList.get(i),
 										tagListMinusTempTagList.get(i).getText());
 				//update the RGB value and scaled textSize of the tag
 				mTagCloudView.setTagRGBT(tempTagListMinusTagList.get(i), 
 										 tempTagListMinusTagList.get(i).getPopularity());
 				//update the tagList to reflect new tag
-				Replace(tempTagListMinusTagList.get(i),
+				replace(tempTagListMinusTagList.get(i),
 						tagListMinusTempTagList.get(i).getText());
 			}
 			//add the remaining as new tags
@@ -143,21 +140,22 @@ public class MainActivity extends Activity {
 				mTagCloudView.setTagRGBT(tempTagListMinusTagList.get(i), 
 										 tempTagListMinusTagList.get(i).getPopularity());
 				//update the tagList to reflect new tag
-				Replace(tempTagListMinusTagList.get(i),
+				replace(tempTagListMinusTagList.get(i),
 						tagListMinusTempTagList.get(i).getText());
 			}
 		}
 		Toast.makeText(this, "Updated", Toast.LENGTH_SHORT).show();
 	}
 
-	public void Replace(Tag newTag, String oldTagText){
-		for (int i=0; i< tagList.size(); i++)
+	public void replace(Tag newTag, String oldTagText) {
+		for (int i = 0; i < tagList.size(); i++) {
 			if (oldTagText.equalsIgnoreCase(tagList.get(i).getText())) {
 				tagList.get(i).setPopularity(newTag.getPopularity());
 				tagList.get(i).setText(newTag.getText());
 				tagList.get(i).setUrl(newTag.getUrl());
 				break;
 			}
+		}
 	}
 
 	private List<Tag> listAMinuslistB(List<Tag> listA, List<Tag> listB) {
@@ -286,7 +284,7 @@ public class MainActivity extends Activity {
 	private List<Tag> fetchTags(String urn) {
 		//in order to make the Tag URL point to Google search for that		
 		Cursor c1, c2;
-		c1 = tDb.fetchTagId(urn);
+		c1 = db.fetchTagId(urn);
 		if (c1 == null) {
 			Log.d(Helper.TAG, "No TAGS present");
 			return null;
@@ -297,7 +295,7 @@ public class MainActivity extends Activity {
 		List<Tag> tempList = new ArrayList<Tag>();
 		do {
 			tag_id = c1.getLong(c1.getColumnIndexOrThrow(TagsDatabase.TAG_ID));
-			c2 = tDb.fetchTagDetails(tag_id);
+			c2 = db.fetchTagDetails(tag_id);
 			if(c2!=null){
 				tag_name = c2.getString(c2.getColumnIndexOrThrow(TagsDatabase.TAG_NAME));
 				popularity = c2.getInt(c2.getColumnIndexOrThrow(TagsDatabase.POPULARITY));

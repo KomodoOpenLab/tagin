@@ -44,7 +44,7 @@ public class TagAdder extends Activity {
 	
 		mSubmit = (Button)findViewById(R.id.submit);
 		
-		mSubmit.setOnClickListener(new View.OnClickListener(){
+		mSubmit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				tag_name = mTagName.getText().toString();
@@ -58,7 +58,7 @@ public class TagAdder extends Activity {
 		});
 	}
 	
-	private void addTag(){
+	private void addTag() {
 		db.addTag(tagId, urn);
 		Intent intent = new Intent();
 		intent.putExtra(MainActivity.EXTRA_TAG_NAME, tag_name);
