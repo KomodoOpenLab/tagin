@@ -1,6 +1,7 @@
 package com.komodo.tagin;
 
 import android.graphics.Color;
+import android.widget.TextView;
 
 /**
  * Komodo Lab: Tagin! Project: 3D Tag Cloud
@@ -24,7 +25,8 @@ public class Tag implements Comparable<Tag> {
 	private float x2D, y2D;
 	private float mScale;
 	private int mColor;
-    private int paramNo; //parameter that holds the setting for this Tag
+    
+    private TextView mTextView;
     
 	public Tag() {
 		this("", 0f, 0f, 0f, 1.0f, 0, "");
@@ -57,9 +59,9 @@ public class Tag implements Comparable<Tag> {
     	
     	mColor = Color.argb(255, 128, 128, 128);
     	
-    	this.mScale = scale;
-    	this.mPopularity = popularity;
-    	this.mURL = url;
+    	mScale = scale;
+    	mPopularity = popularity;
+    	mURL = url;
     }	
 	
 	@Override
@@ -147,12 +149,12 @@ public class Tag implements Comparable<Tag> {
 		this.y2D = y2D;
 	}
 	
-	public int getParamNo() {
-		return paramNo;
+	public TextView getTextView() {
+		return mTextView;
 	}
 	
-	public void setParamNo(int paramNo) {
-		this.paramNo = paramNo;
+	public void setTextView(TextView textView) {
+		mTextView = textView;
 	}
 	
 	public String getUrl() {
