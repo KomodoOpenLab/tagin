@@ -33,8 +33,6 @@ public class TagCloudView extends RelativeLayout {
 	
 	private Context mContext;
 	private TagCloud mTagCloud;
-	/*private List<TextView> mTextViews;
-	private List<RelativeLayout.LayoutParams> mParams;*/
 	
 	public TagCloudView(Context context, int width, int height, List<Tag> tagList) {
 		this(context, width, height, tagList, 6 , 34, 1); //default for min/max text size
@@ -72,31 +70,13 @@ public class TagCloudView extends RelativeLayout {
     	mTagCloud.setAngleY(mAngleY);
     	mTagCloud.update();
 		
-		// Now Draw the 3D objects: for all the tags in the TagCloud
+		// Now Draw the 3D objects
     	for (Tag tag : mTagCloud.getTags()) {
-
-    		TextView textView = new TextView(mContext);
-    		tag.setTextView(textView);
-    		textView.setText(tag.getText());
-    		
-    		RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(
-    													LayoutParams.WRAP_CONTENT,  
-    													LayoutParams.WRAP_CONTENT); 
-    		param.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-    		param.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-    		param.setMargins((int) (mCenterX - mShiftLeft + tag.getX2D()), 
-    						 (int) (mCenterY + tag.getY2D()), 0, 0);
-    		
-    		tag.getTextView().setLayoutParams(param);
-    		tag.getTextView().setSingleLine(true);
-    		tag.getTextView().setTextColor(tag.getColor());
-    		tag.getTextView().setTextSize((int)(tag.getTextSize() * tag.getScale()));
-    		addView(tag.getTextView());
-    		tag.getTextView().setOnClickListener(onTagClickListener(tag.getUrl()));
+    		initializeTag(tag);
     	}
 	}
 	
-	public void addTag(Tag tag) {
+	public void initializeTag(Tag tag) {
 		TextView textView = new TextView(mContext);
 		tag.setTextView(textView);
 		textView.setText(tag.getText());
@@ -115,6 +95,10 @@ public class TagCloudView extends RelativeLayout {
 		tag.getTextView().setTextSize((int)(tag.getTextSize() * tag.getScale()));
 		addView(tag.getTextView());
 		tag.getTextView().setOnClickListener(onTagClickListener(tag.getUrl()));	
+	}
+	
+	public void addTag(Tag tag) {
+		initializeTag(tag);
 		mTagCloud.add(tag);	
 	}
 	
