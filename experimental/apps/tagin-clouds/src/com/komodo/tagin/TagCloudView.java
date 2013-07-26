@@ -76,7 +76,7 @@ public class TagCloudView extends RelativeLayout {
     	}
 	}
 	
-	public void initializeTag(Tag tag) {
+	private void initializeTag(Tag tag) {
 		TextView textView = new TextView(mContext);
 		tag.setTextView(textView);
 		textView.setText(tag.getText());
@@ -97,6 +97,17 @@ public class TagCloudView extends RelativeLayout {
 		tag.getTextView().setOnClickListener(onTagClickListener(tag.getUrl()));	
 	}
 	
+	private void updateView(Tag tag) {
+		TextView view = tag.getTextView();
+		((RelativeLayout.LayoutParams) view.getLayoutParams())
+			.setMargins((int) (mCenterX - mShiftLeft + tag.getX2D()),
+						(int) (mCenterY + tag.getY2D()), 0, 0);
+		view.setTextSize((int) (tag.getTextSize() * tag.getScale()));
+		view.setTextColor(tag.getColor());
+		view.bringToFront();
+		
+	}
+	
 	public void addTag(Tag tag) {
 		initializeTag(tag);
 		mTagCloud.add(tag);	
@@ -111,14 +122,8 @@ public class TagCloudView extends RelativeLayout {
 		int j = mTagCloud.replace(newTag, oldTagText);
 		if (j >= 0) { //then oldTagText was found and replaced with newTag data			
 	    	for (Tag tag : mTagCloud.getTags()) {
-	    		TextView view = tag.getTextView();
-	    		((RelativeLayout.LayoutParams) view.getLayoutParams())
-	    			.setMargins((int) (mCenterX - mShiftLeft + tag.getX2D()),
-	    						(int) (mCenterY + tag.getY2D()), 0, 0);
-	    		view.setText(tag.getText());
-	    		view.setTextSize((int) (tag.getTextSize() * tag.getScale()));
-	    		view.setTextColor(tag.getColor());
-	    		view.bringToFront();
+	    		updateView(tag);
+	    		tag.getTextView().setText(tag.getText());
 	    	}
 			result = true;
 		} 
@@ -138,13 +143,7 @@ public class TagCloudView extends RelativeLayout {
     	mTagCloud.update();
     	
     	for (Tag tag : mTagCloud.getTags()) {
-    		TextView view = tag.getTextView();
-    		((RelativeLayout.LayoutParams) view.getLayoutParams())
-    			.setMargins((int) (mCenterX - mShiftLeft + tag.getX2D()),
-    						(int) (mCenterY + tag.getY2D()), 0, 0);
-    		view.setTextSize((int)(tag.getTextSize() * tag.getScale()));
-    		view.setTextColor(tag.getColor());
-    		view.bringToFront();
+    		updateView(tag);
     	}
 		return true;
 	}
@@ -167,13 +166,7 @@ public class TagCloudView extends RelativeLayout {
 	    	mTagCloud.update();
 	    	
 	    	for (Tag tag : mTagCloud.getTags()) {
-	    		TextView view = tag.getTextView();
-	    		((RelativeLayout.LayoutParams) view.getLayoutParams())
-	    			.setMargins((int) (mCenterX -mShiftLeft + tag.getX2D()),
-	    						(int) (mCenterY + tag.getY2D()), 0, 0);
-	    		view.setTextSize((int)(tag.getTextSize() * tag.getScale()));
-	    		view.setTextColor(tag.getColor());
-	    		view.bringToFront();
+	    		updateView(tag);
 	    	}
 			
 			break;
@@ -234,20 +227,4 @@ public class TagCloudView extends RelativeLayout {
 			}
 		};
 	}
-
-	/*public void reset() {
-		mTagCloud.reset();
-
-    	Iterator<Tag> it = mTagCloud.iterator();
-    	Tag tempTag;
-    	while (it.hasNext()) {
-    		tempTag = (Tag) it.next();
-    		mParams.get(tempTag.getParamNo()).setMargins(	
-    								(int) (mCenterX -mShiftLeft+ tempTag.getX2D()), 
-    								(int) (mCenterY + tempTag.getY2D()), 0, 0);
-    		mTextView.get(tempTag.getParamNo()).setTextSize((int)(tempTag.getTextSize() * tempTag.getScale()));
-    		mTextView.get(tempTag.getParamNo()).setTextColor(tempTag.getColor());
-    		mTextView.get(tempTag.getParamNo()).bringToFront();
-    	}
-	}*/
 }
