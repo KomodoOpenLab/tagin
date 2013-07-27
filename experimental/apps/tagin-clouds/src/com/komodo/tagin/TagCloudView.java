@@ -155,7 +155,7 @@ public class TagCloudView extends RelativeLayout {
 		
 		switch (e.getAction()) {
 		case MotionEvent.ACTION_MOVE:	
-			//rotate elements depending on how far the selection point is from center of cloud
+			// Rotate elements depending on how far the selection point is from center of cloud
 			float dx = x - mCenterX;
 			float dy = y - mCenterY;
 			mAngleX = ( dy / mRadius) * mScrollSpeed * TOUCH_SCALE_FACTOR;

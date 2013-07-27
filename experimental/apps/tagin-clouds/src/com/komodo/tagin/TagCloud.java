@@ -131,7 +131,7 @@ public class TagCloud {
 		return index;
 	}
 
-	// for a given tag, sets teh value of RGB and text size based on other existing tags
+	// for a given tag, sets the value of RGB and text size based on other existing tags
 	public void setTagRGBT(Tag tagToBeUpdated, int popularity) {
 		float percentage = (smallest == largest) ? 
 								1.0f :
