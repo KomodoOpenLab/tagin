@@ -8,7 +8,6 @@ package com.komodo.tagin;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import android.graphics.Color;
