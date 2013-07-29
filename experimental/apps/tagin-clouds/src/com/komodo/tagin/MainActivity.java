@@ -41,7 +41,6 @@ public class MainActivity extends Activity {
 	public static String URN;
 	
 	private List<Tag> mTags;
-	private TagsDatabase db;
 	private TagCloudView mTagCloudView;
 	
 	private int width, height;
@@ -50,14 +49,6 @@ public class MainActivity extends Activity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		db = new TagsDatabase(this);
-		db.open();
-
-		// Step1: register the receiver to get changes in your location using
-		// URN and start it:
-		registerReceiver(mReceiver, new IntentFilter(TaginURN.ACTION_URN_READY));
-		startURNFetchService(); // start the engine
 
 		// Step2: to get a full-screen View:
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -197,17 +188,15 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
-	// Executed whenever a new tag is added to the DB
+	// Executed whenever a new tag is created
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
-		case TAG_ADDED: // this is the case when user has just added a new Tag to DB
-			//Getting the tag name and popularity
+		case TAG_ADDED:
 			if (data != null) {
 				String tagName = data.getStringExtra(EXTRA_TAG_NAME); 
-				int popularity = data.getIntExtra(EXTRA_TAG_POPULARITY, 10);
-				Tag tempTag = new Tag(tagName, popularity, SEARCH_TEXT + tagName );			
+				String popularity = data.getStringExtra(EXTRA_TAG_POPULARITY);
+				Tag tempTag = new Tag(tagName, Integer.parseInt(popularity), SEARCH_TEXT + tagName );			
 				List<Tag> tempTagList = new ArrayList<Tag>();
 				if (!tagCloudCreated) { // first time: stop splash and create TagCloud
 					stopSplashScreen();
@@ -219,8 +208,10 @@ public class MainActivity extends Activity {
 					updateTagCloud(tempTagList);
 				}
 				registerReceiver(mReceiver, new IntentFilter(TaginURN.ACTION_URN_READY));
-				startURNFetchService();
 			}
+			break;
+		default:
+			super.onActivityResult(requestCode, resultCode, data);
 			break;
 		}
 	}
@@ -249,16 +240,6 @@ public class MainActivity extends Activity {
 		stopService(new Intent(Fingerprinter.INTENT_STOP_SERVICE));
 	}
 
-	/**
-	 * Call this function to start the 3D Cloud Walk => this will start the
-	 * engine
-	 */
-	private void startURNFetchService() {
-		Intent intent = new Intent(TaginURN.INTENT_URN_SERVICE);
-		//Pass the number of runs and interval between runs as extras.
-		startService(intent); 
-	}
-
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -267,7 +248,7 @@ public class MainActivity extends Activity {
 				URN = TaginURN.getURN();
 				Log.i(Helper.TAG, URN);
 				List<Tag> tempTagList = new ArrayList<Tag>();
-				tempTagList = fetchTags(URN);
+				//tempTagList = fetchTags(URN);
 				if (!tagCloudCreated) { // first time: stop splash and create TagCloud
 					stopSplashScreen();
 					createTagCloud(tempTagList);
@@ -277,32 +258,4 @@ public class MainActivity extends Activity {
 			}
 		}
 	};
-
-	private List<Tag> fetchTags(String urn) {
-		// In order to make the Tag URL point to Google search for that		
-		Cursor c1, c2;
-		c1 = db.fetchTagId(urn);
-		if (c1 == null) {
-			Log.d(Helper.TAG, "No TAGS present");
-			return null;
-		}
-		long tag_id;
-		String tag_name, URL;
-		int popularity;
-		List<Tag> tempList = new ArrayList<Tag>();
-		do {
-			tag_id = c1.getLong(c1.getColumnIndexOrThrow(TagsDatabase.TAG_ID));
-			c2 = db.fetchTagDetails(tag_id);
-			if (c2 != null) {
-				tag_name = c2.getString(c2.getColumnIndexOrThrow(TagsDatabase.TAG_NAME));
-				popularity = c2.getInt(c2.getColumnIndexOrThrow(TagsDatabase.POPULARITY));
-				URL = SEARCH_TEXT + tag_name;
-				Tag tag = new Tag(tag_name, popularity,URL);
-				tempList.add(tag);
-			}	
-		} while (c1.moveToNext());
-		c1.close();
-		c2.close();
-		return tempList;
-	}
 }
