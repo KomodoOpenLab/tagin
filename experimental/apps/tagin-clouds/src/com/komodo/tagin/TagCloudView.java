@@ -6,9 +6,7 @@ package com.komodo.tagin;
  * @authors Reza Shiftehfar, Sara Khosravinasr and Jorge Silva
  */
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +21,8 @@ public class TagCloudView extends RelativeLayout {
 	
 	private final float TOUCH_SCALE_FACTOR = .8f;
 	private final float TRACKBALL_SCALE_FACTOR = 10;
+	private final static int TEXT_SIZE_MIN = 4;
+	private static final int TEXT_SIZE_MAX = 34;
 	
 	private float mScrollSpeed;
 	private float mAngleX = 0;
@@ -34,11 +34,11 @@ public class TagCloudView extends RelativeLayout {
 	private Context mContext;
 	private TagCloud mTagCloud;
 	
-	public TagCloudView(Context context, int width, int height, List<Tag> tagList) {
-		this(context, width, height, tagList, 6 , 34, 1); //default for min/max text size
+	public TagCloudView(Context context, int width, int height, Map<String,Tag> tags) {
+		this(context, width, height, tags, TEXT_SIZE_MIN , TEXT_SIZE_MAX, 1); //default for min/max text size
 	}
 	
-	public TagCloudView(Context context, int width, int height, List<Tag> tagList, 
+	public TagCloudView(Context context, int width, int height, Map<String,Tag> tags, 
 				int textSizeMin, int textSizeMax, int scrollSpeed) {
 
 		super(context);
@@ -55,8 +55,7 @@ public class TagCloudView extends RelativeLayout {
 		mShiftLeft = (int) (Math.min(mCenterX * 0.15f , mCenterY * 0.15f));
 		
 		// initialize the TagCloud from a list of tags
-		//Filter() func. screens tagList and ignores Tags with same text (Case Insensitive)
-		mTagCloud = new TagCloud(filter(tagList), (int) mRadius, textSizeMin, textSizeMax);
+		mTagCloud = new TagCloud(tags, (int) mRadius, textSizeMin, textSizeMax);
 		int tempColor1 = Color.argb(1, 240, 196, 51);
 		int tempColor2 = Color.argb(1, 255, 0, 0);
 		mTagCloud.setTagColor1(tempColor1); // higher color
@@ -71,7 +70,7 @@ public class TagCloudView extends RelativeLayout {
     	mTagCloud.update();
 		
 		// Now Draw the 3D objects
-    	for (Tag tag : mTagCloud.getTags()) {
+    	for (Tag tag : mTagCloud.getTags().values()) {
     		initializeTag(tag);
     	}
 	}
@@ -113,15 +112,15 @@ public class TagCloudView extends RelativeLayout {
 		mTagCloud.add(tag);	
 	}
 	
-	public void setTagRGBT(Tag tagToBeUpdated, int popularity) {
-		mTagCloud.setTagRGBT(tagToBeUpdated, popularity);
+	public void setTagRGBT(Tag tag) {
+		mTagCloud.setTagRGBT(tag);
 	}
 	
 	public boolean replace(Tag newTag, String oldTagText) {
 		boolean result = false;
 		int j = mTagCloud.replace(newTag, oldTagText);
 		if (j >= 0) { //then oldTagText was found and replaced with newTag data			
-	    	for (Tag tag : mTagCloud.getTags()) {
+	    	for (Tag tag : mTagCloud.getTags().values()) {
 	    		updateView(tag);
 	    		tag.getTextView().setText(tag.getText());
 	    	}
@@ -142,7 +141,7 @@ public class TagCloudView extends RelativeLayout {
     	mTagCloud.setAngleY(mAngleY);
     	mTagCloud.update();
     	
-    	for (Tag tag : mTagCloud.getTags()) {
+    	for (Tag tag : mTagCloud.getTags().values()) {
     		updateView(tag);
     	}
 		return true;
@@ -165,7 +164,7 @@ public class TagCloudView extends RelativeLayout {
 	    	mTagCloud.setAngleY(mAngleY);
 	    	mTagCloud.update();
 	    	
-	    	for (Tag tag : mTagCloud.getTags()) {
+	    	for (Tag tag : mTagCloud.getTags().values()) {
 	    		updateView(tag);
 	    	}
 			
@@ -185,33 +184,6 @@ public class TagCloudView extends RelativeLayout {
 			return url;
 		else
 			return "http://" + url;
-	}
-	
-	//the filter function makes sure that there all elements are having unique Text field:
-	private List<Tag> filter(List<Tag> tagList) {
-		//current implementation is O(n^2) but since the number of tags are not that many,
-		//it is acceptable.
-		List<Tag> tempTagList = new ArrayList();
-	    Iterator<Tag> itr = tagList.iterator();
-	    Iterator<Tag> itrInternal;
-	    Tag tempTag1, tempTag2;	    
-	    //for all elements of TagList
-	    while (itr.hasNext()) {
-	      tempTag1 = (Tag) (itr.next());
-		  boolean found = false;
-		  //go over all elements of temoTagList
-		  itrInternal = tempTagList.iterator();
-   	      while (itrInternal.hasNext()) {
-   	    	tempTag2 = (Tag) (itrInternal.next());  	    	
-   	    	if (tempTag2.getText().equalsIgnoreCase(tempTag1.getText())) {
-   	    		found = true;
-   	    		break;   	    		
-   	    	}
-   	      }
-   	      if (found == false)
-   	    	  tempTagList.add(tempTag1);	      
-	    }
-		return tempTagList;
 	}
 	
 	//for handling the click on the tags

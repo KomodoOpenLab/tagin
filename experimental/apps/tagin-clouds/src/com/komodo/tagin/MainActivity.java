@@ -5,20 +5,19 @@ package com.komodo.tagin;
  * Google Summer of Code 2011
  * @authors Reza Shiftehfar, Sara Khosravinasr and Jorge Silva
  */
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
@@ -40,7 +39,7 @@ public class MainActivity extends Activity {
 	private String SEARCH_TEXT = "http://www.google.com/m?hl=en&q=";
 	public static String URN;
 	
-	private List<Tag> mTags;
+	private Map<String,Tag> mTags;
 	private TagCloudView mTagCloudView;
 	
 	private int width, height;
@@ -77,10 +76,10 @@ public class MainActivity extends Activity {
 	private void stopSplashScreen() {
 	}
 
-	private void createTagCloud(List<Tag> tempTagList) {
+	private void createTagCloud(Map<String,Tag> tags) {
 		// create a TagCloudview and set it as the content of this Activity
-		mTags = tempTagList;
-		if (tempTagList == null || tempTagList.isEmpty()) {
+		mTags = tags;
+		if (tags == null || tags.isEmpty()) {
 			Toast.makeText(this, "No Recorded Tag Exists.", Toast.LENGTH_LONG).show();
 			Intent intent = new Intent(this, TagAdder.class);
 			intent.putExtra(EXTRA_URN, URN);
@@ -94,12 +93,31 @@ public class MainActivity extends Activity {
 		mTagCloudView.setFocusableInTouchMode(true);
 		tagCloudCreated = true;
 	}
-
-	private void updateTagCloud(List<Tag> tempTagList) {
-		if (tempTagList == null)
+	
+	private void addTagToCloud(Tag tag) {
+		if (tag != null) {
+			mTagCloudView.addTag(tag);
+			mTags.put(tag.getText(), tag);
+			updateTagCloud();
+		}
+	}
+	
+	private void updateTagCloud() {
+		for (Tag tag : mTags.values()) {
+			//mTagCloudView.replace(tag, tagListMinusTempTagList.get(i).getText());
+			// update the RGB value and scaled textSize of the tag
+			mTagCloudView.setTagRGBT(tag);
+			// update the tagList to reflect new tag
+			//replace(tag, tagListMinusTempTagList.get(i).getText());
+		}
+	}
+	
+	
+	/*private void updateTagCloud(Map<String,Tag> tags) {
+		if (tags == null)
 			return;
-		List<Tag> tagListMinusTempTagList = listAMinuslistB(mTags, tempTagList);
-		List<Tag> tempTagListMinusTagList = listAMinuslistB(tempTagList, mTags);
+		List<Tag> tagListMinusTempTagList = listAMinuslistB(mTags.values(), tags.values());
+		List<Tag> tempTagListMinusTagList = listAMinuslistB(tags, mTags);
 		int noOfPossibleUpdate = tagListMinusTempTagList.size();
 		int noOfNeededUpdate = tempTagListMinusTagList.size();
 		if (noOfNeededUpdate == 0)
@@ -135,34 +153,15 @@ public class MainActivity extends Activity {
 			}
 		}
 		Toast.makeText(this, "Updated", Toast.LENGTH_SHORT).show();
-	}
+	}*/
 
 	public void replace(Tag newTag, String oldTagText) {
-		for (Tag tag : mTags) {
-			if (oldTagText.equalsIgnoreCase(tag.getText())) {
-				tag.setPopularity(newTag.getPopularity());
-				tag.setText(newTag.getText());
-				tag.setUrl(newTag.getUrl());
-				break;
-			}
+		Tag tag = mTags.get(oldTagText);
+		if (tag != null) {
+			tag.setPopularity(newTag.getPopularity());
+			tag.setText(newTag.getText());
+			tag.setUrl(newTag.getUrl());
 		}
-	}
-
-	private List<Tag> listAMinuslistB(List<Tag> listA, List<Tag> listB) {
-		List<Tag> tempList = new ArrayList<Tag>();
-		for (int i = 0; i < listA.size(); i++) {
-			String listAText = listA.get(i).getText();
-			boolean found = false;
-			for (int j = 0; j < listB.size(); j++) {
-				if (listB.get(j).getText().equalsIgnoreCase(listAText)) {
-					found = true;
-					break;
-				}
-			}
-			if (!found)
-				tempList.add(listA.get(i));
-		}
-		return tempList;
 	}
 
 	@Override
@@ -197,15 +196,13 @@ public class MainActivity extends Activity {
 				String tagName = data.getStringExtra(EXTRA_TAG_NAME); 
 				String popularity = data.getStringExtra(EXTRA_TAG_POPULARITY);
 				Tag tempTag = new Tag(tagName, Integer.parseInt(popularity), SEARCH_TEXT + tagName );			
-				List<Tag> tempTagList = new ArrayList<Tag>();
+				Map<String,Tag> tags = new LinkedHashMap<String,Tag>();
 				if (!tagCloudCreated) { // first time: stop splash and create TagCloud
 					stopSplashScreen();
-					tempTagList.add(tempTag);
-					createTagCloud(tempTagList);
+					tags.put(tempTag.getText(), tempTag);
+					createTagCloud(tags);
 				} else { // after initial creation of Tag Cloud, just update it
-					tempTagList.addAll(mTags);
-					tempTagList.add(tempTag);
-					updateTagCloud(tempTagList);
+					addTagToCloud(tempTag);
 				}
 				registerReceiver(mReceiver, new IntentFilter(TaginURN.ACTION_URN_READY));
 			}
@@ -247,13 +244,13 @@ public class MainActivity extends Activity {
 			if (action.equals(TaginURN.ACTION_URN_READY)) {
 				URN = TaginURN.getURN();
 				Log.i(Helper.TAG, URN);
-				List<Tag> tempTagList = new ArrayList<Tag>();
+				Map<String,Tag> tags = new LinkedHashMap<String,Tag>();
 				//tempTagList = fetchTags(URN);
 				if (!tagCloudCreated) { // first time: stop splash and create TagCloud
 					stopSplashScreen();
-					createTagCloud(tempTagList);
+					createTagCloud(tags);
 				} else { // after initial creation of Tag Cloud, just update it
-					updateTagCloud(tempTagList);
+					updateTagCloud();
 				}
 			}
 		}

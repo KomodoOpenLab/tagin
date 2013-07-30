@@ -8,18 +8,18 @@ package com.komodo.tagin;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.graphics.Color;
 
 public class TagCloud {
 
-	private static final int DEFAULT_RADIUS = 3;
-	private static final int TEXT_SIZE_MIN = 4 , TEXT_SIZE_MAX = 30;
 	private static final int DEFAULT_COLOR1 = Color.argb(1, 226, 185, 48);
 	private static final int DEFAULT_COLOR2 = Color.argb(1, 76, 76,  76);
 	
-	private List<Tag> mTags;
+	private Map<String,Tag> mTags;
 	private int mRadius;
 	private int mTagColor1;
 	private int mTagColor2;
@@ -30,33 +30,21 @@ public class TagCloud {
     private float mAngleX = 0;
     private float mAngleY = 0;
     private int smallest, largest; // used to find spectrum for tag colors
-
-	public TagCloud() {
-		this(new ArrayList<Tag>());
-	}
 	
-	public TagCloud(List<Tag> tags) {
-		this(tags, DEFAULT_RADIUS); 
-	}
-	
-	//Constructor just copies the existing tags in its List
-	public TagCloud(List<Tag> tags, int radius) {
-		this(tags, radius, DEFAULT_COLOR1, DEFAULT_COLOR2, TEXT_SIZE_MIN, TEXT_SIZE_MAX);
-	}
-	
-	public TagCloud(List<Tag> tags, int radius,int textSizeMin, int textSizeMax) {
+	public TagCloud(Map<String,Tag> tags, int radius, int textSizeMin, int textSizeMax) {
 		this(tags, radius, DEFAULT_COLOR1, DEFAULT_COLOR2, textSizeMin, textSizeMax);
 	}
 
-	public TagCloud(List<Tag> tags, int radius, int tagColor1, int tagColor2, 
+	public TagCloud(Map<String,Tag> tags, int radius, int tagColor1, int tagColor2, 
 						int textSizeMin, int textSizeMax) {
-		this.mTags = tags;    // Java does the initialization and deep copying
-		this.mRadius = radius;
-		this.mTagColor1 = tagColor1;
-		this.mTagColor2 = tagColor2;
-		this.mTextSizeMax = textSizeMax;
-		this.mTextSizeMin = textSizeMin;	
+		mTags = tags;    // Java does the initialization and deep copying
+		mRadius = radius;
+		mTagColor1 = tagColor1;
+		mTagColor2 = tagColor2;
+		mTextSizeMax = textSizeMax;
+		mTextSizeMin = textSizeMin;	
 	}       
+	
 	// create method calculates the correct initial location of each tag
 	public void create() {
 		// calculate and set the location of each Tag
@@ -68,13 +56,13 @@ public class TagCloud {
 		// largest popularity gets tcolor2, smallest gets tcolor1, the rest in between
 		smallest = 9999;
 		largest = 0;
-		for (Tag tag : mTags) {
+		for (Tag tag : mTags.values()) {
 			int popularity = tag.getPopularity();
 			largest = Math.max(largest, popularity);
 			smallest = Math.min(smallest, popularity);
 		}
 		//figuring out and assigning the colors/ textsize
-		for (Tag tag : mTags) {
+		for (Tag tag : mTags.values()) {
 			float percentage = 1.0f;
 			if (smallest != largest) {
 				percentage = ((float) tag.getPopularity() - smallest) / ((float) largest - smallest);
@@ -103,7 +91,7 @@ public class TagCloud {
 		newTag.setTextSize(tempTextSize);
 		position(newTag);
 		// now add the new tag to the tagCloud
-		mTags.add(newTag);				
+		mTags.put(newTag.getText(), newTag);				
 		updateAll();
 	}
 	
@@ -112,7 +100,7 @@ public class TagCloud {
 	public int replace(Tag newTag, String oldTagText) {
 		int index = -1;
 		// let's go over all elements of tagCloud list and see if the oldTagText exists:
-		for (Tag tag : mTags) {
+		for (Tag tag : mTags.values()) {
 			if (oldTagText.equalsIgnoreCase(tag.getText())) {
 				index++;
 				tag.setPopularity(newTag.getPopularity());
@@ -131,13 +119,14 @@ public class TagCloud {
 	}
 
 	// for a given tag, sets the value of RGB and text size based on other existing tags
-	public void setTagRGBT(Tag tagToBeUpdated, int popularity) {
+	public void setTagRGBT(Tag tag) {
+		int popularity = tag.getPopularity();
 		float percentage = (smallest == largest) ? 
 								1.0f :
 								((float)popularity-smallest) / ((float)largest-smallest);
 		int tempTextSize = getTextSizeGradient(percentage);
-		tagToBeUpdated.setColor(getColorFromGradient(percentage));
-		tagToBeUpdated.setTextSize(tempTextSize);		
+		tag.setColor(getColorFromGradient(percentage));
+		tag.setTextSize(tempTextSize);		
 	}
 
 	private void position(Tag newTag) {
@@ -171,7 +160,7 @@ public class TagCloud {
 	
 	private void updateAll() {
 		// update transparency/scale for all tags:
-		for (Tag tag : mTags) {
+		for (Tag tag : mTags.values()) {
 			// There exists two options for this part:
 			// multiply positions by a x-rotation matrix
 			float rx1 = (tag.getX());
@@ -211,7 +200,13 @@ public class TagCloud {
 	// now let's sort all tags in the tagCloud based on their z coordinate
 	// this way, when they are finally drawn, upper tags will be drawn on top of lower tags
 	private void depthSort() {
-		Collections.sort(mTags);		
+		List<Tag> entries = new ArrayList<Tag>(mTags.values());
+		Collections.sort(entries);
+		
+		mTags = new LinkedHashMap<String, Tag>();
+		for (Tag tag : entries) {
+			mTags.put(tag.getText(), tag);
+		}
 	}
 	
 	private int getColorFromGradient(float perc) {
@@ -279,7 +274,7 @@ public class TagCloud {
 		this.mAngleY = angleY;
 	}
 	
-	public List<Tag> getTags() {
+	public Map<String,Tag> getTags() {
 		return mTags;
 	}
 }
