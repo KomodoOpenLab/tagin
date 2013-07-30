@@ -6,7 +6,9 @@ package com.komodo.tagin;
  * @authors Reza Shiftehfar, Sara Khosravinasr and Jorge Silva
  */
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
@@ -14,6 +16,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
@@ -40,6 +43,7 @@ public class MainActivity extends Activity {
 	public static String URN;
 	
 	private Map<String,Tag> mTags;
+	private TagsDatabase db;
 	private TagCloudView mTagCloudView;
 	
 	private int width, height;
@@ -48,12 +52,18 @@ public class MainActivity extends Activity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
+		db = new TagsDatabase(this);
+		db.open();
+		
+		registerReceiver(mReceiver, new IntentFilter(TaginURN.ACTION_URN_READY));
+		startURNFetchService(); // start the engine
+		
 		// Step2: to get a full-screen View:
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+		
 		// Step3: get screen resolution:
 		Display display = getWindowManager().getDefaultDisplay();
 		width = display.getWidth();
@@ -205,12 +215,19 @@ public class MainActivity extends Activity {
 					addTagToCloud(tempTag);
 				}
 				registerReceiver(mReceiver, new IntentFilter(TaginURN.ACTION_URN_READY));
+				startURNFetchService();
 			}
 			break;
 		default:
 			super.onActivityResult(requestCode, resultCode, data);
 			break;
 		}
+	}
+	
+	private void startURNFetchService() {
+		Intent intent = new Intent(TaginURN.INTENT_URN_SERVICE);
+		//Pass the number of runs and interval between runs as extras.
+		startService(intent);
 	}
 
 	@Override
@@ -244,10 +261,13 @@ public class MainActivity extends Activity {
 			if (action.equals(TaginURN.ACTION_URN_READY)) {
 				URN = TaginURN.getURN();
 				Log.i(Helper.TAG, URN);
-				Map<String,Tag> tags = new LinkedHashMap<String,Tag>();
-				//tempTagList = fetchTags(URN);
 				if (!tagCloudCreated) { // first time: stop splash and create TagCloud
 					stopSplashScreen();
+					List<Tag> tempTagList = fetchTags(URN);
+					Map<String,Tag> tags = new LinkedHashMap<String,Tag>();
+					for (Tag tag : tempTagList) {
+						tags.put(tag.getText(), tag);
+					}
 					createTagCloud(tags);
 				} else { // after initial creation of Tag Cloud, just update it
 					updateTagCloud();
@@ -255,4 +275,32 @@ public class MainActivity extends Activity {
 			}
 		}
 	};
+	
+	private List<Tag> fetchTags(String urn) {
+		// In order to make the Tag URL point to Google search for that		
+		List<Tag> tempList = new ArrayList<Tag>();
+		Cursor c1, c2;
+		c1 = db.fetchTagId(urn);
+		if (c1 == null) {
+			Log.d(Helper.TAG, "No TAGS present");
+			return tempList;
+		}
+		long tag_id;
+		String tag_name, URL;
+		int popularity;
+		do {
+			tag_id = c1.getLong(c1.getColumnIndexOrThrow(TagsDatabase.TAG_ID));
+			c2 = db.fetchTagDetails(tag_id);
+			if (c2 != null) {
+				tag_name = c2.getString(c2.getColumnIndexOrThrow(TagsDatabase.TAG_NAME));
+				popularity = c2.getInt(c2.getColumnIndexOrThrow(TagsDatabase.POPULARITY));
+				URL = SEARCH_TEXT + tag_name;
+				Tag tag = new Tag(tag_name, popularity,URL);
+				tempList.add(tag);
+			}	
+		} while (c1.moveToNext());
+		c1.close();
+		c2.close();
+		return tempList;
+	}
 }

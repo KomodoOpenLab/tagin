@@ -6,6 +6,7 @@ package com.komodo.tagin;
  * @authors Primal Pappachan
  */
 
+import ca.idi.taginsdk.Helper;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +15,11 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class TagAdder extends Activity {
+	
+	private String time, bssid, urn;
+	private long tagId;
+	private Helper mHelper; 
+	private TagsDatabase db;
 	
 	private EditText mTagName, mRating;
 	private Button mSubmit;
@@ -25,16 +31,28 @@ public class TagAdder extends Activity {
 		mTagName = (EditText)findViewById(R.id.Details_EditText01);
 		mRating = (EditText)findViewById(R.id.Details_EditText02);
 		mSubmit = (Button)findViewById(R.id.submit);
+		mHelper = Helper.getInstance();
+		
+		Intent intent = getIntent();
+		urn  = intent.getStringExtra(MainActivity.EXTRA_URN);
+		db = new TagsDatabase(this);
+		db.open();
 		
 		mSubmit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				//addTag();
+				int popularity = Integer.parseInt(mRating.getText().toString());
+				time = mHelper.getTime();
+				bssid = mHelper.getDeviceId(TagAdder.this);
+				tagId = db.addTagDetails(mTagName.getText().toString(), time, bssid, popularity);
 				addTag();
 			}
 		});
 	}
 	
 	private void addTag() {
+		db.addTag(tagId, urn);
 		Intent intent = new Intent();
 		intent.putExtra(MainActivity.EXTRA_TAG_NAME, mTagName.getText().toString());
 		intent.putExtra(MainActivity.EXTRA_TAG_POPULARITY, mRating.getText().toString());
