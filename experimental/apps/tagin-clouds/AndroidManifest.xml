@@ -4,8 +4,8 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="8" />
-    
+    <uses-sdk android:minSdkVersion="14" />
+
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -42,12 +42,16 @@
                 <action android:name="ca.idi.taginsdk.TaginURN" />
             </intent-filter>
         </service>
-        
+
         <provider
             android:name="ca.idi.taginsdk.TaginProvider"
             android:authorities="ca.idi.taginsdk.taginprovider"
             android:syncable="true" />
 
+        <activity
+            android:name="com.komodo.tagin.CloudActivity"
+            android:label="@string/title_activity_cloud" >
+        </activity>
     </application>
 
 </manifest>
