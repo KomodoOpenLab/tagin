@@ -50,7 +50,7 @@ public class TagsDatabase {
 
 	private final Context mCtx;
 
-	private static class DataBaseHelper extends SQLiteOpenHelper{
+	private static class DataBaseHelper extends SQLiteOpenHelper {
 
 
 		public DataBaseHelper(Context context) {
@@ -72,21 +72,21 @@ public class TagsDatabase {
 
 	}
 
-	public TagsDatabase(Context ctx){
+	public TagsDatabase(Context ctx) {
 		this.mCtx = ctx;
 	}
 
-	public TagsDatabase open() throws SQLException{
+	public TagsDatabase open() throws SQLException {
 		mDbHelper = new DataBaseHelper(mCtx);
 		mDb = mDbHelper.getWritableDatabase();
 		return this;
 	}
 
-	public void close(){
+	public void close() {
 		mDbHelper.close();
 	}
 
-	public long addTagDetails(String tag_name, String time, String bssid, int popularity){
+	public long addTagDetails(String tag_name, String time, String bssid, int popularity) {
 		ContentValues values = new ContentValues();
 		values.put(TAG_NAME, tag_name);
 		values.put(CREATED_AT, time);
@@ -95,35 +95,35 @@ public class TagsDatabase {
 		return mDb.insert(TABLE_TAG_DETAILS, null, values);
 	}
 
-	public void addTag(long tag_id, String urn){
+	public void addTag(long tag_id, String urn) {
 		ContentValues values = new ContentValues();
 		values.put(TAG_ID, tag_id);
 		values.put(URN, urn);
 		Long row = mDb.insert(TABLE_TAGS, null, values);
 		Log.i(Helper.TAG, "Tag Added" + Long.toString(row));
-		printTableContents();
-		printTagDetails();
+		//printTableContents();
+		//printTagDetails();
 	}
 
-	public Cursor fetchTagId(String urn){
+	public Cursor fetchTagId(String urn) {
 		Cursor mCursor;
 		mCursor = mDb.query(TABLE_TAGS, null, URN + "=" + "?", new String[]{urn}, null, null, null);
 		return mCursor.moveToFirst()? mCursor: null;
 	}
 
-	public Cursor fetchTagDetails(Long tag_id){
+	public Cursor fetchTagDetails(Long tag_id) {
 		Cursor mCursor;
 		mCursor = mDb.query(TABLE_TAG_DETAILS, null, _ID + "=" + tag_id, null, null, null, null);
 		return mCursor.moveToFirst()? mCursor: null;
 	}
 
-	public Cursor fetchTags(Long tag_id){
+	/*public Cursor fetchTags(Long tag_id) {
 		Cursor mCursor;
 		mCursor = mDb.query(TABLE_TAG_DETAILS, new String[]{TAG_NAME}, _ID + "=" + tag_id, null, null, null, null);
 		return mCursor.moveToFirst()? mCursor: null;
-	}
+	}*/
 
-	private void printTableContents(){
+	private void printTableContents() {
 		Cursor c = mDb.query(TABLE_TAGS, null, null, null, null, null, null);
 		Long id, tag_id;
 		String urn;
@@ -138,7 +138,7 @@ public class TagsDatabase {
 		c.close();
 	}
 
-	private void printTagDetails(){
+	private void printTagDetails() {
 		Cursor c = mDb.query(TABLE_TAG_DETAILS, null, null, null, null, null, null);
 		Long id;
 		String bssid, tag;

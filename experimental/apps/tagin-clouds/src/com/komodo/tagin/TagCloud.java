@@ -146,15 +146,17 @@ public class TagCloud {
 	private void positionAll() {
 		double phi = 0;
 		double theta = 0;
+		int i = 1;
 		int max = mTags.size();
-		for (int i = 1; i < max+1; i++) {
-			phi = Math.acos(-1.0 + (2.0*i -1.0)/max);
+		for (Tag tag : mTags.values()) {
+			phi = Math.acos(-1.0 + (2.0 * i - 1.0) / max);
 			theta = Math.sqrt(max * Math.PI) * phi;
 			
 			//coordinate conversion:			
-			mTags.get(i-1).setX((int) ((mRadius * Math.cos(theta) * Math.sin(phi))));
-			mTags.get(i-1).setY((int) (mRadius * Math.sin(theta) * Math.sin(phi)));
-			mTags.get(i-1).setZ((int) (mRadius * Math.cos(phi)));
+			tag.setX((int) (mRadius * Math.cos(theta) * Math.sin(phi)));
+			tag.setY((int) (mRadius * Math.sin(theta) * Math.sin(phi)));
+			tag.setZ((int) (mRadius * Math.cos(phi)));
+			i++;
 		}		
 	}	
 	

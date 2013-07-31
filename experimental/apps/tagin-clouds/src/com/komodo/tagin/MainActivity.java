@@ -297,6 +297,7 @@ public class MainActivity extends Activity {
 				URL = SEARCH_TEXT + tag_name;
 				Tag tag = new Tag(tag_name, popularity,URL);
 				tempList.add(tag);
+				c2.close();
 			}	
 		} while (c1.moveToNext());
 		c1.close();
