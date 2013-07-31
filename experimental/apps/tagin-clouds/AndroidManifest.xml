@@ -23,6 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity
             android:name="com.komodo.tagin.TagAdder"
             android:label="@string/app_name" >
@@ -35,11 +36,20 @@
                 <action android:name="ca.idi.taginsdk.Fingerprinter" />
             </intent-filter>
         </service>
+        
         <service
             android:name="ca.idi.taginsdk.TaginURN"
             android:enabled="true" >
             <intent-filter>
                 <action android:name="ca.idi.taginsdk.TaginURN" />
+            </intent-filter>
+        </service>
+        
+        <service
+            android:name="ca.idrc.tagin.lib.TaginService"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="ca.idrc.tagin.lib.ACTION_URN_READY" />
             </intent-filter>
         </service>
 
