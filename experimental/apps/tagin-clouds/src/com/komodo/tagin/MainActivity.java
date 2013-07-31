@@ -40,21 +40,21 @@ public class MainActivity extends Activity {
 	public static final String EXTRA_TAG_NAME = "tag_name";
 	public static final String EXTRA_TAG_POPULARITY = "popularity";
 	private String SEARCH_TEXT = "http://www.google.com/m?hl=en&q=";
-	public static String URN;
+	//public static String URN;
 	
 	private Map<String,Tag> mTags;
-	private TagsDatabase db;
+	//private TagsDatabase db;
 	private TagCloudView mTagCloudView;
 	
 	private int width, height;
-	private boolean tagCloudCreated;
+	private boolean isCloudCreated;
 	private static final int TAG_ADDED = 1;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		db = new TagsDatabase(this);
-		db.open();
+		/*db = new TagsDatabase(this);
+		db.open();*/
 		
 		registerReceiver(mReceiver, new IntentFilter(TaginURN.ACTION_URN_READY));
 		startURNFetchService(); // start the engine
@@ -72,7 +72,7 @@ public class MainActivity extends Activity {
 		// Step4: start splash screen and wait for current location to be found:
 		// tagCloudcreated is used to know whether we need to create or update
 		// the tagcloud
-		tagCloudCreated = false;
+		isCloudCreated = false;
 		startSplashScreen();
 		// notice that creation/update of tagcloud has been
 		// moved to BroadcastReceiver.onReceive() method
@@ -92,7 +92,7 @@ public class MainActivity extends Activity {
 		if (tags == null || tags.isEmpty()) {
 			Toast.makeText(this, "No Recorded Tag Exists.", Toast.LENGTH_LONG).show();
 			Intent intent = new Intent(this, TagAdder.class);
-			intent.putExtra(EXTRA_URN, URN);
+			//intent.putExtra(EXTRA_URN, URN);
 			startActivityForResult(intent, TAG_ADDED);
 			return;
 		}
@@ -101,7 +101,7 @@ public class MainActivity extends Activity {
 		setContentView(mTagCloudView);
 		mTagCloudView.requestFocus();
 		mTagCloudView.setFocusableInTouchMode(true);
-		tagCloudCreated = true;
+		isCloudCreated = true;
 	}
 	
 	private void addTagToCloud(Tag tag) {
@@ -187,7 +187,7 @@ public class MainActivity extends Activity {
 		switch (item.getItemId()) {
 		case R.id.add_tag:
 			Intent intent = new Intent(this, TagAdder.class);
-			intent.putExtra(EXTRA_URN, URN);
+			//intent.putExtra(EXTRA_URN, URN);
 			startActivityForResult(intent, TAG_ADDED);
 			break;
 		case R.id.exit_app:
@@ -207,7 +207,7 @@ public class MainActivity extends Activity {
 				String popularity = data.getStringExtra(EXTRA_TAG_POPULARITY);
 				Tag tempTag = new Tag(tagName, Integer.parseInt(popularity), SEARCH_TEXT + tagName );			
 				Map<String,Tag> tags = new LinkedHashMap<String,Tag>();
-				if (!tagCloudCreated) { // first time: stop splash and create TagCloud
+				if (!isCloudCreated) { // first time: stop splash and create TagCloud
 					stopSplashScreen();
 					tags.put(tempTag.getText(), tempTag);
 					createTagCloud(tags);
@@ -259,15 +259,15 @@ public class MainActivity extends Activity {
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
 			if (action.equals(TaginURN.ACTION_URN_READY)) {
-				URN = TaginURN.getURN();
-				Log.i(Helper.TAG, URN);
-				if (!tagCloudCreated) { // first time: stop splash and create TagCloud
+				/*URN = TaginURN.getURN();
+				Log.i(Helper.TAG, URN);*/
+				if (!isCloudCreated) { // first time: stop splash and create TagCloud
 					stopSplashScreen();
-					List<Tag> tempTagList = fetchTags(URN);
+					//List<Tag> tempTagList = fetchTags(URN);
 					Map<String,Tag> tags = new LinkedHashMap<String,Tag>();
-					for (Tag tag : tempTagList) {
+					/*for (Tag tag : tempTagList) {
 						tags.put(tag.getText(), tag);
-					}
+					}*/
 					createTagCloud(tags);
 				} else { // after initial creation of Tag Cloud, just update it
 					updateTagCloud();
@@ -276,7 +276,7 @@ public class MainActivity extends Activity {
 		}
 	};
 	
-	private List<Tag> fetchTags(String urn) {
+	/*private List<Tag> fetchTags(String urn) {
 		// In order to make the Tag URL point to Google search for that		
 		List<Tag> tempList = new ArrayList<Tag>();
 		Cursor c1, c2;
@@ -303,5 +303,5 @@ public class MainActivity extends Activity {
 		c1.close();
 		c2.close();
 		return tempList;
-	}
+	}*/
 }
