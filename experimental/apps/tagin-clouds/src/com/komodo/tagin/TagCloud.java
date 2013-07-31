@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import android.graphics.Color;
+import android.util.Log;
 
 public class TagCloud {
 
@@ -83,15 +84,15 @@ public class TagCloud {
 	}
 	
 	// if a single tag needed to be added
-	public void add(Tag newTag) {	
-		int j = newTag.getPopularity();
+	public void add(Tag tag) {
+		int j = tag.getPopularity();
 		float percentage = (smallest == largest) ? 1.0f : ((float) j - smallest) / ((float) largest - smallest);
 		int tempTextSize = getTextSizeGradient(percentage);
-		newTag.setColor(getColorFromGradient(percentage));
-		newTag.setTextSize(tempTextSize);
-		position(newTag);
+		tag.setColor(getColorFromGradient(percentage));
+		tag.setTextSize(tempTextSize);
+		position(tag);
 		// now add the new tag to the tagCloud
-		mTags.put(newTag.getText(), newTag);				
+		mTags.put(tag.getText(), tag);				
 		updateAll();
 	}
 	

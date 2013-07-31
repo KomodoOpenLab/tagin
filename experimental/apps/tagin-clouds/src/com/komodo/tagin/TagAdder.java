@@ -6,13 +6,14 @@ package com.komodo.tagin;
  * @authors Primal Pappachan
  */
 
-import ca.idi.taginsdk.Helper;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import ca.idi.taginsdk.Helper;
 
 public class TagAdder extends Activity {
 	
@@ -52,6 +53,7 @@ public class TagAdder extends Activity {
 	}
 	
 	private void addTag() {
+		Log.d("tagin", "TagAdder.addTag()");
 		db.addTag(tagId, urn);
 		Intent intent = new Intent();
 		intent.putExtra(MainActivity.EXTRA_TAG_NAME, mTagName.getText().toString());

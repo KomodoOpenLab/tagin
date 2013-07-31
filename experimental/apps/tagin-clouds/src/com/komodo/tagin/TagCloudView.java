@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -92,8 +93,8 @@ public class TagCloudView extends RelativeLayout {
 		tag.getTextView().setSingleLine(true);
 		tag.getTextView().setTextColor(tag.getColor());
 		tag.getTextView().setTextSize((int)(tag.getTextSize() * tag.getScale()));
-		addView(tag.getTextView());
 		tag.getTextView().setOnClickListener(onTagClickListener(tag.getUrl()));	
+		addView(tag.getTextView());
 	}
 	
 	private void updateView(Tag tag) {
@@ -108,8 +109,10 @@ public class TagCloudView extends RelativeLayout {
 	}
 	
 	public void addTag(Tag tag) {
-		initializeTag(tag);
-		mTagCloud.add(tag);	
+		if (!mTagCloud.getTags().containsKey(tag.getText())) {
+			initializeTag(tag);
+			mTagCloud.add(tag);
+		}
 	}
 	
 	public void setTagRGBT(Tag tag) {
