@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:gravity="center"
+  android:orientation="vertical"
+  >
+  <TextView
+  	android:layout_gravity="center_horizontal"
+  	android:layout_width="wrap_content"
+  	android:layout_height="wrap_content"
+  	android:text="Tag your location"
+  	android:textSize="16sp"
+  	/>
+  <LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal"
+		android:orientation="vertical"
+		android:layout_marginBottom="2dip"
+		android:background="@drawable/shape"
+		>	
+ 	<TextView
+ 		android:layout_width="wrap_content"
+ 		android:layout_height="wrap_content"
+	 	android:textSize="20sp"
+	 	android:textStyle="bold"	
+ 		android:text="Enter the TAG Details"
+ 		android:textColor="@color/black"
+ 		android:layout_gravity="center_horizontal"
+ 	/> 
+	<EditText
+			android:hint="Tag Name" 
+		 	android:id="@+id/Details_EditText01"
+		 	android:layout_width="fill_parent"
+         	android:layout_height="wrap_content"
+        	android:singleLine="true"             
+       	 	android:layout_marginLeft="0dip"             
+  	/> 
+		<EditText 
+			 android:hint="Popularity"
+			 android:id="@+id/Details_EditText02"
+	         android:layout_height="wrap_content"
+	         android:layout_width="fill_parent"
+	         android:singleLine="true"
+	         android:inputType="numberDecimal"     
+	  	 /> 
+	<Button 
+		 android:id="@+id/submit"
+	     android:text = "Submit the Tag"  
+	     android:layout_width="wrap_content"
+	     android:layout_height="wrap_content"
+	     android:textSize="18dip"
+		 android:textStyle="bold"
+		 android:layout_gravity="center_horizontal"
+	     /> 
+	</LinearLayout>          
+</LinearLayout>
