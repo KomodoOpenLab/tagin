@@ -105,7 +105,6 @@ public class MainActivity extends Activity {
 	}
 	
 	private void addTagToCloud(Tag tag) {
-		Log.d("tagin", "MainActivity.addTagToCloud(Tag)");
 		if (tag != null && !mTags.containsKey(tag.getText())) {
 			mTagCloudView.addTag(tag);
 			mTags.put(tag.getText(), tag);

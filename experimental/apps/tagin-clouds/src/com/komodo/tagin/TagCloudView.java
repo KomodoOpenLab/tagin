@@ -12,7 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -134,19 +133,7 @@ public class TagCloudView extends RelativeLayout {
 	
 	@Override
 	public boolean onTrackballEvent(MotionEvent e) {
-		float x = e.getX();
-		float y = e.getY();
-
-		mAngleX = ( y) * mScrollSpeed * TRACKBALL_SCALE_FACTOR;
-		mAngleY = (-x) * mScrollSpeed * TRACKBALL_SCALE_FACTOR;
-		
-    	mTagCloud.setAngleX(mAngleX);
-    	mTagCloud.setAngleY(mAngleY);
-    	mTagCloud.update();
-    	
-    	for (Tag tag : mTagCloud.getTags().values()) {
-    		updateView(tag);
-    	}
+    	updateAngles(e.getY(), -e.getX(), TRACKBALL_SCALE_FACTOR);
 		return true;
 	}
 
@@ -160,16 +147,7 @@ public class TagCloudView extends RelativeLayout {
 			// Rotate elements depending on how far the selection point is from center of cloud
 			float dx = x - mCenterX;
 			float dy = y - mCenterY;
-			mAngleX = ( dy / mRadius) * mScrollSpeed * TOUCH_SCALE_FACTOR;
-			mAngleY = (-dx / mRadius) * mScrollSpeed * TOUCH_SCALE_FACTOR;
-	    	
-			mTagCloud.setAngleX(mAngleX);
-	    	mTagCloud.setAngleY(mAngleY);
-	    	mTagCloud.update();
-	    	
-	    	for (Tag tag : mTagCloud.getTags().values()) {
-	    		updateView(tag);
-	    	}
+	    	updateAngles(dy / mRadius, -dx / mRadius, TOUCH_SCALE_FACTOR);
 			
 			break;
 		/*case MotionEvent.ACTION_UP:  //now it is clicked!!!!		
@@ -179,6 +157,19 @@ public class TagCloudView extends RelativeLayout {
 		}
 		
 		return true;
+	}
+	
+	private void updateAngles(float x, float y, float scaleFactor) {
+		mAngleX = x * mScrollSpeed * scaleFactor;
+		mAngleY = y * mScrollSpeed * scaleFactor;
+    	
+		mTagCloud.setAngleX(mAngleX);
+    	mTagCloud.setAngleY(mAngleY);
+    	mTagCloud.update();
+    	
+    	for (Tag tag : mTagCloud.getTags().values()) {
+    		updateView(tag);
+    	}
 	}
 	
 	private String makeUrl(String url) {

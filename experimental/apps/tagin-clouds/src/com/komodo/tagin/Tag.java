@@ -58,7 +58,6 @@ public class Tag implements Comparable<Tag> {
     	this.y2D = 0;
     	
     	mColor = Color.argb(255, 128, 128, 128);
-    	
     	mScale = scale;
     	mPopularity = popularity;
     	mURL = url;

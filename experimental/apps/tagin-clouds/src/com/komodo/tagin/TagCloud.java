@@ -13,12 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 import android.graphics.Color;
-import android.util.Log;
 
 public class TagCloud {
 
 	private static final int DEFAULT_COLOR1 = Color.argb(1, 226, 185, 48);
-	private static final int DEFAULT_COLOR2 = Color.argb(1, 76, 76,  76);
+	private static final int DEFAULT_COLOR2 = Color.argb(1, 76, 76, 76);
 	
 	private Map<String,Tag> mTags;
 	private int mRadius;
@@ -130,18 +129,17 @@ public class TagCloud {
 		tag.setTextSize(tempTextSize);		
 	}
 
-	private void position(Tag newTag) {
-		double phi = 0;
-		double theta = 0;
+	private void position(Tag tag) {
 		// when adding a new tag, just place it at some random location
 		// this is in fact why adding too many elements make TagCloud ugly
 		// after many add, do one reset to rearrange all tags
-		phi = Math.random() * Math.PI;
-		theta = Math.random() * (2 * Math.PI);
+		double phi = Math.random() * Math.PI;
+		double theta = Math.random() * (2 * Math.PI);
+
 		// coordinate conversion:
-		newTag.setX((int) (mRadius * Math.cos(theta) * Math.sin(phi)));
-		newTag.setY((int) (mRadius * Math.sin(theta) * Math.sin(phi)));
-		newTag.setZ((int) (mRadius * Math.cos(phi)));
+		tag.setX((int) (mRadius * Math.cos(theta) * Math.sin(phi)));
+		tag.setY((int) (mRadius * Math.sin(theta) * Math.sin(phi)));
+		tag.setZ((int) (mRadius * Math.cos(phi)));
 	}
 	
 	private void positionAll() {
