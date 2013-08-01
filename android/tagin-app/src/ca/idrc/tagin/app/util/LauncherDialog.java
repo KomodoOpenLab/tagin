@@ -45,11 +45,14 @@ public class LauncherDialog extends AlertDialog {
 					switch (which) {
 					case 0:
 						mContext.startActivity(new Intent(mContext, TaginActivity.class));
+						dismiss();
 						break;
 					case 1:
 						mContext.startActivity(new Intent(mContext, TagsActivity.class));
+						dismiss();
 						break;
 					default:
+						dismiss();
 						break;
 					}
 				}
