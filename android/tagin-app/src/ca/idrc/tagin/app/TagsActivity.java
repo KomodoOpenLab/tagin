@@ -1,24 +1,7 @@
 package ca.idrc.tagin.app;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
 import android.app.Activity;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -27,7 +10,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class TagsActivity extends Activity {
+import ca.idrc.tagin.lib.tags.GetLabelTask;
+import ca.idrc.tagin.lib.tags.GetLabelTaskListener;
+import ca.idrc.tagin.lib.tags.SetLabelTask;
+import ca.idrc.tagin.lib.tags.SetLabelTaskListener;
+
+public class TagsActivity extends Activity implements GetLabelTaskListener, SetLabelTaskListener {
 	
 	private Context mContext;
 	
@@ -38,8 +26,6 @@ public class TagsActivity extends Activity {
 	private TextView mLabelView;
 	private Button mSetLabelButton;
 	private Button mGetLabelButton;
-	
-	private final String APP_URL = "http://tagin-tags.appspot.com/tagin-tags";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,84 +49,37 @@ public class TagsActivity extends Activity {
 	
 	public void onGetLabel(View view) {
 		mGetLabelButton.setText("Fetching label...");
-		new GetLabelTask().execute();
+		String urn = mURNText1.getText().toString();
+		GetLabelTask<TagsActivity> task = new GetLabelTask<TagsActivity>(this, urn);
+		task.execute();
 	}
 	
 	public void onSetLabel(View view) {
 		mSetLabelButton.setText("Saving tag...");
-		new SetLabelTask().execute();
+		String urn = mURNText2.getText().toString();
+		String label = mLabelText.getText().toString();
+		SetLabelTask<TagsActivity> task = new SetLabelTask<TagsActivity>(this, urn, label);
+		task.execute();
 	}
 	
-	private class GetLabelTask extends AsyncTask<Void, Void, String> {
-
-		@Override
-		protected String doInBackground(Void... params) {
-			String urn = mURNText1.getText().toString();
-			String result = "";
-			HttpClient client = new DefaultHttpClient();
-			HttpGet request = new HttpGet(APP_URL + "?urn=" + urn);
-			try {
-				HttpResponse response = client.execute(request);
-				BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-				String line = "";
-				while ((line = reader.readLine()) != null) {
-					result += line;
-				}
-			} catch (ClientProtocolException e1) {
-				e1.printStackTrace();
-				return null;
-			} catch (IOException e1) {
-				e1.printStackTrace();
-				return null;
-			}
-			return result;
+	@Override
+	public void onGetLabelTaskComplete(String result) {
+		if (result != null) {
+			mLabelView.setText(result);
 		}
-		
-		@Override
-		protected void onPostExecute(String result) {
-			if (result != null) {
-				mLabelView.setText(result);
-			}
-			mGetLabelButton.setText("Get label");
-		}
-		
-	}	
-	
-	private class SetLabelTask extends AsyncTask<Void, Void, Boolean> {
-
-		@Override
-		protected Boolean doInBackground(Void... params) {
-			String urn = mURNText2.getText().toString();
-			String label = mLabelText.getText().toString();
-
-			HttpClient client = new DefaultHttpClient();
-			HttpPost post = new HttpPost(APP_URL);
-			try {
-				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-				nameValuePairs.add(new BasicNameValuePair("urn", urn));
-				nameValuePairs.add(new BasicNameValuePair("label", label));
-				post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-				client.execute(post);
-			} catch (IOException e) {
-				e.printStackTrace();
-				return false;
-			}
-			return true;
-		}
-		
-		@Override
-		protected void onPostExecute(Boolean isSuccessful) {
-			mURNText2.setText("");
-			mLabelText.setText("");
-			mSetLabelButton.setText("Set label");
-			if (isSuccessful) {
-				Toast.makeText(mContext, "Tag successfully saved", Toast.LENGTH_SHORT).show();
-			} else {
-				Toast.makeText(mContext, "Failed to save tag", Toast.LENGTH_SHORT).show();
-			}
-		}
-		
+		mGetLabelButton.setText("Get label");
 	}
 
+	@Override
+	public void onSetLabelTaskComplete(Boolean isSuccessful) {
+		mURNText2.setText("");
+		mLabelText.setText("");
+		mSetLabelButton.setText("Set label");
+		if (isSuccessful) {
+			Toast.makeText(mContext, "Tag successfully saved", Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(mContext, "Failed to save tag", Toast.LENGTH_SHORT).show();
+		}
+	}
 
 }

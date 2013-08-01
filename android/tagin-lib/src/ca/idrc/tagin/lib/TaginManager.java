@@ -13,6 +13,7 @@ public class TaginManager {
 	private static Tagin mTagin;
 	
 	public static final String TAG = "tagin-lib";
+	public static final String TAGS_APP_URL = "http://tagin-tags.appspot.com/tagin-tags";
 
 	public TaginManager(Context context) {
 		Tagin.Builder builder = new Tagin.Builder(AndroidHttp.newCompatibleTransport(), new GsonFactory(), null);
