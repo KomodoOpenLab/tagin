@@ -16,6 +16,12 @@ public class LauncherActivity extends Activity {
 	}
 	
 	@Override
+	protected void onPause() {
+		super.onPause();
+		mLauncherDialog.dismissDialog();
+	}
+	
+	@Override
 	protected void onResume() {
 		super.onResume();
 		mLauncherDialog.showDialog();
