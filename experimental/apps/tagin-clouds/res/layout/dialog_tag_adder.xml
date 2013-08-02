@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_get_urn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:onClick="onGetURNClick"
+            android:text="+"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/urn_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="URN value"
+            android:textIsSelectable="true"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="6dp" >
+
+        <EditText
+            android:id="@+id/txt_urn_label"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Label" />
+    </LinearLayout>
+
+</LinearLayout>

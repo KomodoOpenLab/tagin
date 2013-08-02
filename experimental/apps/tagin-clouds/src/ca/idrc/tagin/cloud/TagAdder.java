@@ -6,8 +6,6 @@ package ca.idrc.tagin.cloud;
  * @authors Primal Pappachan
  */
 
-import com.komodo.tagin.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

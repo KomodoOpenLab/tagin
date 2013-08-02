@@ -11,8 +11,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.komodo.tagin.R;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;

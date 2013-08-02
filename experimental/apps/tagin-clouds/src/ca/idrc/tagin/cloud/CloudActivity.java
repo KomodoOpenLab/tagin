@@ -9,8 +9,6 @@ package ca.idrc.tagin.cloud;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.komodo.tagin.R;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
+import ca.idrc.tagin.cloud.util.TagAdderDialog;
 import ca.idrc.tagin.lib.TaginManager;
 import ca.idrc.tagin.lib.TaginService;
 
@@ -35,12 +34,14 @@ public class CloudActivity extends Activity {
 	private Map<String,Tag> mTags;
 	private TaginManager mTaginManager;
 	private TagCloudView mTagCloudView;
+	private TagAdderDialog mTagAdderDialog;
 
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		startSplashScreen();
 		mTaginManager = new TaginManager(this);
+		mTagAdderDialog = new TagAdderDialog(this);
         createTagCloud();
 	}
 
@@ -96,8 +97,7 @@ public class CloudActivity extends Activity {
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
 		case R.id.add_tag:
-			Intent intent = new Intent(this, TagAdder.class);
-			startActivity(intent);
+			mTagAdderDialog.showDialog();
 			break;
 		case R.id.exit_app:
 			finish();
