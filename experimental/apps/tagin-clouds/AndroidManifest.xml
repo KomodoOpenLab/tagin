@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.komodo.tagin"
+    package="ca.idrc.tagin.cloud"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -15,17 +15,12 @@
         android:icon="@drawable/tagcloud_icon"
         android:label="@string/app_name" >
         <activity
-            android:name="com.komodo.tagin.MainActivity"
+            android:name="ca.idrc.tagin.cloud.MainActivity"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         
         <activity
-            android:name="com.komodo.tagin.TagAdder"
+            android:name="ca.idrc.tagin.cloud.TagAdder"
             android:label="@string/app_name" >
         </activity>
 
@@ -59,8 +54,12 @@
             android:syncable="true" />
 
         <activity
-            android:name="com.komodo.tagin.CloudActivity"
+            android:name="ca.idrc.tagin.cloud.CloudActivity"
             android:label="@string/title_activity_cloud" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

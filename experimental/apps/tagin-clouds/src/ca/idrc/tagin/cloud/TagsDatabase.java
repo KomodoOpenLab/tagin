@@ -1,4 +1,4 @@
-package com.komodo.tagin;
+package ca.idrc.tagin.cloud;
 
 /**
  * Komodo Lab: Tagin! Project: 3D Tag Cloud

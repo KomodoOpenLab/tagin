@@ -1,4 +1,4 @@
-package com.komodo.tagin;
+package ca.idrc.tagin.cloud;
 
 /**
  * Komodo Lab: Tagin! Project: 3D Tag Cloud
@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.komodo.tagin.R;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;

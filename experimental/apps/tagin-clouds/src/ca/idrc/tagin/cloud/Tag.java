@@ -1,4 +1,4 @@
-package com.komodo.tagin;
+package ca.idrc.tagin.cloud;
 
 import android.graphics.Color;
 import android.widget.TextView;

@@ -1,10 +1,12 @@
-package com.komodo.tagin;
+package ca.idrc.tagin.cloud;
 
 /**
  * Komodo Lab: Tagin! Project: 3D Tag Cloud
  * Google Summer of Code 2011
  * @authors Primal Pappachan
  */
+
+import com.komodo.tagin.R;
 
 import android.app.Activity;
 import android.content.Intent;

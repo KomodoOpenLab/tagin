@@ -1,4 +1,4 @@
-package com.komodo.tagin;
+package ca.idrc.tagin.cloud;
 
 /**
  * Komodo Lab: Tagin! Project: 3D Tag Cloud
@@ -42,6 +42,7 @@ public class TagCloudView extends RelativeLayout {
 				int textSizeMin, int textSizeMax, int scrollSpeed) {
 
 		super(context);
+		setFocusableInTouchMode(true);
 		this.mContext = context;
 		
 		mScrollSpeed = scrollSpeed;
