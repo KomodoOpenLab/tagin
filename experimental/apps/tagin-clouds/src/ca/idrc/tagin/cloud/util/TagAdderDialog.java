@@ -1,13 +1,18 @@
 package ca.idrc.tagin.cloud.util;
 
-import ca.idrc.tagin.cloud.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+import ca.idrc.tagin.cloud.R;
 
 
 public class TagAdderDialog extends AlertDialog {
 	
+	private TextView mURNTextView;
+	private EditText mLabelEditText;
 	private AlertDialog mLauncherDialog;
 	private Activity mContext;
 	
@@ -19,6 +24,8 @@ public class TagAdderDialog extends AlertDialog {
 	public void showDialog() {
 		TagAdderBuilder builder = new TagAdderBuilder(mContext);
 		mLauncherDialog = builder.create();
+		mURNTextView = builder.getURNTextView();
+		mLabelEditText = builder.getLabelEditText();
 		mLauncherDialog.show();
 	}
 	
@@ -26,12 +33,23 @@ public class TagAdderDialog extends AlertDialog {
 		mLauncherDialog.dismiss();
 	}
 	
+	public TextView getURNTextView() {
+		return mURNTextView;
+	}
+	
+	public EditText getLabelEditText() {
+		return mLabelEditText;
+	}
+	
 	
 	private class TagAdderBuilder extends AlertDialog.Builder {
 		
+		private final View mView;
+
 		public TagAdderBuilder(Activity context) {
 			super(context);
-			setView(mContext.getLayoutInflater().inflate(R.layout.dialog_tag_adder, null));
+			mView = mContext.getLayoutInflater().inflate(R.layout.dialog_tag_adder, null);
+			setView(mView);
 
 			setCancelable(true);
 			setTitle("Add a new tag");
@@ -52,6 +70,14 @@ public class TagAdderDialog extends AlertDialog {
 					
 				}
 			});
+		}
+		
+		public TextView getURNTextView() {
+			return (TextView) mView.findViewById(R.id.tv_urn_value);
+		}
+		
+		public EditText getLabelEditText() {
+			return (EditText) mView.findViewById(R.id.txt_urn_label);
 		}
 	}
 

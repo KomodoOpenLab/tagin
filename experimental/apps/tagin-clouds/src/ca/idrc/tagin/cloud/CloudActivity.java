@@ -18,8 +18,9 @@ import android.os.Bundle;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 import ca.idrc.tagin.cloud.util.TagAdderDialog;
 import ca.idrc.tagin.lib.TaginManager;
 import ca.idrc.tagin.lib.TaginService;
@@ -74,6 +75,11 @@ public class CloudActivity extends Activity {
 		}
 	}
 	
+	public void onGetURNClick(View view) {
+		mTaginManager.apiRequest(TaginService.REQUEST_URN);
+		mTagAdderDialog.getURNTextView().setText("Fetching URN...");
+	}
+	
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -111,6 +117,7 @@ public class CloudActivity extends Activity {
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals(TaginService.ACTION_URN_READY)) {
 				String urn = intent.getStringExtra(TaginService.EXTRA_QUERY_RESULT);
+				mTagAdderDialog.getURNTextView().setText(urn);
 			}
 		}
 	};
