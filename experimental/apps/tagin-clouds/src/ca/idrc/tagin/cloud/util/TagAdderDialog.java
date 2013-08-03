@@ -6,7 +6,9 @@ import android.content.DialogInterface;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import ca.idrc.tagin.cloud.CloudActivity;
 import ca.idrc.tagin.cloud.R;
+import ca.idrc.tagin.cloud.Tag;
 
 
 public class TagAdderDialog extends AlertDialog {
@@ -14,9 +16,9 @@ public class TagAdderDialog extends AlertDialog {
 	private TextView mURNTextView;
 	private EditText mLabelEditText;
 	private AlertDialog mLauncherDialog;
-	private Activity mContext;
+	private CloudActivity mContext;
 	
-	public TagAdderDialog(Activity context) {
+	public TagAdderDialog(CloudActivity context) {
 		super(context);
 		mContext = context;
 	}
@@ -45,10 +47,14 @@ public class TagAdderDialog extends AlertDialog {
 	private class TagAdderBuilder extends AlertDialog.Builder {
 		
 		private final View mView;
+		private TextView mURNTextView;
+		private EditText mLabelEditText;
 
 		public TagAdderBuilder(Activity context) {
 			super(context);
 			mView = mContext.getLayoutInflater().inflate(R.layout.dialog_tag_adder, null);
+			mURNTextView = (TextView) mView.findViewById(R.id.tv_urn_value);
+			mLabelEditText = (EditText) mView.findViewById(R.id.txt_urn_label);
 			setView(mView);
 
 			setCancelable(true);
@@ -57,8 +63,8 @@ public class TagAdderDialog extends AlertDialog {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
-					
+					Tag tag = new Tag(mURNTextView.getText().toString(), mLabelEditText.getText().toString(), 10);
+					mContext.addTagToCloud(tag);
 				}
 			});
 			
@@ -73,11 +79,11 @@ public class TagAdderDialog extends AlertDialog {
 		}
 		
 		public TextView getURNTextView() {
-			return (TextView) mView.findViewById(R.id.tv_urn_value);
+			return mURNTextView;
 		}
 		
 		public EditText getLabelEditText() {
-			return (EditText) mView.findViewById(R.id.txt_urn_label);
+			return mLabelEditText;
 		}
 	}
 

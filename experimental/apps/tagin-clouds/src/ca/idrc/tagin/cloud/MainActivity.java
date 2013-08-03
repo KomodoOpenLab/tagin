@@ -205,7 +205,7 @@ public class MainActivity extends Activity {
 			if (data != null) {
 				String tagName = data.getStringExtra(EXTRA_TAG_NAME); 
 				String popularity = data.getStringExtra(EXTRA_TAG_POPULARITY);
-				Tag tempTag = new Tag(tagName, Integer.parseInt(popularity), SEARCH_TEXT + tagName );			
+				Tag tempTag = new Tag("id", tagName, Integer.parseInt(popularity), SEARCH_TEXT + tagName );			
 				Map<String,Tag> tags = new LinkedHashMap<String,Tag>();
 				if (!isCloudCreated) { // first time: stop splash and create TagCloud
 					stopSplashScreen();

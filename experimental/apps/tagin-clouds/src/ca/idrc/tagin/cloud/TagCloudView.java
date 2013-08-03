@@ -109,10 +109,9 @@ public class TagCloudView extends RelativeLayout {
 	}
 	
 	public void addTag(Tag tag) {
-		if (!mTagCloud.getTags().containsKey(tag.getText())) {
-			initializeTag(tag);
-			mTagCloud.add(tag);
-		}
+		initializeTag(tag);
+		mTagCloud.add(tag);
+		updateView(tag);
 	}
 	
 	public void setTagRGBT(Tag tag) {

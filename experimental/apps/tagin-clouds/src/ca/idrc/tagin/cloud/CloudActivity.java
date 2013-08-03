@@ -19,8 +19,6 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 import ca.idrc.tagin.cloud.util.TagAdderDialog;
 import ca.idrc.tagin.lib.TaginManager;
 import ca.idrc.tagin.lib.TaginService;
@@ -54,17 +52,15 @@ public class CloudActivity extends Activity {
 		mTags = new LinkedHashMap<String, Tag>();
 		
 		Display display = getWindowManager().getDefaultDisplay();
-		int width = display.getWidth();
-		int height = display.getHeight();
-		mTagCloudView = new TagCloudView(this, width, height, mTags);
+		mTagCloudView = new TagCloudView(this, display.getWidth(), display.getHeight(), mTags);
 		setContentView(mTagCloudView);
 		mTagCloudView.requestFocus();
 	}
 	
-	private void addTagToCloud(Tag tag) {
-		if (tag != null && !mTags.containsKey(tag.getText())) {
+	public void addTagToCloud(Tag tag) {
+		if (tag != null && !mTags.containsKey(tag.getID())) {
 			mTagCloudView.addTag(tag);
-			mTags.put(tag.getText(), tag);
+			mTags.put(tag.getID(), tag);
 			updateTagCloud();
 		}
 	}

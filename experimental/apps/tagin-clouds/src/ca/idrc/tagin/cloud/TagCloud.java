@@ -91,7 +91,7 @@ public class TagCloud {
 		tag.setTextSize(tempTextSize);
 		position(tag);
 		// now add the new tag to the tagCloud
-		mTags.put(tag.getText(), tag);				
+		mTags.put(tag.getID(), tag);				
 		updateAll();
 	}
 	
@@ -206,7 +206,7 @@ public class TagCloud {
 		
 		mTags = new LinkedHashMap<String, Tag>();
 		for (Tag tag : entries) {
-			mTags.put(tag.getText(), tag);
+			mTags.put(tag.getID(), tag);
 		}
 	}
 	
