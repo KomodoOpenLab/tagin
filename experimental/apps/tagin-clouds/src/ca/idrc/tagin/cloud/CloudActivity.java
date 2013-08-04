@@ -6,6 +6,13 @@ package ca.idrc.tagin.cloud;
  * @authors Reza Shiftehfar, Sara Khosravinasr and Jorge Silva
  */
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -15,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,12 +57,13 @@ public class CloudActivity extends Activity {
 	}
 
 	private void createTagCloud() {
-		mTags = new LinkedHashMap<String, Tag>();
+		mTags = loadState();
 		
 		Display display = getWindowManager().getDefaultDisplay();
 		mTagCloudView = new TagCloudView(this, display.getWidth(), display.getHeight(), mTags);
 		setContentView(mTagCloudView);
 		mTagCloudView.requestFocus();
+		updateTagCloud();
 	}
 	
 	public void addTagToCloud(Tag tag) {
@@ -62,6 +71,7 @@ public class CloudActivity extends Activity {
 			mTagCloudView.addTag(tag);
 			mTags.put(tag.getID(), tag);
 			updateTagCloud();
+			saveState();
 		}
 	}
 	
@@ -74,6 +84,51 @@ public class CloudActivity extends Activity {
 	public void onGetURNClick(View view) {
 		mTaginManager.apiRequest(TaginService.REQUEST_URN);
 		mTagAdderDialog.getURNTextView().setText("Fetching URN...");
+	}
+	
+	@SuppressWarnings("unchecked")
+	private Map<String,Tag> loadState() {
+		Map<String,Tag> tags = new LinkedHashMap<String,Tag>();
+		File file = new File(getFilesDir() + "/state");
+
+		if (file.exists()) {
+			try {
+				Log.d("tagin", "file exists");
+				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+				tags = (Map<String,Tag>) ois.readObject();
+				Log.d("tagin", "file: " + tags);
+				ois.close();
+			} catch (Exception e) { 
+				Log.d("tagin", "exception: " + e.getMessage());
+				e.printStackTrace();
+			}
+		}
+		Log.d("tagin", "return: " + tags);
+		return tags;
+	}
+	
+	private void saveState() {
+		ObjectOutputStream oos = null;
+		try {
+			File history = new File(getFilesDir() + "/state");
+			history.getParentFile().createNewFile();
+			FileOutputStream fout = new FileOutputStream(history);
+			oos = new ObjectOutputStream(fout);
+			oos.writeObject(mTags);
+		} catch (FileNotFoundException ex) {
+			ex.printStackTrace();  
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} finally {
+			try {
+				if (oos != null) {
+					oos.flush();
+					oos.close();
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
 	
 	@Override

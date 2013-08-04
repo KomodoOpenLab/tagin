@@ -1,5 +1,7 @@
 package ca.idrc.tagin.cloud;
 
+import java.io.Serializable;
+
 import android.graphics.Color;
 import android.widget.TextView;
 
@@ -13,7 +15,7 @@ import android.widget.TextView;
  * Tag class:
  * For now tags are just cubes. Later they will be replaced by real texts!
  */
-public class Tag implements Comparable<Tag> {
+public class Tag implements Serializable, Comparable<Tag> {
 
 	private static final int DEFAULT_POPULARITY = 1;
 	private float x, y, z; //the center of the 3D Tag
