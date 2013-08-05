@@ -126,7 +126,7 @@ public class TagCloud {
 								((float)popularity-smallest) / ((float)largest-smallest);
 		int tempTextSize = getTextSizeGradient(percentage);
 		tag.setColor(getColorFromGradient(percentage));
-		tag.setTextSize(tempTextSize);		
+		tag.setTextSize(tempTextSize);
 	}
 
 	private void position(Tag tag) {

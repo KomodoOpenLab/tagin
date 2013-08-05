@@ -93,17 +93,14 @@ public class CloudActivity extends Activity {
 
 		if (file.exists()) {
 			try {
-				Log.d("tagin", "file exists");
 				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
 				tags = (Map<String,Tag>) ois.readObject();
-				Log.d("tagin", "file: " + tags);
 				ois.close();
 			} catch (Exception e) { 
-				Log.d("tagin", "exception: " + e.getMessage());
+				Log.d("tagin", "exception caught: " + e.getMessage());
 				e.printStackTrace();
 			}
 		}
-		Log.d("tagin", "return: " + tags);
 		return tags;
 	}
 	

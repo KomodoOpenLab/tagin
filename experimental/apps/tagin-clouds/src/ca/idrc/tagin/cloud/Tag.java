@@ -1,5 +1,8 @@
 package ca.idrc.tagin.cloud;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import android.graphics.Color;
@@ -11,12 +14,10 @@ import android.widget.TextView;
  * @authors Reza Shiftehfar, Sara Khosravinasr and Jorge Silva
  */
 
-/*
- * Tag class:
- * For now tags are just cubes. Later they will be replaced by real texts!
- */
 public class Tag implements Serializable, Comparable<Tag> {
 
+	private static final long serialVersionUID = -2794895115445323565L;
+	
 	private static final int DEFAULT_POPULARITY = 1;
 	private float x, y, z; //the center of the 3D Tag
 	private float x2D, y2D;
@@ -24,12 +25,12 @@ public class Tag implements Serializable, Comparable<Tag> {
 	private String mID;
 	private String mText;
 	private String mURL;
-	private int mPopularity;  //this is the importance/popularity of the Tag 
+	private int mPopularity;
 	private int mTextSize;
 	private float mScale;
 	private int mColor;
     
-    private TextView mTextView;
+    private transient TextView mTextView;
     
 	public Tag() {
 		this("", "", 0f, 0f, 0f, 1.0f, 0, "");
@@ -69,6 +70,18 @@ public class Tag implements Serializable, Comparable<Tag> {
 	@Override
 	public int compareTo(Tag another) {
 		return (int)(another.z - z);
+	}
+	
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.defaultWriteObject();
+		out.writeInt(mTextSize);
+		out.writeInt(mColor);
+	}
+	
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		mTextSize = in.readInt();
+		mColor = in.readInt();
 	}
 	
     public float getX() {
