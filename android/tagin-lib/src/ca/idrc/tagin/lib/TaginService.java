@@ -63,7 +63,9 @@ public class TaginService extends Service {
 		} else if (type.equals(REQUEST_LIST_FINGERPRINTS)) {
 			new ApiRequestTask().execute(new ListFingerprintsRequest(mTagin));
 		} else if (type.equals(REQUEST_NEIGHBOURS)) {
-			new ApiRequestTask().execute(new FindNeighboursRequest(mTagin, intent.getStringExtra(EXTRA_PARAM_1)));
+			String urn = intent.getStringExtra(EXTRA_PARAM_1);
+			String count = intent.getStringExtra(EXTRA_PARAM_2);
+			new ApiRequestTask().execute(new FindNeighboursRequest(mTagin, urn, count));
 		}
 		return START_NOT_STICKY;
 	}

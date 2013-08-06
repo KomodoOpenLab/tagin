@@ -13,17 +13,19 @@ public class FindNeighboursRequest implements TaginApiCall {
 	
 	private Tagin mTagin;
 	private String mUrn;
+	private Integer mMaxCount;
 	
-	public FindNeighboursRequest(Tagin tagin, String urn) {
+	public FindNeighboursRequest(Tagin tagin, String urn, String count) {
 		mTagin = tagin;
 		mUrn = urn;
+		mMaxCount = Integer.parseInt(count);
 	}
 
 	@Override
 	public String execute() {
 		String result = null;
 		try {
-			URNCollection urns = mTagin.urns().neighbours(mUrn).execute();
+			URNCollection urns = mTagin.urns().neighbours(mUrn, mMaxCount).execute();
 			result = urns.toString();
 		} catch (IOException e) {
 			Log.d(TaginManager.TAG, "Failed to find neighbours: " + e.getMessage());
