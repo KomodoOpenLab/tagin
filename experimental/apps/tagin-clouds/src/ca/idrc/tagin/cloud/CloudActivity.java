@@ -31,11 +31,6 @@ import ca.idrc.tagin.cloud.util.TagAdderDialog;
 import ca.idrc.tagin.lib.TaginManager;
 import ca.idrc.tagin.lib.TaginService;
 
-/**
- * SampleTagCloud class: this is a sample program to show how the 3D Tag Cloud
- * can be used. It Creates the activity and sets the ContentView to our
- * TagCloudView class
- */
 public class CloudActivity extends Activity {
 	
 	private Map<String,Tag> mTags;

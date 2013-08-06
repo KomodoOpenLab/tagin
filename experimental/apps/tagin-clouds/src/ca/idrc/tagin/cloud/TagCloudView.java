@@ -21,12 +21,11 @@ public class TagCloudView extends RelativeLayout {
 	
 	private final float TOUCH_SCALE_FACTOR = .8f;
 	private final float TRACKBALL_SCALE_FACTOR = 10;
-	private final static int TEXT_SIZE_MIN = 4;
-	private static final int TEXT_SIZE_MAX = 34;
+	private final int TEXT_SIZE_MIN = 4;
+	private final int TEXT_SIZE_MAX = 34;
+	private final int SCROLL_SPEED = 1;
 	
 	private float mScrollSpeed;
-	private float mAngleX = 0;
-	private float mAngleY = 0;
 	private float mCenterX, mCenterY;
 	private float mRadius;
 	private int mShiftLeft;
@@ -35,17 +34,12 @@ public class TagCloudView extends RelativeLayout {
 	private TagCloud mTagCloud;
 	
 	public TagCloudView(Context context, int width, int height, Map<String,Tag> tags) {
-		this(context, width, height, tags, TEXT_SIZE_MIN , TEXT_SIZE_MAX, 1); //default for min/max text size
-	}
-	
-	public TagCloudView(Context context, int width, int height, Map<String,Tag> tags, 
-				int textSizeMin, int textSizeMax, int scrollSpeed) {
 
 		super(context);
 		setFocusableInTouchMode(true);
-		this.mContext = context;
+		mContext = context;
 		
-		mScrollSpeed = scrollSpeed;
+		mScrollSpeed = SCROLL_SPEED;
        
 		//set the center of the sphere on center of our screen:
 		mCenterX = width / 2;
@@ -56,18 +50,18 @@ public class TagCloudView extends RelativeLayout {
 		mShiftLeft = (int) (Math.min(mCenterX * 0.15f , mCenterY * 0.15f));
 		
 		// initialize the TagCloud from a list of tags
-		mTagCloud = new TagCloud(tags, (int) mRadius, textSizeMin, textSizeMax);
-		int tempColor1 = Color.argb(1, 240, 196, 51);
-		int tempColor2 = Color.argb(1, 255, 0, 0);
-		mTagCloud.setTagColor1(tempColor1); // higher color
-		mTagCloud.setTagColor2(tempColor2); // lower color
+		mTagCloud = new TagCloud(tags, (int) mRadius, TEXT_SIZE_MIN, TEXT_SIZE_MAX);
+		int color1 = Color.argb(1, 240, 196, 51);
+		int color2 = Color.argb(1, 255, 0, 0);
+		mTagCloud.setTagColor1(color1); // higher color
+		mTagCloud.setTagColor2(color2); // lower color
 		mTagCloud.setRadius((int) mRadius);
 		mTagCloud.create(); // to put each Tag at its correct initial location
 
 
     	// Update the transparency/scale of tags
-    	mTagCloud.setAngleX(mAngleX);
-    	mTagCloud.setAngleY(mAngleY);
+    	mTagCloud.setAngleX(0);
+    	mTagCloud.setAngleY(0);
     	mTagCloud.update();
 		
 		// Now Draw the 3D objects
@@ -105,7 +99,6 @@ public class TagCloudView extends RelativeLayout {
 		view.setTextSize((int) (tag.getTextSize() * tag.getScale()));
 		view.setTextColor(tag.getColor());
 		view.bringToFront();
-		
 	}
 	
 	public void addTag(Tag tag) {
@@ -116,19 +109,6 @@ public class TagCloudView extends RelativeLayout {
 	
 	public void setTagRGBT(Tag tag) {
 		mTagCloud.setTagRGBT(tag);
-	}
-	
-	public boolean replace(Tag newTag, String oldTagText) {
-		boolean result = false;
-		int j = mTagCloud.replace(newTag, oldTagText);
-		if (j >= 0) { //then oldTagText was found and replaced with newTag data			
-	    	for (Tag tag : mTagCloud.getTags().values()) {
-	    		updateView(tag);
-	    		tag.getTextView().setText(tag.getText());
-	    	}
-			result = true;
-		} 
-		return result;
 	}
 	
 	@Override
@@ -160,11 +140,11 @@ public class TagCloudView extends RelativeLayout {
 	}
 	
 	private void updateAngles(float x, float y, float scaleFactor) {
-		mAngleX = x * mScrollSpeed * scaleFactor;
-		mAngleY = y * mScrollSpeed * scaleFactor;
+		float angleX = x * mScrollSpeed * scaleFactor;
+		float angleY = y * mScrollSpeed * scaleFactor;
     	
-		mTagCloud.setAngleX(mAngleX);
-    	mTagCloud.setAngleY(mAngleY);
+		mTagCloud.setAngleX(angleX);
+    	mTagCloud.setAngleY(angleY);
     	mTagCloud.update();
     	
     	for (Tag tag : mTagCloud.getTags().values()) {

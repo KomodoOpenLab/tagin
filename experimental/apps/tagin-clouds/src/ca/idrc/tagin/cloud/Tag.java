@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 public class Tag implements Serializable, Comparable<Tag> {
 
-	private static final long serialVersionUID = -2794895115445323565L;
+	private static final long serialVersionUID = -4652373547442417254L;
 	
 	private static final int DEFAULT_POPULARITY = 1;
 	private float x, y, z; //the center of the 3D Tag
