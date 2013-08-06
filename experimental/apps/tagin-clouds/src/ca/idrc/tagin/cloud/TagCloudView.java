@@ -142,9 +142,9 @@ public class TagCloudView extends RelativeLayout {
 	private void updateAngles(float x, float y, float scaleFactor) {
 		float angleX = x * mScrollSpeed * scaleFactor;
 		float angleY = y * mScrollSpeed * scaleFactor;
-    	
+		
 		mTagCloud.setAngleX(angleX);
-    	mTagCloud.setAngleY(angleY);
+		mTagCloud.setAngleY(angleY);
     	mTagCloud.update();
     	
     	for (Tag tag : mTagCloud.getTags().values()) {
