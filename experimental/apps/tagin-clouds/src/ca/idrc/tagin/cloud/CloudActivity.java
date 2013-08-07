@@ -6,13 +6,7 @@ package ca.idrc.tagin.cloud;
  * @authors Reza Shiftehfar, Sara Khosravinasr and Jorge Silva
  */
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -30,8 +24,19 @@ import android.view.View;
 import ca.idrc.tagin.cloud.util.TagAdderDialog;
 import ca.idrc.tagin.lib.TaginManager;
 import ca.idrc.tagin.lib.TaginService;
+import ca.idrc.tagin.lib.tags.GetLabelTask;
+import ca.idrc.tagin.lib.tags.GetLabelTaskListener;
 
-public class CloudActivity extends Activity {
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.tagin.model.URN;
+import com.google.api.services.tagin.model.URNCollection;
+
+public class CloudActivity extends Activity implements GetLabelTaskListener {
+	
+	private final String MAX_NEIGHBOURS = "10";
+	private Integer mNeighboursCounter;
+	
+	private boolean isInitializing;
 	
 	private Map<String,Tag> mTags;
 	private TaginManager mTaginManager;
@@ -41,19 +46,19 @@ public class CloudActivity extends Activity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		startSplashScreen();
 		mTaginManager = new TaginManager(this);
 		mTagAdderDialog = new TagAdderDialog(this);
-        createTagCloud();
+		mTags = new LinkedHashMap<String,Tag>();
+		startSplashScreen();
+		mTaginManager.apiRequest(TaginService.REQUEST_URN);
 	}
 
 	private void startSplashScreen() {
+		isInitializing = true;
 		setContentView(R.layout.splash);
 	}
 
 	private void createTagCloud() {
-		mTags = loadState();
-		
 		Display display = getWindowManager().getDefaultDisplay();
 		mTagCloudView = new TagCloudView(this, display.getWidth(), display.getHeight(), mTags);
 		setContentView(mTagCloudView);
@@ -66,7 +71,6 @@ public class CloudActivity extends Activity {
 			mTagCloudView.addTag(tag);
 			mTags.put(tag.getID(), tag);
 			updateTagCloud();
-			saveState();
 		}
 	}
 	
@@ -81,48 +85,6 @@ public class CloudActivity extends Activity {
 		mTagAdderDialog.getURNTextView().setText("Fetching URN...");
 	}
 	
-	@SuppressWarnings("unchecked")
-	private Map<String,Tag> loadState() {
-		Map<String,Tag> tags = new LinkedHashMap<String,Tag>();
-		File file = new File(getFilesDir() + "/state");
-
-		if (file.exists()) {
-			try {
-				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
-				tags = (Map<String,Tag>) ois.readObject();
-				ois.close();
-			} catch (Exception e) { 
-				Log.d("tagin", "exception caught: " + e.getMessage());
-				e.printStackTrace();
-			}
-		}
-		return tags;
-	}
-	
-	private void saveState() {
-		ObjectOutputStream oos = null;
-		try {
-			File history = new File(getFilesDir() + "/state");
-			history.getParentFile().createNewFile();
-			FileOutputStream fout = new FileOutputStream(history);
-			oos = new ObjectOutputStream(fout);
-			oos.writeObject(mTags);
-		} catch (FileNotFoundException ex) {
-			ex.printStackTrace();  
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} finally {
-			try {
-				if (oos != null) {
-					oos.flush();
-					oos.close();
-				}
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-		}
-	}
-	
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -133,6 +95,7 @@ public class CloudActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
         registerReceiver(mReceiver, new IntentFilter(TaginService.ACTION_URN_READY));
+        registerReceiver(mReceiver, new IntentFilter(TaginService.ACTION_NEIGHBOURS_READY));
 	}
 
 	@Override
@@ -155,13 +118,52 @@ public class CloudActivity extends Activity {
 		return true;
 	}
 	
+	public void handleNeighboursReady(String result) {
+		URNCollection urns = null;
+		try {
+			urns = new GsonFactory().fromString(result, URNCollection.class);
+		} catch (IOException e) {
+			Log.e("tagin", "Deserialization error: " + e.getMessage());
+		}
+		
+		if (urns != null && urns.getItems().size() != 0) {
+			mNeighboursCounter = urns.getItems().size();
+			for (URN urn : urns.getItems()) {
+				GetLabelTask<CloudActivity> task = new GetLabelTask<CloudActivity>(this, urn.getValue());
+				task.execute();
+			}
+		}
+	}
+	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals(TaginService.ACTION_URN_READY)) {
 				String urn = intent.getStringExtra(TaginService.EXTRA_QUERY_RESULT);
-				mTagAdderDialog.getURNTextView().setText(urn);
+				if (isInitializing) {
+					mTaginManager.apiRequest(TaginService.REQUEST_NEIGHBOURS, urn, MAX_NEIGHBOURS);
+				} else {
+					mTagAdderDialog.getURNTextView().setText(urn);
+				}
+			} else if (intent.getAction().equals(TaginService.ACTION_NEIGHBOURS_READY)) {
+				String result = intent.getStringExtra(TaginService.EXTRA_QUERY_RESULT);
+				handleNeighboursReady(result);
 			}
 		}
 	};
+
+	@Override
+	public void onGetLabelTaskComplete(String urn, String result) {
+		synchronized(mNeighboursCounter) {
+			mNeighboursCounter--;
+			if (result != null) {
+				Tag tag = new Tag(urn, result, 10);
+				mTags.put(urn, tag);
+			}
+			if (mNeighboursCounter == 0) {
+				createTagCloud();
+			}
+		}
+	}
+
 }

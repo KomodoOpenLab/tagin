@@ -47,6 +47,7 @@
             android:exported="true" >
             <intent-filter>
                 <action android:name="ca.idrc.tagin.lib.ACTION_URN_READY" />
+                <action android:name="ca.idrc.tagin.lib.ACTION_NEIGHBOURS_READY" />
             </intent-filter>
         </service>
 
