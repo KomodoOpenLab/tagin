@@ -63,7 +63,7 @@ public class TagsActivity extends Activity implements GetLabelTaskListener, SetL
 	}
 	
 	@Override
-	public void onGetLabelTaskComplete(String result) {
+	public void onGetLabelTaskComplete(String urn, String result) {
 		if (result != null) {
 			mLabelView.setText(result);
 		}

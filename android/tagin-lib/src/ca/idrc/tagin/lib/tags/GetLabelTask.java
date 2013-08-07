@@ -50,7 +50,7 @@ public class GetLabelTask<T extends Context & GetLabelTaskListener> extends Asyn
 	
 	@Override
 	protected void onPostExecute(String result) {
-		mContext.onGetLabelTaskComplete(result);
+		mContext.onGetLabelTaskComplete(mURN, result);
 	}
 	
 }
