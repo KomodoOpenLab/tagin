@@ -59,6 +59,7 @@ public class CloudActivity extends Activity implements GetLabelTaskListener {
 	}
 
 	private void createTagCloud() {
+		isInitializing = false;
 		Display display = getWindowManager().getDefaultDisplay();
 		mTagCloudView = new TagCloudView(this, display.getWidth(), display.getHeight(), mTags);
 		setContentView(mTagCloudView);
@@ -67,7 +68,7 @@ public class CloudActivity extends Activity implements GetLabelTaskListener {
 	}
 	
 	public void addTagToCloud(Tag tag) {
-		if (tag != null && !mTags.containsKey(tag.getID())) {
+		if (tag != null) {
 			mTagCloudView.addTag(tag);
 			mTags.put(tag.getID(), tag);
 			updateTagCloud();
@@ -141,7 +142,13 @@ public class CloudActivity extends Activity implements GetLabelTaskListener {
 			if (intent.getAction().equals(TaginService.ACTION_URN_READY)) {
 				String urn = intent.getStringExtra(TaginService.EXTRA_QUERY_RESULT);
 				if (isInitializing) {
-					mTaginManager.apiRequest(TaginService.REQUEST_NEIGHBOURS, urn, MAX_NEIGHBOURS);
+					if (urn != null) {
+						mTaginManager.apiRequest(TaginService.REQUEST_NEIGHBOURS, urn, MAX_NEIGHBOURS);
+					} else {
+						Log.d("tagin", "Could not submit fingerprint");
+						// TODO show error dialog
+						createTagCloud();
+					}
 				} else {
 					mTagAdderDialog.getURNTextView().setText(urn);
 				}
