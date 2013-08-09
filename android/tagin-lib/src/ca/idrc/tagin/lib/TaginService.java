@@ -21,9 +21,9 @@ import com.google.api.services.tagin.model.Pattern;
 public class TaginService extends Service {
 	
 	private Tagin mTagin;
-	private WifiManager mWifiManager;
 	private Handler mHandler;
 	private Pattern mPattern;
+	private WifiManager mWifiManager;
 	
 	private int mScanIterations;
 	private final int MAX_SCANS = 3;
