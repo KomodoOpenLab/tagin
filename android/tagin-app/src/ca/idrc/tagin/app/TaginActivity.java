@@ -24,6 +24,8 @@ import com.google.api.services.tagin.model.Fingerprint;
 import com.google.api.services.tagin.model.FingerprintCollection;
 
 public class TaginActivity extends Activity {
+	
+	private final String MAX_NEIGHBOURS = "10";
 
 	private TaginManager mTaginManager;
 	
@@ -69,15 +71,15 @@ public class TaginActivity extends Activity {
 	}
 	
 	public void onFindNeighbours(View view) {
-		if (mURNTextView.getText().length() != 32) {
+		if (mNeighboursEditText.getText().length() < 30) {
 			Toast.makeText(this, "Invalid URN", Toast.LENGTH_SHORT).show();
 		} else {
 			mFindNeighboursButton.setText("Searching for nearby neighbours...");
-			mTaginManager.apiRequest(TaginService.REQUEST_NEIGHBOURS, mURNTextView.getText().toString());
+			String urn = mNeighboursEditText.getText().toString();
+			mTaginManager.apiRequest(TaginService.REQUEST_NEIGHBOURS, urn, MAX_NEIGHBOURS);
 		}
 	}
 	
-
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		
 		@Override
@@ -98,10 +100,12 @@ public class TaginActivity extends Activity {
 	private void handleFingerprintsResponse(String result) {
 		FingerprintCollection fps = null;
 		
-		try {
-			fps = new GsonFactory().fromString(result, FingerprintCollection.class);
-		} catch (IOException e) {
-			Log.e("tagin!", "Deserialization error: " + e.getMessage());
+		if (result != null) {
+			try {
+				fps = new GsonFactory().fromString(result, FingerprintCollection.class);
+			} catch (IOException e) {
+				Log.e("tagin!", "Deserialization error: " + e.getMessage());
+			}
 		}
 		
 		if (fps != null) {

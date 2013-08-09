@@ -46,16 +46,12 @@ public class CloudActivity extends Activity implements GetLabelTaskListener {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.splash);
+		isInitializing = true;
 		mTaginManager = new TaginManager(this);
 		mTagAdderDialog = new TagAdderDialog(this);
 		mTags = new LinkedHashMap<String,Tag>();
-		startSplashScreen();
 		mTaginManager.apiRequest(TaginService.REQUEST_URN);
-	}
-
-	private void startSplashScreen() {
-		isInitializing = true;
-		setContentView(R.layout.splash);
 	}
 
 	private void createTagCloud() {
@@ -121,18 +117,24 @@ public class CloudActivity extends Activity implements GetLabelTaskListener {
 	
 	public void handleNeighboursReady(String result) {
 		URNCollection urns = null;
-		try {
-			urns = new GsonFactory().fromString(result, URNCollection.class);
-		} catch (IOException e) {
-			Log.e("tagin", "Deserialization error: " + e.getMessage());
-		}
 		
-		if (urns != null && urns.getItems().size() != 0) {
+		if (result != null) {
+			try {
+				urns = new GsonFactory().fromString(result, URNCollection.class);
+			} catch (IOException e) {
+				Log.e("tagin", "Deserialization error: " + e.getMessage());
+			}
+		}
+
+		if (urns != null && urns.getItems() != null && urns.getItems().size() > 0) {
 			mNeighboursCounter = urns.getItems().size();
 			for (URN urn : urns.getItems()) {
 				GetLabelTask<CloudActivity> task = new GetLabelTask<CloudActivity>(this, urn.getValue());
 				task.execute();
 			}
+		} else {
+			// No neighbours found, start cloud
+			createTagCloud();
 		}
 	}
 	
