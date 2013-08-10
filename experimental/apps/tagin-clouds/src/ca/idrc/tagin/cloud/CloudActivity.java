@@ -35,9 +35,11 @@ public class CloudActivity extends Activity implements GetLabelTaskListener {
 	
 	private final String MAX_NEIGHBOURS = "10";
 	private Integer mNeighboursCounter;
+	private String mInitialURN;
 	
 	private boolean isInitializing;
 	
+	private CloudActivity mInstance;
 	private Map<String,Tag> mTags;
 	private TaginManager mTaginManager;
 	private TagCloudView mTagCloudView;
@@ -48,6 +50,7 @@ public class CloudActivity extends Activity implements GetLabelTaskListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.splash);
 		isInitializing = true;
+		mInstance = this;
 		mTaginManager = new TaginManager(this);
 		mTagAdderDialog = new TagAdderDialog(this);
 		mTags = new LinkedHashMap<String,Tag>();
@@ -146,6 +149,9 @@ public class CloudActivity extends Activity implements GetLabelTaskListener {
 				if (isInitializing) {
 					if (urn != null) {
 						mTaginManager.apiRequest(TaginService.REQUEST_NEIGHBOURS, urn, MAX_NEIGHBOURS);
+						mInitialURN = urn;
+						GetLabelTask<CloudActivity> task = new GetLabelTask<CloudActivity>(mInstance, urn);
+						task.execute();
 					} else {
 						Log.d("tagin", "Could not submit fingerprint");
 						// TODO show error dialog
@@ -162,15 +168,20 @@ public class CloudActivity extends Activity implements GetLabelTaskListener {
 	};
 
 	@Override
-	public void onGetLabelTaskComplete(String urn, String result) {
-		synchronized(mNeighboursCounter) {
-			mNeighboursCounter--;
-			if (result != null) {
-				Tag tag = new Tag(urn, result, 10);
-				mTags.put(urn, tag);
-			}
-			if (mNeighboursCounter == 0) {
-				createTagCloud();
+	public void onGetLabelTaskComplete(String urn, String label) {
+		if (urn.equals(mInitialURN)) {
+			Tag tag = new Tag(urn, label, 30);
+			mTags.put(urn, tag);
+		} else {
+			synchronized(mNeighboursCounter) {
+				mNeighboursCounter--;
+				if (label != null) {
+					Tag tag = new Tag(urn, label, 10);
+					mTags.put(urn, tag);
+				}
+				if (mNeighboursCounter == 0) {
+					createTagCloud();
+				}
 			}
 		}
 	}
