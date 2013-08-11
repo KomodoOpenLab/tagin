@@ -14,6 +14,7 @@ import ca.idrc.tagin.cloud.Tag;
 public class TagAdderDialog extends AlertDialog {
 	
 	private TextView mURNTextView;
+	private TextView mLabelTextView;
 	private EditText mLabelEditText;
 	private AlertDialog mLauncherDialog;
 	private CloudActivity mContext;
@@ -27,6 +28,7 @@ public class TagAdderDialog extends AlertDialog {
 		TagAdderBuilder builder = new TagAdderBuilder(mContext);
 		mLauncherDialog = builder.create();
 		mURNTextView = builder.getURNTextView();
+		mLabelTextView = builder.getLabelTextView();
 		mLabelEditText = builder.getLabelEditText();
 		mLauncherDialog.show();
 	}
@@ -39,6 +41,10 @@ public class TagAdderDialog extends AlertDialog {
 		return mURNTextView;
 	}
 	
+	public TextView getLabelTextView() {
+		return mLabelTextView;
+	}
+	
 	public EditText getLabelEditText() {
 		return mLabelEditText;
 	}
@@ -48,12 +54,14 @@ public class TagAdderDialog extends AlertDialog {
 		
 		private final View mView;
 		private TextView mURNTextView;
+		private TextView mLabelTextView;
 		private EditText mLabelEditText;
 
 		public TagAdderBuilder(Activity context) {
 			super(context);
 			mView = mContext.getLayoutInflater().inflate(R.layout.dialog_tag_adder, null);
 			mURNTextView = (TextView) mView.findViewById(R.id.tv_urn_value);
+			mLabelTextView = (TextView) mView.findViewById(R.id.tv_label_value);
 			mLabelEditText = (EditText) mView.findViewById(R.id.txt_urn_label);
 			setView(mView);
 
@@ -63,8 +71,8 @@ public class TagAdderDialog extends AlertDialog {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					Tag tag = new Tag(mURNTextView.getText().toString(), mLabelEditText.getText().toString(), 10);
-					mContext.addTagToCloud(tag);
+					Tag tag = new Tag(mURNTextView.getText().toString(), mLabelEditText.getText().toString(), 20);
+					mContext.submitTag(tag);
 				}
 			});
 			
@@ -72,7 +80,6 @@ public class TagAdderDialog extends AlertDialog {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
 					
 				}
 			});
@@ -80,6 +87,10 @@ public class TagAdderDialog extends AlertDialog {
 		
 		public TextView getURNTextView() {
 			return mURNTextView;
+		}
+		
+		public TextView getLabelTextView() {
+			return mLabelTextView;
 		}
 		
 		public EditText getLabelEditText() {

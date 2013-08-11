@@ -26,12 +26,14 @@ import ca.idrc.tagin.lib.TaginManager;
 import ca.idrc.tagin.lib.TaginService;
 import ca.idrc.tagin.lib.tags.GetLabelTask;
 import ca.idrc.tagin.lib.tags.GetLabelTaskListener;
+import ca.idrc.tagin.lib.tags.SetLabelTask;
+import ca.idrc.tagin.lib.tags.SetLabelTaskListener;
 
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.tagin.model.URN;
 import com.google.api.services.tagin.model.URNCollection;
 
-public class CloudActivity extends Activity implements GetLabelTaskListener {
+public class CloudActivity extends Activity implements GetLabelTaskListener, SetLabelTaskListener {
 	
 	private final String MAX_NEIGHBOURS = "10";
 	private Integer mNeighboursCounter;
@@ -64,6 +66,12 @@ public class CloudActivity extends Activity implements GetLabelTaskListener {
 		setContentView(mTagCloudView);
 		mTagCloudView.requestFocus();
 		updateTagCloud();
+	}
+	
+	public void submitTag(Tag tag) {
+		SetLabelTask<CloudActivity> task = new SetLabelTask<CloudActivity>(mInstance, tag.getID(), tag.getText());
+		task.execute();
+		addTagToCloud(tag);
 	}
 	
 	public void addTagToCloud(Tag tag) {
@@ -159,6 +167,8 @@ public class CloudActivity extends Activity implements GetLabelTaskListener {
 					}
 				} else {
 					mTagAdderDialog.getURNTextView().setText(urn);
+					GetLabelTask<CloudActivity> task = new GetLabelTask<CloudActivity>(mInstance, urn);
+					task.execute();
 				}
 			} else if (intent.getAction().equals(TaginService.ACTION_NEIGHBOURS_READY)) {
 				String result = intent.getStringExtra(TaginService.EXTRA_QUERY_RESULT);
@@ -169,21 +179,32 @@ public class CloudActivity extends Activity implements GetLabelTaskListener {
 
 	@Override
 	public void onGetLabelTaskComplete(String urn, String label) {
-		if (urn.equals(mInitialURN)) {
-			Tag tag = new Tag(urn, label, 30);
-			mTags.put(urn, tag);
-		} else {
-			synchronized(mNeighboursCounter) {
-				mNeighboursCounter--;
-				if (label != null) {
-					Tag tag = new Tag(urn, label, 10);
-					mTags.put(urn, tag);
-				}
-				if (mNeighboursCounter == 0) {
-					createTagCloud();
+		if (isInitializing) {
+			if (urn.equals(mInitialURN)) {
+				Tag tag = new Tag(urn, label, 20);
+				mTags.put(urn, tag);
+			} else {
+				synchronized(mNeighboursCounter) {
+					mNeighboursCounter--;
+					if (label != null) {
+						Tag tag = new Tag(urn, label, 18);
+						mTags.put(urn, tag);
+					}
+					if (mNeighboursCounter == 0) {
+						createTagCloud();
+					}
 				}
 			}
+		} else {
+			if (label != null) {
+				mTagAdderDialog.getLabelTextView().setText(label);
+			}
 		}
+	}
+
+	@Override
+	public void onSetLabelTaskComplete(Boolean isSuccessful) {
+		
 	}
 
 }
