@@ -8,11 +8,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 
-/**
- * Custom AlertDialog class which handles subscriptions management
- * @author CampusUB1 Development Team
- *
- */
+
 public class LauncherDialog extends AlertDialog {
 	
 	private AlertDialog mLauncherDialog;
@@ -27,6 +23,10 @@ public class LauncherDialog extends AlertDialog {
 		LauncherDialogBuilder builder = new LauncherDialogBuilder(mContext);
 		mLauncherDialog = builder.create();
 		mLauncherDialog.show();
+	}
+	
+	public void dismissDialog() {
+		mLauncherDialog.dismiss();
 	}
 	
 	
@@ -60,7 +60,6 @@ public class LauncherDialog extends AlertDialog {
 				@Override
 				public void onCancel(DialogInterface dialog) {
 					mContext.finish();
-					dismiss();
 				}
 			});
 		}

@@ -1,4 +1,4 @@
-package com.komodo.tagin;
+package ca.idrc.tagin.cloud;
 
 /**
  * Komodo Lab: Tagin! Project: 3D Tag Cloud
@@ -13,12 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 import android.graphics.Color;
-import android.util.Log;
 
 public class TagCloud {
 
 	private static final int DEFAULT_COLOR1 = Color.argb(1, 226, 185, 48);
-	private static final int DEFAULT_COLOR2 = Color.argb(1, 76, 76,  76);
+	private static final int DEFAULT_COLOR2 = Color.argb(1, 76, 76, 76);
 	
 	private Map<String,Tag> mTags;
 	private int mRadius;
@@ -50,7 +49,7 @@ public class TagCloud {
 	public void create() {
 		// calculate and set the location of each Tag
 		positionAll();
-		sineCosine(mAngleX, mAngleY, mAngleZ);
+		sineCosine();
 		updateAll();
 		// Now, let's calculate and set the color for each tag:
 		// first loop through all tags to find the smallest and largest populariteies
@@ -76,11 +75,8 @@ public class TagCloud {
 	
 	// updates the transparency/scale of all elements
 	public void update() {
-		// if mAngleX and mAngleY under threshold, skip motion calculations for performance
-		if (Math.abs(mAngleX) > .1 || Math.abs(mAngleY) > .1 ) {
-			sineCosine(mAngleX, mAngleY, mAngleZ);
-			updateAll();
-		}
+		sineCosine();
+		updateAll();
 	}
 	
 	// if a single tag needed to be added
@@ -92,31 +88,8 @@ public class TagCloud {
 		tag.setTextSize(tempTextSize);
 		position(tag);
 		// now add the new tag to the tagCloud
-		mTags.put(tag.getText(), tag);				
+		mTags.put(tag.getID(), tag);				
 		updateAll();
-	}
-	
-	// to replace an existing tag with a new one
-	// it returns the location of the replacement, if not found=> returns -1
-	public int replace(Tag newTag, String oldTagText) {
-		int index = -1;
-		// let's go over all elements of tagCloud list and see if the oldTagText exists:
-		for (Tag tag : mTags.values()) {
-			if (oldTagText.equalsIgnoreCase(tag.getText())) {
-				index++;
-				tag.setPopularity(newTag.getPopularity());
-				tag.setText(newTag.getText());
-				tag.setUrl(newTag.getUrl());
-				int j = newTag.getPopularity();
-				float percentage =  (smallest == largest) ? 1.0f : ((float) j - smallest) / ((float) largest - smallest);
-				int tempTextSize = getTextSizeGradient(percentage);
-				tag.setColor(getColorFromGradient(percentage));
-				tag.setTextSize(tempTextSize);
-				newTag = tag;
-				break;
-			}
-		}
-		return index;
 	}
 
 	// for a given tag, sets the value of RGB and text size based on other existing tags
@@ -127,21 +100,20 @@ public class TagCloud {
 								((float)popularity-smallest) / ((float)largest-smallest);
 		int tempTextSize = getTextSizeGradient(percentage);
 		tag.setColor(getColorFromGradient(percentage));
-		tag.setTextSize(tempTextSize);		
+		tag.setTextSize(tempTextSize);
 	}
 
-	private void position(Tag newTag) {
-		double phi = 0;
-		double theta = 0;
+	private void position(Tag tag) {
 		// when adding a new tag, just place it at some random location
 		// this is in fact why adding too many elements make TagCloud ugly
 		// after many add, do one reset to rearrange all tags
-		phi = Math.random() * Math.PI;
-		theta = Math.random() * (2 * Math.PI);
+		double phi = Math.random() * Math.PI;
+		double theta = Math.random() * (2 * Math.PI);
+
 		// coordinate conversion:
-		newTag.setX((int) (mRadius * Math.cos(theta) * Math.sin(phi)));
-		newTag.setY((int) (mRadius * Math.sin(theta) * Math.sin(phi)));
-		newTag.setZ((int) (mRadius * Math.cos(phi)));
+		tag.setX((int) (mRadius * Math.cos(theta) * Math.sin(phi)));
+		tag.setY((int) (mRadius * Math.sin(theta) * Math.sin(phi)));
+		tag.setZ((int) (mRadius * Math.cos(phi)));
 	}
 	
 	private void positionAll() {
@@ -208,7 +180,7 @@ public class TagCloud {
 		
 		mTags = new LinkedHashMap<String, Tag>();
 		for (Tag tag : entries) {
-			mTags.put(tag.getText(), tag);
+			mTags.put(tag.getID(), tag);
 		}
 	}
 	
@@ -223,19 +195,15 @@ public class TagCloud {
 		return (int) (perc * mTextSizeMax + (1-perc) * mTextSizeMin);
 	}
 	
-	private void sineCosine(float angleX, float angleY, float angleZ) {
+	private void sineCosine() {
 		double degToRad = Math.PI / 180;
-		sin_mAngleX = (float) Math.sin(angleX * degToRad);
-		cos_mAngleX = (float) Math.cos(angleX * degToRad);
-		sin_mAngleY = (float) Math.sin(angleY * degToRad);
-		cos_mAngleY = (float) Math.cos(angleY * degToRad);
-		sin_mAngleZ = (float) Math.sin(angleZ * degToRad);
-		cos_mAngleZ = (float) Math.cos(angleZ * degToRad);
+		sin_mAngleX = (float) Math.sin(mAngleX * degToRad);
+		cos_mAngleX = (float) Math.cos(mAngleX * degToRad);
+		sin_mAngleY = (float) Math.sin(mAngleY * degToRad);
+		cos_mAngleY = (float) Math.cos(mAngleY * degToRad);
+		sin_mAngleZ = (float) Math.sin(mAngleZ * degToRad);
+		cos_mAngleZ = (float) Math.cos(mAngleZ * degToRad);
 	}
-
-	/*public void reset() {
-		create();
-	}*/
 	
 	public int getRadius() {
 		return mRadius;

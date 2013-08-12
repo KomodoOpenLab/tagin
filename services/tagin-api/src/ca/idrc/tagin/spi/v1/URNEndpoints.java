@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
 import javax.inject.Named;
 
 import ca.idrc.tagin.dao.TaginDao;
@@ -47,7 +46,7 @@ public class URNEndpoints {
 			path = "urns/{urn}/neighbours",
 			httpMethod = HttpMethod.GET
 	)
-	public List<URN> getNeighbours(@Named("urn") String urn, @Nullable @Named("max_count") Integer maxCount) {
+	public List<URN> getNeighbours(@Named("urn") String urn, @Named("max_count") Integer maxCount) {
 		Map<String,URN> neighbours = new LinkedHashMap<String,URN>();
 		TaginDao dao = new TaginEntityManager();
 		Fingerprint fp = dao.getFingerprint(urn);
@@ -56,7 +55,7 @@ public class URNEndpoints {
 			String key = n.getFingerprint().getUrn();
 			if (n.getFingerprint().getUrn() != null && !neighbours.containsKey(key))
 				neighbours.put(key, new URN(key));
-			if (maxCount != null && neighbours.size() >= maxCount)
+			if (neighbours.size() >= maxCount)
 				break;
 		}
 		dao.close();
