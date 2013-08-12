@@ -75,11 +75,8 @@ public class TagCloud {
 	
 	// updates the transparency/scale of all elements
 	public void update() {
-		// if mAngleX and mAngleY under threshold, skip motion calculations for performance
-		if (Math.abs(mAngleX) > .1 || Math.abs(mAngleY) > .1 ) {
-			sineCosine();
-			updateAll();
-		}
+		sineCosine();
+		updateAll();
 	}
 	
 	// if a single tag needed to be added
