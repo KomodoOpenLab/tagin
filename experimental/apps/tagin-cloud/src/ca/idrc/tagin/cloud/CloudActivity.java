@@ -189,7 +189,7 @@ public class CloudActivity extends Activity implements GetLabelTaskListener, Set
 				synchronized(mNeighboursCounter) {
 					mNeighboursCounter--;
 					if (label != null) {
-						Tag tag = new Tag(urn, label, 18);
+						Tag tag = new Tag(urn, label, 20);
 						mTags.put(urn, tag);
 					}
 					if (mNeighboursCounter == 0) {
