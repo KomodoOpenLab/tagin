@@ -8,7 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import ca.idrc.tagin.cloud.CloudActivity;
 import ca.idrc.tagin.cloud.R;
-import ca.idrc.tagin.cloud.Tag;
+import ca.idrc.tagin.cloud.tag.Tag;
 
 
 public class TagAdderDialog extends AlertDialog {

@@ -21,6 +21,8 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import ca.idrc.tagin.cloud.tag.Tag;
+import ca.idrc.tagin.cloud.tag.TagCloudView;
 import ca.idrc.tagin.cloud.util.TagAdderDialog;
 import ca.idrc.tagin.lib.TaginManager;
 import ca.idrc.tagin.lib.TaginService;
