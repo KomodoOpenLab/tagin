@@ -6,7 +6,7 @@ package ca.idrc.tagin.cloud.tag;
  * @authors Reza Shiftehfar, Sara Khosravinasr and Jorge Silva
  */
 
-import java.util.Map;
+import ca.idrc.tagin.cloud.util.TagMap;
 
 import android.content.Context;
 import android.content.Intent;
@@ -33,7 +33,7 @@ public class TagCloudView extends RelativeLayout {
 	private Context mContext;
 	private TagCloud mTagCloud;
 	
-	public TagCloudView(Context context, int width, int height, Map<String,Tag> tags) {
+	public TagCloudView(Context context, int width, int height, TagMap tags) {
 
 		super(context);
 		setFocusableInTouchMode(true);
@@ -65,7 +65,7 @@ public class TagCloudView extends RelativeLayout {
     	mTagCloud.update();
 		
 		// Now Draw the 3D objects
-    	for (Tag tag : mTagCloud.getTags().values()) {
+    	for (Tag tag : mTagCloud.getTagMap().values()) {
     		initializeTag(tag);
     	}
 	}
@@ -102,8 +102,8 @@ public class TagCloudView extends RelativeLayout {
 	}
 	
 	public void addTag(Tag tag) {
-		if (mTagCloud.getTags().containsKey(tag.getID())) {
-			Tag oldTag = mTagCloud.getTags().get(tag.getID());
+		if (mTagCloud.getTagMap().containsKey(tag.getID())) {
+			Tag oldTag = mTagCloud.getTagMap().get(tag.getID());
 			oldTag.setText(tag.getText());
 			oldTag.getTextView().setText(tag.getText());
 		} else {
@@ -153,7 +153,7 @@ public class TagCloudView extends RelativeLayout {
 		mTagCloud.setAngleY(angleY);
     	mTagCloud.update();
     	
-    	for (Tag tag : mTagCloud.getTags().values()) {
+    	for (Tag tag : mTagCloud.getTagMap().values()) {
     		updateView(tag);
     	}
 	}

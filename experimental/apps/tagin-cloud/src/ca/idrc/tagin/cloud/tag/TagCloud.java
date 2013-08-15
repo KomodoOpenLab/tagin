@@ -8,9 +8,9 @@ package ca.idrc.tagin.cloud.tag;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+
+import ca.idrc.tagin.cloud.util.TagMap;
 
 import android.graphics.Color;
 
@@ -19,7 +19,7 @@ public class TagCloud {
 	private static final int DEFAULT_COLOR1 = Color.argb(1, 226, 185, 48);
 	private static final int DEFAULT_COLOR2 = Color.argb(1, 76, 76, 76);
 	
-	private Map<String,Tag> mTags;
+	private TagMap mTagMap;
 	private int mRadius;
 	private int mTagColor1;
 	private int mTagColor2;
@@ -31,13 +31,13 @@ public class TagCloud {
     private float mAngleY = 0;
     private int smallest, largest; // used to find spectrum for tag colors
 	
-	public TagCloud(Map<String,Tag> tags, int radius, int textSizeMin, int textSizeMax) {
+	public TagCloud(TagMap tags, int radius, int textSizeMin, int textSizeMax) {
 		this(tags, radius, DEFAULT_COLOR1, DEFAULT_COLOR2, textSizeMin, textSizeMax);
 	}
 
-	public TagCloud(Map<String,Tag> tags, int radius, int tagColor1, int tagColor2, 
+	public TagCloud(TagMap tags, int radius, int tagColor1, int tagColor2, 
 						int textSizeMin, int textSizeMax) {
-		mTags = tags;    // Java does the initialization and deep copying
+		mTagMap = tags;    // Java does the initialization and deep copying
 		mRadius = radius;
 		mTagColor1 = tagColor1;
 		mTagColor2 = tagColor2;
@@ -56,13 +56,13 @@ public class TagCloud {
 		// largest popularity gets tcolor2, smallest gets tcolor1, the rest in between
 		smallest = 9999;
 		largest = 0;
-		for (Tag tag : mTags.values()) {
+		for (Tag tag : mTagMap.values()) {
 			int popularity = tag.getPopularity();
 			largest = Math.max(largest, popularity);
 			smallest = Math.min(smallest, popularity);
 		}
 		//figuring out and assigning the colors/ textsize
-		for (Tag tag : mTags.values()) {
+		for (Tag tag : mTagMap.values()) {
 			float percentage = 1.0f;
 			if (smallest != largest) {
 				percentage = ((float) tag.getPopularity() - smallest) / ((float) largest - smallest);
@@ -88,7 +88,7 @@ public class TagCloud {
 		tag.setTextSize(tempTextSize);
 		position(tag);
 		// now add the new tag to the tagCloud
-		mTags.put(tag.getID(), tag);				
+		mTagMap.put(tag.getID(), tag);				
 		updateAll();
 	}
 
@@ -120,8 +120,8 @@ public class TagCloud {
 		double phi = 0;
 		double theta = 0;
 		int i = 1;
-		int max = mTags.size();
-		for (Tag tag : mTags.values()) {
+		int max = mTagMap.size();
+		for (Tag tag : mTagMap.values()) {
 			phi = Math.acos(-1.0 + (2.0 * i - 1.0) / max);
 			theta = Math.sqrt(max * Math.PI) * phi;
 			
@@ -135,7 +135,7 @@ public class TagCloud {
 	
 	private void updateAll() {
 		// update transparency/scale for all tags:
-		for (Tag tag : mTags.values()) {
+		for (Tag tag : mTagMap.values()) {
 			// There exists two options for this part:
 			// multiply positions by a x-rotation matrix
 			float rx1 = (tag.getX());
@@ -175,12 +175,12 @@ public class TagCloud {
 	// now let's sort all tags in the tagCloud based on their z coordinate
 	// this way, when they are finally drawn, upper tags will be drawn on top of lower tags
 	private void depthSort() {
-		List<Tag> entries = new ArrayList<Tag>(mTags.values());
+		List<Tag> entries = new ArrayList<Tag>(mTagMap.values());
 		Collections.sort(entries);
 		
-		mTags = new LinkedHashMap<String, Tag>();
+		mTagMap = new TagMap();
 		for (Tag tag : entries) {
-			mTags.put(tag.getID(), tag);
+			mTagMap.put(tag.getID(), tag);
 		}
 	}
 	
@@ -245,7 +245,7 @@ public class TagCloud {
 		this.mAngleY = angleY;
 	}
 	
-	public Map<String,Tag> getTags() {
-		return mTags;
+	public TagMap getTagMap() {
+		return mTagMap;
 	}
 }
