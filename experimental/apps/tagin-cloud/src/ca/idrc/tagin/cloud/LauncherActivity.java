@@ -52,9 +52,9 @@ public class LauncherActivity extends Activity implements GetLabelTaskListener {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.launcher, menu);
 		return true;
 	}
+	
 	@Override
 	protected void onPause() {
 		super.onPause();
