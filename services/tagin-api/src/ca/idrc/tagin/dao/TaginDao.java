@@ -5,6 +5,7 @@ import java.util.List;
 import ca.idrc.tagin.model.Fingerprint;
 import ca.idrc.tagin.model.Neighbour;
 import ca.idrc.tagin.model.Pattern;
+import ca.idrc.tagin.model.URN;
 
 public interface TaginDao {
 	
@@ -23,6 +24,8 @@ public interface TaginDao {
 	public Fingerprint getFingerprint(String urn);
 	
 	public List<Neighbour> getNeighbours(Fingerprint fp);
+	
+	public List<URN> fetchNumOfNeighbours(Fingerprint fp, Integer maxCount);
 	
 	public void beginTransaction();
 	
