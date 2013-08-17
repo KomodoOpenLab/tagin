@@ -116,18 +116,18 @@ public class TaginEntityManager implements TaginDao {
 		if (neighbours.size() >= maxCount || neighbours.size() == 0) {
 			return new ArrayList<URN>(neighbours.values());
 		} else {
-			return fetchNumOfNeighboursAux(0, maxCount, neighbours);
+			return fetchNumOfNeighboursAux(fp.getUrn(), 0, maxCount, neighbours);
 		}
 	}
 	
-	private List<URN> fetchNumOfNeighboursAux(int index, Integer maxCount, Map<String, URN> neighbours) {
+	private List<URN> fetchNumOfNeighboursAux(String initialURN, int index, Integer maxCount, Map<String, URN> neighbours) {
 		List<URN> urns = new ArrayList<URN>(neighbours.values());
 		Fingerprint fp = getFingerprint(urns.get(index).getValue());
 		index++;
 		
 		for (Neighbour n : getNeighbours(fp)) {
 			String key = n.getFingerprint().getUrn();
-			if (key != null && !neighbours.containsKey(key))
+			if (key != null && !neighbours.containsKey(key) && !key.equals(initialURN))
 				neighbours.put(key, new URN(key));
 			if (neighbours.size() >= maxCount)
 				break;
@@ -136,7 +136,7 @@ public class TaginEntityManager implements TaginDao {
 		if (neighbours.size() >= maxCount || index == neighbours.size()) {
 			return new ArrayList<URN>(neighbours.values());
 		} else {
-			return fetchNumOfNeighboursAux(index, maxCount, neighbours);
+			return fetchNumOfNeighboursAux(initialURN, index, maxCount, neighbours);
 		}
 	}
 	
