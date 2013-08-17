@@ -89,7 +89,6 @@ public class LauncherActivity extends Activity implements GetLabelTaskListener {
 	
 	public void handleNeighboursReady(String result) {
 		URNCollection urns = null;
-		
 		if (result != null) {
 			try {
 				urns = new GsonFactory().fromString(result, URNCollection.class);
@@ -97,7 +96,7 @@ public class LauncherActivity extends Activity implements GetLabelTaskListener {
 				Log.e("tagin", "Deserialization error: " + e.getMessage());
 			}
 		}
-
+		
 		if (urns != null && urns.getItems() != null && urns.getItems().size() > 0) {
 			mNeighboursCounter = urns.getItems().size();
 			for (URN urn : urns.getItems()) {
@@ -105,7 +104,7 @@ public class LauncherActivity extends Activity implements GetLabelTaskListener {
 				task.execute();
 			}
 		} else {
-			// No neighbours found
+			Log.d("tagin", "No neighbours found");
 			startCloud();
 		}
 	}

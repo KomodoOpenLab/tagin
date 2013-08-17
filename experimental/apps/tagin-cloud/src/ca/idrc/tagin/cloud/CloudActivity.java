@@ -75,7 +75,7 @@ public class CloudActivity extends Activity implements GetLabelTaskListener, Set
 	
 	public void onGetURNClick(View view) {
 		mTaginManager.apiRequest(TaginService.REQUEST_URN);
-		mTagAdderDialog.getURNTextView().setText("Fetching URN...");
+		mTagAdderDialog.getURNTextView().setText(R.string.fetching_urn);
 	}
 	
 	@Override
