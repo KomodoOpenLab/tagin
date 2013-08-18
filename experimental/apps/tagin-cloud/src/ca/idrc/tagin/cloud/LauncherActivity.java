@@ -93,7 +93,7 @@ public class LauncherActivity extends Activity implements GetLabelTaskListener {
 			try {
 				urns = new GsonFactory().fromString(result, URNCollection.class);
 			} catch (IOException e) {
-				Log.e("tagin", "Deserialization error: " + e.getMessage());
+				Log.e(TaginCloudApp.APP_TAG, "Deserialization error: " + e.getMessage());
 			}
 		}
 		
@@ -104,7 +104,7 @@ public class LauncherActivity extends Activity implements GetLabelTaskListener {
 				task.execute();
 			}
 		} else {
-			Log.d("tagin", "No neighbours found");
+			Log.d(TaginCloudApp.APP_TAG, "No neighbours found");
 			startCloud();
 		}
 	}
@@ -120,7 +120,7 @@ public class LauncherActivity extends Activity implements GetLabelTaskListener {
 					GetLabelTask<LauncherActivity> task = new GetLabelTask<LauncherActivity>(mInstance, urn);
 					task.execute();
 				} else {
-					Log.d("tagin", "Could not submit fingerprint");
+					Log.d(TaginCloudApp.APP_TAG, "Could not submit fingerprint");
 					// TODO show error dialog
 					startCloud();
 				}
