@@ -1,8 +1,5 @@
 package ca.idrc.tagin.cloud;
 
-import java.io.IOException;
-
-import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.tagin.model.URN;
 import com.google.api.services.tagin.model.URNCollection;
 
@@ -10,6 +7,7 @@ import ca.idrc.tagin.cloud.tag.Tag;
 import ca.idrc.tagin.cloud.util.TagMap;
 import ca.idrc.tagin.lib.TaginManager;
 import ca.idrc.tagin.lib.TaginService;
+import ca.idrc.tagin.lib.TaginUtils;
 import ca.idrc.tagin.lib.tags.GetLabelTask;
 import ca.idrc.tagin.lib.tags.GetLabelTaskListener;
 
@@ -88,14 +86,7 @@ public class LauncherActivity extends Activity implements GetLabelTaskListener {
 	}
 	
 	public void handleNeighboursReady(String result) {
-		URNCollection urns = null;
-		if (result != null) {
-			try {
-				urns = new GsonFactory().fromString(result, URNCollection.class);
-			} catch (IOException e) {
-				Log.e(TaginCloudApp.APP_TAG, "Deserialization error: " + e.getMessage());
-			}
-		}
+		URNCollection urns = TaginUtils.deserialize(result, URNCollection.class);
 		
 		if (urns != null && urns.getItems() != null && urns.getItems().size() > 0) {
 			mNeighboursCounter = urns.getItems().size();

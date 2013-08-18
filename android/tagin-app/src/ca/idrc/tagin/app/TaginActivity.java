@@ -1,6 +1,5 @@
 package ca.idrc.tagin.app;
 
-import java.io.IOException;
 import java.util.List;
 
 import android.app.Activity;
@@ -9,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -18,8 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import ca.idrc.tagin.lib.TaginManager;
 import ca.idrc.tagin.lib.TaginService;
+import ca.idrc.tagin.lib.TaginUtils;
 
-import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.tagin.model.Fingerprint;
 import com.google.api.services.tagin.model.FingerprintCollection;
 
@@ -98,15 +96,7 @@ public class TaginActivity extends Activity {
 	};
 	
 	private void handleFingerprintsResponse(String result) {
-		FingerprintCollection fps = null;
-		if (result != null) {
-			try {
-				fps = new GsonFactory().fromString(result, FingerprintCollection.class);
-			} catch (IOException e) {
-				Log.e("tagin-app", "Deserialization error: " + e.getMessage());
-			}
-		}
-		
+		FingerprintCollection fps = TaginUtils.deserialize(result, FingerprintCollection.class);
 		if (fps != null) {
 			StringBuffer sb = new StringBuffer();
 			List<Fingerprint> items = fps.getItems();
