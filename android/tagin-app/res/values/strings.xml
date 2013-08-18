@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">tagin!</string>
+    <string name="app_name">tagin-app</string>
     <string name="action_settings">Settings</string>
     <string name="select_service">Select your desired service</string>
     
-    <string name="requesting_urn">Requesting URN...</string>
-    <string name="requesting_fp_list">Requesting fingerprints list...</string>
+    <string name="requesting_urn">Requesting URN&#8230;</string>
+    <string name="requesting_fp_list">Requesting fingerprints list&#8230;</string>
     <string name="invalid_urn">Invalid URN</string>
-    <string name="searching_for_neighbours">Searching for nearby neighbours...</string>
+    <string name="searching_for_neighbours">Searching for nearby neighbours&#8230;</string>
     <string name="failed_list_fp">Failed to list fingerprints</string>
     <string name="fp_list">fingerprints.list()</string>
     <string name="failed_acquire_urn">Failed to acquire URN</string>
@@ -16,8 +16,8 @@
     <string name="could_not_find_neighbours">Could not find neighbours</string>
     <string name="find_neighbours">Find neighbours</string>
     
-    <string name="fetching_label">Fetching label...</string>
-    <string name="saving_tag">Saving tag...</string>
+    <string name="fetching_label">Fetching label&#8230;</string>
+    <string name="saving_tag">Saving tag&#8230;</string>
     <string name="get_label">Get label</string>
     <string name="set_label">Set label</string>
     <string name="tag_saved">Tag successfully saved</string>

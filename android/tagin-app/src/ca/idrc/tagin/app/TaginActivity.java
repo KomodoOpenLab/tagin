@@ -103,7 +103,7 @@ public class TaginActivity extends Activity {
 			try {
 				fps = new GsonFactory().fromString(result, FingerprintCollection.class);
 			} catch (IOException e) {
-				Log.e("tagin!", "Deserialization error: " + e.getMessage());
+				Log.e("tagin-app", "Deserialization error: " + e.getMessage());
 			}
 		}
 		
