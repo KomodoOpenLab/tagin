@@ -61,20 +61,20 @@ public class TaginActivity extends Activity {
 	}
 
 	public void onRequestURN(View view) {
-		mURNRequestButton.setText("Requesting URN...");
+		mURNRequestButton.setText(R.string.requesting_urn);
 		mTaginManager.apiRequest(TaginService.REQUEST_URN);
 	}
 	
 	public void onListFingerprints(View view) {
-		mListFingerprintsButton.setText("Requesting fingerprints list...");
+		mListFingerprintsButton.setText(R.string.requesting_fp_list);
 		mTaginManager.apiRequest(TaginService.REQUEST_LIST_FINGERPRINTS);
 	}
 	
 	public void onFindNeighbours(View view) {
 		if (mNeighboursEditText.getText().length() < 30) {
-			Toast.makeText(this, "Invalid URN", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, R.string.invalid_urn, Toast.LENGTH_SHORT).show();
 		} else {
-			mFindNeighboursButton.setText("Searching for nearby neighbours...");
+			mFindNeighboursButton.setText(R.string.searching_for_neighbours);
 			String urn = mNeighboursEditText.getText().toString();
 			mTaginManager.apiRequest(TaginService.REQUEST_NEIGHBOURS, urn, MAX_NEIGHBOURS);
 		}
@@ -99,7 +99,6 @@ public class TaginActivity extends Activity {
 	
 	private void handleFingerprintsResponse(String result) {
 		FingerprintCollection fps = null;
-		
 		if (result != null) {
 			try {
 				fps = new GsonFactory().fromString(result, FingerprintCollection.class);
@@ -118,27 +117,27 @@ public class TaginActivity extends Activity {
 			}
 			mListFPTextView.setText(sb.toString());
 		} else {
-			mListFPTextView.setText("Failed to list fingerprints");
+			mListFPTextView.setText(R.string.failed_list_fp);
 		}
-		mListFingerprintsButton.setText("fingerprints.list()");
+		mListFingerprintsButton.setText(R.string.fp_list);
 	}
 	
 	private void handleURNResponse(String urn) {
 		if (urn != null) {
 			mURNTextView.setText(urn);
 		} else {
-			mURNTextView.setText("Failed to acquire URN");
+			mURNTextView.setText(R.string.failed_acquire_urn);
 		}
-		mURNRequestButton.setText("Request URN");
+		mURNRequestButton.setText(R.string.request_urn);
 	}
 	
 	private void handleNeighboursResponse(String result) {
 		if (result != null) {
 			mNeighboursEditText.setText(result);
 		} else {
-			mNeighboursEditText.setText("Could not find neighbours");
+			mNeighboursEditText.setText(R.string.could_not_find_neighbours);
 		}
-		mFindNeighboursButton.setText("Find neighbours");
+		mFindNeighboursButton.setText(R.string.find_neighbours);
 	}
 	
 	@Override

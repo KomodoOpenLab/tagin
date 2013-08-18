@@ -1,5 +1,6 @@
 package ca.idrc.tagin.app.util;
 
+import ca.idrc.tagin.app.R;
 import ca.idrc.tagin.app.TaginActivity;
 import ca.idrc.tagin.app.TagsActivity;
 
@@ -37,7 +38,7 @@ public class LauncherDialog extends AlertDialog {
 			CharSequence[] items = {"tagin-api", "tagin-tags"};
 
 			setCancelable(true);
-			setTitle("Select your desired service");
+			setTitle(R.string.select_service);
 			setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
 				
 				@Override
