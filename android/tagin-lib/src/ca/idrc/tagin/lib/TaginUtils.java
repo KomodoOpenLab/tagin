@@ -9,15 +9,15 @@ import android.util.Log;
 public class TaginUtils {
 	
 	public static <T> T deserialize(String result, Class<T> clazz) {
-		T taginObject = null;
+		T container = null;
 		if (result != null) {
 			try {
-				taginObject = new GsonFactory().fromString(result, clazz);
+				container = new GsonFactory().fromString(result, clazz);
 			} catch (IOException e) {
 				Log.e(TaginManager.TAG, "Deserialization error: " + e.getMessage());
 			}
 		}
-		return taginObject;
+		return container;
 	}
 
 }

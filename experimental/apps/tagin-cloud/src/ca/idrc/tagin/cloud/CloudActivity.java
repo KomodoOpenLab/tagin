@@ -6,6 +6,14 @@ package ca.idrc.tagin.cloud;
  * @authors Reza Shiftehfar, Sara Khosravinasr and Jorge Silva
  */
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -41,8 +49,17 @@ public class CloudActivity extends Activity implements GetLabelTaskListener, Set
 		mInstance = this;
 		mTaginManager = new TaginManager(this);
 		mTagAdderDialog = new TagAdderDialog(this);
-		mTagMap = (TagMap) getIntent().getSerializableExtra(LauncherActivity.EXTRA_TAGS);
+		initCloud();
 		createTagCloud();
+	}
+	
+	private void initCloud() {
+		if (TaginCloudApp.persistence.isConnected()) {
+			mTagMap = (TagMap) getIntent().getSerializableExtra(LauncherActivity.EXTRA_TAGS);
+			saveData();
+		} else {
+			mTagMap = loadData();
+		}
 	}
 
 	private void createTagCloud() {
@@ -64,6 +81,7 @@ public class CloudActivity extends Activity implements GetLabelTaskListener, Set
 			mTagCloudView.addTag(tag);
 			mTagMap.put(tag.getID(), tag);
 			updateTagCloud();
+			saveData();
 		}
 	}
 	
@@ -107,6 +125,46 @@ public class CloudActivity extends Activity implements GetLabelTaskListener, Set
 			break;
 		}
 		return true;
+	}
+	
+	public void saveData() {
+		ObjectOutputStream oos = null;
+		try {
+			File history = new File(getFilesDir() + "/tags.dat");
+			history.getParentFile().createNewFile();
+			FileOutputStream fout = new FileOutputStream(history);
+			oos = new ObjectOutputStream(fout);
+			oos.writeObject(mTagMap);
+		} catch (FileNotFoundException ex) {
+			ex.printStackTrace();  
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} finally {
+			try {
+				if (oos != null) {
+					oos.flush();
+					oos.close();
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+	
+	private TagMap loadData() {
+		File file = new File(getFilesDir() + "/tags.dat");
+		TagMap feedsEntry = null;
+
+		if (file.exists()) {
+			try {
+				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+				feedsEntry = (TagMap) ois.readObject();
+				ois.close();
+			} catch (Exception e) { 
+				e.printStackTrace();
+			}
+		}
+		return feedsEntry;
 	}
 
 	
