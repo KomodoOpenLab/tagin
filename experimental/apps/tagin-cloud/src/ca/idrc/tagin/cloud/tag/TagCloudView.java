@@ -9,9 +9,7 @@ package ca.idrc.tagin.cloud.tag;
 import ca.idrc.tagin.cloud.util.TagMap;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -158,24 +156,12 @@ public class TagCloudView extends RelativeLayout {
     	}
 	}
 	
-	private String makeUrl(String url) {
-		if 	((url.substring(0,7).equalsIgnoreCase("http://")) 	|| 
-			 (url.substring(0,8).equalsIgnoreCase("https://")))
-			return url;
-		else
-			return "http://" + url;
-	}
-	
-	//for handling the click on the tags
-	//onclick open the tag url in a new window. Back button will bring you back to TagCloud
 	private View.OnClickListener onTagClickListener(final String url) {
 		return new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//we now have url from main code
-				Uri uri = Uri.parse(makeUrl(url));
-				//just open a new intent and set the content to search for the url
-				mContext.startActivity(new Intent(Intent.ACTION_VIEW, uri));				
+				/*Uri uri = Uri.parse(makeUrl(url));
+				mContext.startActivity(new Intent(Intent.ACTION_VIEW, uri));*/				
 			}
 		};
 	}
