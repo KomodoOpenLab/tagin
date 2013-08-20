@@ -4,13 +4,20 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
+import android.net.wifi.WifiManager;
 
 public class Persistence {
 	
+	private WifiManager mWifiManager;
 	private ConnectivityManager mConnectivityManager;
 	
 	public Persistence(Context context) {
+		mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 		mConnectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+	}
+	
+	public boolean isWifiEnabled() {
+		return mWifiManager.isWifiEnabled();
 	}
 
 	public boolean isMobileConnected() {

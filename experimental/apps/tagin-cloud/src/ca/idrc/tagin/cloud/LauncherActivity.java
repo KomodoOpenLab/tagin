@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.Toast;
 
 public class LauncherActivity extends Activity implements GetLabelTaskListener {
 
@@ -38,7 +39,21 @@ public class LauncherActivity extends Activity implements GetLabelTaskListener {
 		mInstance = this;
 		mTaginManager = new TaginManager(this);
 		mTagMap = new TagMap();
-		mTaginManager.apiRequest(TaginService.REQUEST_URN);
+		init();
+	}
+	
+	private void init() {
+		if (TaginCloudApp.persistence.isConnected()) {
+			if (TaginCloudApp.persistence.isWifiEnabled()) {
+				mTaginManager.apiRequest(TaginService.REQUEST_URN);
+			} else {
+				Toast.makeText(this, "Please activate your WiFi adapter", Toast.LENGTH_SHORT).show();
+				// TODO show dialog
+			}
+		} else {
+			Toast.makeText(this, "No active connection found, working in offline mode", Toast.LENGTH_SHORT).show();
+			startCloud();
+		}
 	}
 	
 	public void startCloud() {
