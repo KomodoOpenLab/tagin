@@ -1,5 +1,7 @@
 package ca.idrc.tagin.app;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -9,13 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import ca.idrc.tagin.lib.tags.GetLabelTask;
-import ca.idrc.tagin.lib.tags.GetLabelTaskListener;
+import ca.idrc.tagin.lib.tags.GetLabelsTask;
+import ca.idrc.tagin.lib.tags.GetLabelsTaskListener;
 import ca.idrc.tagin.lib.tags.SetLabelTask;
 import ca.idrc.tagin.lib.tags.SetLabelTaskListener;
 
-public class TagsActivity extends Activity implements GetLabelTaskListener, SetLabelTaskListener {
+public class TagsActivity extends Activity implements GetLabelsTaskListener, SetLabelTaskListener {
 	
 	private Context mContext;
 	
@@ -50,7 +51,7 @@ public class TagsActivity extends Activity implements GetLabelTaskListener, SetL
 	public void onGetLabel(View view) {
 		mGetLabelButton.setText(R.string.fetching_label);
 		String urn = mURNText1.getText().toString();
-		GetLabelTask<TagsActivity> task = new GetLabelTask<TagsActivity>(this, urn);
+		GetLabelsTask<TagsActivity> task = new GetLabelsTask<TagsActivity>(this, urn);
 		task.execute();
 	}
 	
@@ -63,10 +64,8 @@ public class TagsActivity extends Activity implements GetLabelTaskListener, SetL
 	}
 	
 	@Override
-	public void onGetLabelTaskComplete(String urn, String result) {
-		if (result != null) {
-			mLabelView.setText(result);
-		}
+	public void onGetLabelsTaskComplete(String urn, List<String> labels) {
+		mLabelView.setText(labels.toString());
 		mGetLabelButton.setText(R.string.get_label);
 	}
 
@@ -81,5 +80,4 @@ public class TagsActivity extends Activity implements GetLabelTaskListener, SetL
 			Toast.makeText(mContext, R.string.tag_save_failed, Toast.LENGTH_SHORT).show();
 		}
 	}
-
 }

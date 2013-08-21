@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -30,12 +31,12 @@ import ca.idrc.tagin.cloud.util.TagAdderDialog;
 import ca.idrc.tagin.cloud.util.TagMap;
 import ca.idrc.tagin.lib.TaginManager;
 import ca.idrc.tagin.lib.TaginService;
-import ca.idrc.tagin.lib.tags.GetLabelTask;
-import ca.idrc.tagin.lib.tags.GetLabelTaskListener;
+import ca.idrc.tagin.lib.tags.GetLabelsTask;
+import ca.idrc.tagin.lib.tags.GetLabelsTaskListener;
 import ca.idrc.tagin.lib.tags.SetLabelTask;
 import ca.idrc.tagin.lib.tags.SetLabelTaskListener;
 
-public class CloudActivity extends Activity implements GetLabelTaskListener, SetLabelTaskListener {
+public class CloudActivity extends Activity implements GetLabelsTaskListener, SetLabelTaskListener {
 	
 	private CloudActivity mInstance;
 	private TagMap mTagMap;
@@ -174,17 +175,15 @@ public class CloudActivity extends Activity implements GetLabelTaskListener, Set
 			if (intent.getAction().equals(TaginService.ACTION_URN_READY)) {
 				String urn = intent.getStringExtra(TaginService.EXTRA_QUERY_RESULT);
 				mTagAdderDialog.getURNTextView().setText(urn);
-				GetLabelTask<CloudActivity> task = new GetLabelTask<CloudActivity>(mInstance, urn);
+				GetLabelsTask<CloudActivity> task = new GetLabelsTask<CloudActivity>(mInstance, urn);
 				task.execute();
 			}
 		}
 	};
 
 	@Override
-	public void onGetLabelTaskComplete(String urn, String label) {
-		if (label != null) {
-			mTagAdderDialog.getLabelTextView().setText(label);
-		}
+	public void onGetLabelsTaskComplete(String urn, List<String> labels) {
+		mTagAdderDialog.getLabelTextView().setText(labels.toString());
 	}
 
 	@Override

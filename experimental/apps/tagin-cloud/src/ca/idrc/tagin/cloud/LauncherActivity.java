@@ -1,5 +1,7 @@
 package ca.idrc.tagin.cloud;
 
+import java.util.List;
+
 import com.google.api.services.tagin.model.URN;
 import com.google.api.services.tagin.model.URNCollection;
 
@@ -8,8 +10,8 @@ import ca.idrc.tagin.cloud.util.TagMap;
 import ca.idrc.tagin.lib.TaginManager;
 import ca.idrc.tagin.lib.TaginService;
 import ca.idrc.tagin.lib.TaginUtils;
-import ca.idrc.tagin.lib.tags.GetLabelTask;
-import ca.idrc.tagin.lib.tags.GetLabelTaskListener;
+import ca.idrc.tagin.lib.tags.GetLabelsTask;
+import ca.idrc.tagin.lib.tags.GetLabelsTaskListener;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -21,7 +23,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 
-public class LauncherActivity extends Activity implements GetLabelTaskListener {
+public class LauncherActivity extends Activity implements GetLabelsTaskListener {
 
 	public final static String EXTRA_TAGS = "ca.idrc.tagin.cloud.EXTRA_TAGS";
 	private final String MAX_NEIGHBOURS = "10";
@@ -82,14 +84,16 @@ public class LauncherActivity extends Activity implements GetLabelTaskListener {
 	}
 	
 	@Override
-	public void onGetLabelTaskComplete(String urn, String label) {
+	public void onGetLabelsTaskComplete(String urn, List<String> labels) {
 		if (urn.equals(mInitialURN)) {
-			Tag tag = new Tag(urn, label, 20);
-			mTagMap.put(urn, tag);
+			for (String label: labels) {
+				Tag tag = new Tag(urn, label, 20);
+				mTagMap.put(urn, tag);
+			}
 		} else {
 			synchronized(mNeighboursCounter) {
 				mNeighboursCounter--;
-				if (label != null) {
+				for (String label : labels) {
 					Tag tag = new Tag(urn, label, 20);
 					mTagMap.put(urn, tag);
 				}
@@ -106,7 +110,7 @@ public class LauncherActivity extends Activity implements GetLabelTaskListener {
 		if (urns != null && urns.getItems() != null && urns.getItems().size() > 0) {
 			mNeighboursCounter = urns.getItems().size();
 			for (URN urn : urns.getItems()) {
-				GetLabelTask<LauncherActivity> task = new GetLabelTask<LauncherActivity>(this, urn.getValue());
+				GetLabelsTask<LauncherActivity> task = new GetLabelsTask<LauncherActivity>(this, urn.getValue());
 				task.execute();
 			}
 		} else {
@@ -123,7 +127,7 @@ public class LauncherActivity extends Activity implements GetLabelTaskListener {
 				if (urn != null) {
 					mTaginManager.apiRequest(TaginService.REQUEST_NEIGHBOURS, urn, MAX_NEIGHBOURS);
 					mInitialURN = urn;
-					GetLabelTask<LauncherActivity> task = new GetLabelTask<LauncherActivity>(mInstance, urn);
+					GetLabelsTask<LauncherActivity> task = new GetLabelsTask<LauncherActivity>(mInstance, urn);
 					task.execute();
 				} else {
 					Log.d(TaginCloudApp.APP_TAG, "Could not submit fingerprint");
