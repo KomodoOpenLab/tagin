@@ -16,6 +16,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import ca.idrc.tagin.lib.TaginManager;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 
 public class GetLabelsTask<T extends Context & GetLabelsTaskListener> extends AsyncTask<Void, Void, List<String>> {
 	
@@ -37,9 +40,11 @@ public class GetLabelsTask<T extends Context & GetLabelsTaskListener> extends As
 			HttpResponse response = client.execute(request);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 			String line = "";
+			String json = "";
 			while ((line = reader.readLine()) != null) {
-				labels.add(line);
+				json += line;
 			}
+			labels = new Gson().fromJson(json, new TypeToken<List<String>>(){}.getType());
 		} catch (ClientProtocolException e1) {
 			e1.printStackTrace();
 			return null;

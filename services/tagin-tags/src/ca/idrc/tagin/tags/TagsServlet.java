@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import ca.idrc.tagin.tags.dao.TagsDao;
 import ca.idrc.tagin.tags.dao.TagsEntityManager;
 
+import com.google.gson.Gson;
+
 @SuppressWarnings("serial")
 public class TagsServlet extends HttpServlet {
 	
@@ -40,7 +42,7 @@ public class TagsServlet extends HttpServlet {
 			dao.close();
 			resp.setContentType("application/json");
 			resp.setCharacterEncoding("UTF-8");
-			resp.getWriter().println(labels);
+			resp.getWriter().println(new Gson().toJson(labels));
 		}
 	}
 }

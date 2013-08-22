@@ -2,7 +2,6 @@ package ca.idrc.tagin.cloud.util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +43,10 @@ public class TagMap implements Serializable {
 	}
 	
 	public int size() {
-		return mTags.size();
+		List<Tag> tags = new ArrayList<Tag>();
+		for (TagGroup tagGroup : mTags.values()) {
+			tags.addAll(tagGroup.getTags());
+		}
+		return tags.size();
 	}
 }
