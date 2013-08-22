@@ -187,4 +187,10 @@ public class Tag implements Serializable, Comparable<Tag> {
 	public void setUrl(String url) {
 		this.mURL = url;
 	}
+	
+	public String toString() {
+		return getClass().getSimpleName() + "[" +
+				"ID: " + mID +
+				", Text: " + mText + "]";
+	}
 }

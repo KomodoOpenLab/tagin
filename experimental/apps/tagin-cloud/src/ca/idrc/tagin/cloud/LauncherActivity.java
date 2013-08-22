@@ -86,7 +86,7 @@ public class LauncherActivity extends Activity implements GetLabelsTaskListener 
 	@Override
 	public void onGetLabelsTaskComplete(String urn, List<String> labels) {
 		if (urn.equals(mInitialURN)) {
-			for (String label: labels) {
+			for (String label : labels) {
 				Tag tag = new Tag(urn, label, 20);
 				mTagMap.put(urn, tag);
 			}

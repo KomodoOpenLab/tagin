@@ -101,9 +101,9 @@ public class TagCloudView extends RelativeLayout {
 	
 	public void addTag(Tag tag) {
 		if (mTagCloud.getTagMap().containsKey(tag.getID())) {
-			Tag oldTag = mTagCloud.getTagMap().get(tag.getID());
+			/*Tag oldTag = mTagCloud.getTagMap().get(tag.getID());
 			oldTag.setText(tag.getText());
-			oldTag.getTextView().setText(tag.getText());
+			oldTag.getTextView().setText(tag.getText());*/
 		} else {
 			initializeTag(tag);
 			updateView(tag);
