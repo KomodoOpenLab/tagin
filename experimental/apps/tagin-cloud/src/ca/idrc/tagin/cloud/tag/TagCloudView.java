@@ -1,4 +1,4 @@
-package ca.idrc.tagin.cloud;
+package ca.idrc.tagin.cloud.tag;
 
 /**
  * Komodo Lab: Tagin! Project: 3D Tag Cloud
@@ -6,12 +6,10 @@ package ca.idrc.tagin.cloud;
  * @authors Reza Shiftehfar, Sara Khosravinasr and Jorge Silva
  */
 
-import java.util.Map;
+import ca.idrc.tagin.cloud.util.TagMap;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -33,7 +31,7 @@ public class TagCloudView extends RelativeLayout {
 	private Context mContext;
 	private TagCloud mTagCloud;
 	
-	public TagCloudView(Context context, int width, int height, Map<String,Tag> tags) {
+	public TagCloudView(Context context, int width, int height, TagMap tags) {
 
 		super(context);
 		setFocusableInTouchMode(true);
@@ -65,7 +63,7 @@ public class TagCloudView extends RelativeLayout {
     	mTagCloud.update();
 		
 		// Now Draw the 3D objects
-    	for (Tag tag : mTagCloud.getTags().values()) {
+    	for (Tag tag : mTagCloud.getTagMap().values()) {
     		initializeTag(tag);
     	}
 	}
@@ -102,9 +100,15 @@ public class TagCloudView extends RelativeLayout {
 	}
 	
 	public void addTag(Tag tag) {
-		initializeTag(tag);
-		mTagCloud.add(tag);
-		updateView(tag);
+		if (mTagCloud.getTagMap().containsKey(tag.getID())) {
+			Tag oldTag = mTagCloud.getTagMap().get(tag.getID());
+			oldTag.setText(tag.getText());
+			oldTag.getTextView().setText(tag.getText());
+		} else {
+			initializeTag(tag);
+			updateView(tag);
+			mTagCloud.add(tag);
+		}
 	}
 	
 	public void setTagRGBT(Tag tag) {
@@ -147,29 +151,17 @@ public class TagCloudView extends RelativeLayout {
 		mTagCloud.setAngleY(angleY);
     	mTagCloud.update();
     	
-    	for (Tag tag : mTagCloud.getTags().values()) {
+    	for (Tag tag : mTagCloud.getTagMap().values()) {
     		updateView(tag);
     	}
 	}
 	
-	private String makeUrl(String url) {
-		if 	((url.substring(0,7).equalsIgnoreCase("http://")) 	|| 
-			 (url.substring(0,8).equalsIgnoreCase("https://")))
-			return url;
-		else
-			return "http://" + url;
-	}
-	
-	//for handling the click on the tags
-	//onclick open the tag url in a new window. Back button will bring you back to TagCloud
 	private View.OnClickListener onTagClickListener(final String url) {
 		return new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//we now have url from main code
-				Uri uri = Uri.parse(makeUrl(url));
-				//just open a new intent and set the content to search for the url
-				mContext.startActivity(new Intent(Intent.ACTION_VIEW, uri));				
+				/*Uri uri = Uri.parse(makeUrl(url));
+				mContext.startActivity(new Intent(Intent.ACTION_VIEW, uri));*/				
 			}
 		};
 	}

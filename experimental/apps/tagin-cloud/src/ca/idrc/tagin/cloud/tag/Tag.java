@@ -1,4 +1,4 @@
-package ca.idrc.tagin.cloud;
+package ca.idrc.tagin.cloud.tag;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

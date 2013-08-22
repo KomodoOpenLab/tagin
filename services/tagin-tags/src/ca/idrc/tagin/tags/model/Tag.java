@@ -1,6 +1,8 @@
 package ca.idrc.tagin.tags.model;
 
-import javax.persistence.Basic;
+import java.util.List;
+
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -10,16 +12,16 @@ public class Tag {
 	@Id
 	private String urn;
 
-	@Basic
-	private String label;
+	@ElementCollection
+	private List<String> labels;
 	
 	public Tag() {
 		
 	}
 	
-	public Tag(String urn, String label) {
+	public Tag(String urn, List<String> labels) {
 		this.urn = urn;
-		this.label = label;
+		this.labels = labels;
 	}
 
 	public String getUrn() {
@@ -30,18 +32,22 @@ public class Tag {
 		this.urn = urn;
 	}
 
-	public String getLabel() {
-		return label;
+	public List<String> getLabels() {
+		return labels;
 	}
 
-	public void setLabel(String label) {
-		this.label = label;
+	public void setLabels(List<String> labels) {
+		this.labels = labels;
+	}
+	
+	public void putLabel(String label) {
+		labels.add(label);
 	}
 
 	public String toString() {
 		return getClass().getSimpleName() + "[" + 
 				"URN: " + getUrn() + 
-				", label: " + getLabel() + "]";
+				", labels: " + getLabels() + "]";
 	}
 
 }

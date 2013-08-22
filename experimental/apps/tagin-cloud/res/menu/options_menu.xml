@@ -2,10 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/add_tag"
-        android:title="Add Tag"/>
+        android:id="@+id/menu_settings"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_action_overflow"
+        android:title="@string/menu_settings"/>
     <item
-        android:id="@+id/exit_app"
-        android:title="Exit"/>
+        android:id="@+id/menu_add_tag"
+        android:orderInCategory="90"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_content_new"
+        android:title="@string/menu_add_tag"/>
 
 </menu>

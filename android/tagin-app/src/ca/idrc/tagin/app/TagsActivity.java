@@ -1,5 +1,7 @@
 package ca.idrc.tagin.app;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -9,13 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import ca.idrc.tagin.lib.tags.GetLabelTask;
-import ca.idrc.tagin.lib.tags.GetLabelTaskListener;
+import ca.idrc.tagin.lib.tags.GetLabelsTask;
+import ca.idrc.tagin.lib.tags.GetLabelsTaskListener;
 import ca.idrc.tagin.lib.tags.SetLabelTask;
 import ca.idrc.tagin.lib.tags.SetLabelTaskListener;
 
-public class TagsActivity extends Activity implements GetLabelTaskListener, SetLabelTaskListener {
+public class TagsActivity extends Activity implements GetLabelsTaskListener, SetLabelTaskListener {
 	
 	private Context mContext;
 	
@@ -48,14 +49,14 @@ public class TagsActivity extends Activity implements GetLabelTaskListener, SetL
 	}
 	
 	public void onGetLabel(View view) {
-		mGetLabelButton.setText("Fetching label...");
+		mGetLabelButton.setText(R.string.fetching_label);
 		String urn = mURNText1.getText().toString();
-		GetLabelTask<TagsActivity> task = new GetLabelTask<TagsActivity>(this, urn);
+		GetLabelsTask<TagsActivity> task = new GetLabelsTask<TagsActivity>(this, urn);
 		task.execute();
 	}
 	
 	public void onSetLabel(View view) {
-		mSetLabelButton.setText("Saving tag...");
+		mSetLabelButton.setText(R.string.saving_tag);
 		String urn = mURNText2.getText().toString();
 		String label = mLabelText.getText().toString();
 		SetLabelTask<TagsActivity> task = new SetLabelTask<TagsActivity>(this, urn, label);
@@ -63,23 +64,20 @@ public class TagsActivity extends Activity implements GetLabelTaskListener, SetL
 	}
 	
 	@Override
-	public void onGetLabelTaskComplete(String urn, String result) {
-		if (result != null) {
-			mLabelView.setText(result);
-		}
-		mGetLabelButton.setText("Get label");
+	public void onGetLabelsTaskComplete(String urn, List<String> labels) {
+		mLabelView.setText(labels.toString());
+		mGetLabelButton.setText(R.string.get_label);
 	}
 
 	@Override
 	public void onSetLabelTaskComplete(Boolean isSuccessful) {
 		mURNText2.setText("");
 		mLabelText.setText("");
-		mSetLabelButton.setText("Set label");
+		mSetLabelButton.setText(R.string.set_label);
 		if (isSuccessful) {
-			Toast.makeText(mContext, "Tag successfully saved", Toast.LENGTH_SHORT).show();
+			Toast.makeText(mContext, R.string.tag_saved, Toast.LENGTH_SHORT).show();
 		} else {
-			Toast.makeText(mContext, "Failed to save tag", Toast.LENGTH_SHORT).show();
+			Toast.makeText(mContext, R.string.tag_save_failed, Toast.LENGTH_SHORT).show();
 		}
 	}
-
 }

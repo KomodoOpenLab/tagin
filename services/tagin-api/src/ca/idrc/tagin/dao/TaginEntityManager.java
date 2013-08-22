@@ -1,7 +1,9 @@
 package ca.idrc.tagin.dao;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -10,6 +12,7 @@ import ca.idrc.tagin.model.Beacon;
 import ca.idrc.tagin.model.Fingerprint;
 import ca.idrc.tagin.model.Neighbour;
 import ca.idrc.tagin.model.Pattern;
+import ca.idrc.tagin.model.URN;
 import ca.idrc.tagin.spi.v1.URNManager;
 
 public class TaginEntityManager implements TaginDao {
@@ -97,6 +100,44 @@ public class TaginEntityManager implements TaginDao {
 			}
 		}
 		return neighbours;
+	}
+	
+	@Override
+	public List<URN> fetchNumOfNeighbours(Fingerprint fp, Integer maxCount) {
+		Map<String,URN> neighbours = new LinkedHashMap<String,URN>();
+		for (Neighbour n : getNeighbours(fp)) {
+			String key = n.getFingerprint().getUrn();
+			if (key != null && !neighbours.containsKey(key))
+				neighbours.put(key, new URN(key));
+			if (neighbours.size() >= maxCount)
+				break;
+		}
+		
+		if (neighbours.size() >= maxCount || neighbours.size() == 0) {
+			return new ArrayList<URN>(neighbours.values());
+		} else {
+			return fetchNumOfNeighboursAux(fp.getUrn(), 0, maxCount, neighbours);
+		}
+	}
+	
+	private List<URN> fetchNumOfNeighboursAux(String initialURN, int index, Integer maxCount, Map<String, URN> neighbours) {
+		List<URN> urns = new ArrayList<URN>(neighbours.values());
+		Fingerprint fp = getFingerprint(urns.get(index).getValue());
+		index++;
+		
+		for (Neighbour n : getNeighbours(fp)) {
+			String key = n.getFingerprint().getUrn();
+			if (key != null && !neighbours.containsKey(key) && !key.equals(initialURN))
+				neighbours.put(key, new URN(key));
+			if (neighbours.size() >= maxCount)
+				break;
+		}
+		
+		if (neighbours.size() >= maxCount || index == neighbours.size()) {
+			return new ArrayList<URN>(neighbours.values());
+		} else {
+			return fetchNumOfNeighboursAux(initialURN, index, maxCount, neighbours);
+		}
 	}
 	
 	@SuppressWarnings("unchecked")

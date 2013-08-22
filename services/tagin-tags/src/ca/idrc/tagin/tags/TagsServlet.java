@@ -1,6 +1,7 @@
 package ca.idrc.tagin.tags;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,11 +36,11 @@ public class TagsServlet extends HttpServlet {
 		String urn = req.getParameter(PARAM_URN);
 		if (urn != null && !urn.isEmpty()) {
 			TagsDao dao = new TagsEntityManager();
-			String label = dao.getLabel(urn);
+			List<String> labels = dao.getLabels(urn);
 			dao.close();
 			resp.setContentType("application/json");
 			resp.setCharacterEncoding("UTF-8");
-			resp.getWriter().println(label);
+			resp.getWriter().println(labels);
 		}
 	}
 }

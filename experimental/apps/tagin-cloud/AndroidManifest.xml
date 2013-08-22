@@ -14,35 +14,14 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-	android:name="ca.idrc.tagin.cloud.TaginCloud"
+        android:name="ca.idrc.tagin.cloud.TaginCloudApp"
         android:icon="@drawable/tagcloud_icon"
         android:label="@string/app_name" >
         <activity
             android:name="ca.idrc.tagin.cloud.MainActivity"
             android:label="@string/app_name" >
         </activity>
-        
-        <activity
-            android:name="ca.idrc.tagin.cloud.TagAdder"
-            android:label="@string/app_name" >
-        </activity>
 
-        <service
-            android:name="ca.idi.taginsdk.Fingerprinter"
-            android:enabled="true" >
-            <intent-filter>
-                <action android:name="ca.idi.taginsdk.Fingerprinter" />
-            </intent-filter>
-        </service>
-        
-        <service
-            android:name="ca.idi.taginsdk.TaginURN"
-            android:enabled="true" >
-            <intent-filter>
-                <action android:name="ca.idi.taginsdk.TaginURN" />
-            </intent-filter>
-        </service>
-        
         <service
             android:name="ca.idrc.tagin.lib.TaginService"
             android:exported="true" >
@@ -52,14 +31,13 @@
             </intent-filter>
         </service>
 
-        <provider
-            android:name="ca.idi.taginsdk.TaginProvider"
-            android:authorities="ca.idi.taginsdk.taginprovider"
-            android:syncable="true" />
-
         <activity
             android:name="ca.idrc.tagin.cloud.CloudActivity"
             android:label="@string/title_activity_cloud" >
+        </activity>
+        <activity
+            android:name="ca.idrc.tagin.cloud.LauncherActivity"
+            android:label="@string/title_activity_launcher" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
