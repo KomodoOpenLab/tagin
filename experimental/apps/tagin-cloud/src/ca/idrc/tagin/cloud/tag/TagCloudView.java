@@ -19,7 +19,7 @@ public class TagCloudView extends RelativeLayout {
 	
 	private final float TOUCH_SCALE_FACTOR = .8f;
 	private final float TRACKBALL_SCALE_FACTOR = 10;
-	private final int TEXT_SIZE_MIN = 4;
+	private final int TEXT_SIZE_MIN = 6;
 	private final int TEXT_SIZE_MAX = 34;
 	private final int SCROLL_SPEED = 1;
 	
