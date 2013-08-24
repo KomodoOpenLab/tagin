@@ -6,14 +6,13 @@ package ca.idrc.tagin.cloud.tag;
  * @authors Reza Shiftehfar, Sara Khosravinasr and Jorge Silva
  */
 
-import ca.idrc.tagin.cloud.util.TagMap;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import ca.idrc.tagin.cloud.util.TagMap;
 
 public class TagCloudView extends RelativeLayout {
 	
@@ -69,10 +68,6 @@ public class TagCloudView extends RelativeLayout {
 	}
 	
 	private void initializeTag(Tag tag) {
-		TextView textView = new TextView(mContext);
-		tag.setTextView(textView);
-		textView.setText(tag.getText());
-		
 		RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT,  
 				LayoutParams.WRAP_CONTENT);
@@ -81,11 +76,16 @@ public class TagCloudView extends RelativeLayout {
 		param.setMargins((int) (mCenterX - mShiftLeft + tag.getX2D()), 
 						 (int) (mCenterY + tag.getY2D()), 0, 0);
 		
-		tag.getTextView().setLayoutParams(param);
-		tag.getTextView().setSingleLine(true);
-		tag.getTextView().setTextColor(tag.getColor());
-		tag.getTextView().setTextSize((int)(tag.getTextSize() * tag.getScale()));
-		tag.getTextView().setOnClickListener(onTagClickListener(tag.getUrl()));	
+		TextView textView = new TextView(mContext);
+		textView.setSingleLine(false);
+		textView.setMaxLines(10);
+		textView.setLayoutParams(param);
+		textView.setTextColor(tag.getColor());
+		textView.setTextSize((int)(tag.getTextSize() * tag.getScale()));
+		textView.setOnClickListener(onTagClickListener(tag.getUrl()));	
+		textView.setText(tag.getText());
+		
+		tag.setTextView(textView);
 		addView(tag.getTextView());
 	}
 	

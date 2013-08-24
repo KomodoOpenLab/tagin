@@ -87,15 +87,13 @@ public class LauncherActivity extends Activity implements GetLabelsTaskListener 
 	public void onGetLabelsTaskComplete(String urn, List<String> labels) {
 		if (urn.equals(mInitialURN)) {
 			for (String label : labels) {
-				Tag tag = new Tag(urn, label, 20);
-				mTagMap.put(urn, tag);
+				mTagMap.put(urn, new Tag(urn, label, 20));
 			}
 		} else {
 			synchronized(mNeighboursCounter) {
 				mNeighboursCounter--;
 				for (String label : labels) {
-					Tag tag = new Tag(urn, label, 20);
-					mTagMap.put(urn, tag);
+					mTagMap.put(urn, new Tag(urn, label, 20));
 				}
 				if (mNeighboursCounter == 0) {
 					startCloud();
