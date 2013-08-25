@@ -193,7 +193,7 @@ public class CloudActivity extends Activity implements GetLabelsTaskListener, Se
 			}
 			textView.setText(sb.toString());
 		} else {
-			textView.setText("No label assigned yet");
+			textView.setText(R.string.no_labels_assigned);
 		}
 	}
 
