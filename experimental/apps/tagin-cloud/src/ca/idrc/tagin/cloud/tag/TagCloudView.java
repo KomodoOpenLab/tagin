@@ -79,6 +79,7 @@ public class TagCloudView extends RelativeLayout {
 		TextView textView = new TextView(mContext);
 		textView.setSingleLine(false);
 		textView.setMaxLines(10);
+		textView.setHorizontallyScrolling(true);
 		textView.setLayoutParams(param);
 		textView.setTextColor(tag.getColor());
 		textView.setTextSize((int)(tag.getTextSize() * tag.getScale()));
