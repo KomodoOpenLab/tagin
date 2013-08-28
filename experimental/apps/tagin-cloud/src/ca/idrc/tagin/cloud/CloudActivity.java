@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,14 +38,18 @@ import ca.idrc.tagin.lib.tags.GetLabelsTaskListener;
 import ca.idrc.tagin.lib.tags.SetLabelTask;
 import ca.idrc.tagin.lib.tags.SetLabelTaskListener;
 
-public class CloudActivity extends Activity implements GetLabelsTaskListener, SetLabelTaskListener {
+import com.github.espiandev.showcaseview.ShowcaseView;
+
+public class CloudActivity extends Activity implements GetLabelsTaskListener, SetLabelTaskListener,
+		ShowcaseView.OnShowcaseEventListener {
+	
+	private ShowcaseView mShowcaseView;
 	
 	private CloudActivity mInstance;
 	private TagMap mTagMap;
 	private TaginManager mTaginManager;
 	private TagCloudView mTagCloudView;
 	private TagAdderDialog mTagAdderDialog;
-
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -113,6 +118,13 @@ public class CloudActivity extends Activity implements GetLabelsTaskListener, Se
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.options_menu, menu);
+		if (mTagMap.isEmpty()) {
+			ShowcaseView.ConfigOptions options = new ShowcaseView.ConfigOptions();
+			options.hideOnClickOutside = false;
+			mShowcaseView = ShowcaseView.insertShowcaseViewWithType(ShowcaseView.ITEM_ACTION_ITEM, 
+					R.id.menu_add_tag, this, R.string.showcase_title, R.string.shwocase_message, options);
+			mShowcaseView.setOnShowcaseEventListener(this);
+		}
 		return true;
 	}
 
@@ -201,6 +213,18 @@ public class CloudActivity extends Activity implements GetLabelsTaskListener, Se
 
 	@Override
 	public void onSetLabelTaskComplete(Boolean isSuccessful) {
+		
+	}
+
+	@Override
+	public void onShowcaseViewHide(ShowcaseView showcaseView) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onShowcaseViewShow(ShowcaseView showcaseView) {
+		// TODO Auto-generated method stub
 		
 	}
 

@@ -17,5 +17,8 @@
     <string name="no_labels_assigned">No labels assigned yet.</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    
+    <string name="showcase_title">Welcome to tagin-cloud!</string>
+    <string name="shwocase_message">There are no tags available yet for this location! Use the + button on the actionbar to add a new tag.</string>
 
 </resources>
