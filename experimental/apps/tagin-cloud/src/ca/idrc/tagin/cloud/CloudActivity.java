@@ -129,6 +129,13 @@ public class CloudActivity extends Activity implements GetLabelsTaskListener, Se
 		return true;
 	}
 	
+	@Override
+	public void onBackPressed() {
+		Intent intent = new Intent(Intent.ACTION_MAIN);
+		intent.addCategory(Intent.CATEGORY_HOME);
+		startActivity(intent);
+	}
+	
 	public void saveData() {
 		ObjectOutputStream oos = null;
 		try {
