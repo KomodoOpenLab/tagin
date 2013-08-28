@@ -174,10 +174,12 @@ public class CloudActivity extends Activity implements GetLabelsTaskListener, Se
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals(TaginService.ACTION_URN_READY)) {
-				String urn = intent.getStringExtra(TaginService.EXTRA_QUERY_RESULT);
-				mTagAdderDialog.getURNTextView().setText(urn);
-				GetLabelsTask<CloudActivity> task = new GetLabelsTask<CloudActivity>(mInstance, urn);
-				task.execute();
+				if (intent.hasExtra(TaginService.EXTRA_QUERY_RESULT)) {
+					String urn = intent.getStringExtra(TaginService.EXTRA_QUERY_RESULT);
+					mTagAdderDialog.getURNTextView().setText(urn);
+					GetLabelsTask<CloudActivity> task = new GetLabelsTask<CloudActivity>(mInstance, urn);
+					task.execute();
+				}
 			}
 		}
 	};
