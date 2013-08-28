@@ -4,6 +4,7 @@ gen/
 *.class
 *.api
 *.discovery
+*.settings
 appengine-generated/
 endpoint-libs/
 classes/
