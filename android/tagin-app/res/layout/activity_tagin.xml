@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:onClick="onRequestURN"
-            android:text="Request URN"
+            android:text="@string/request_urn"
             android:textSize="12sp" />
         
         <TextView
@@ -37,7 +37,7 @@
             android:layout_marginTop="12dp"
             android:ems="18"
             android:textIsSelectable="true"
-            android:hint="Received URN"
+            android:hint="@string/received_urn"
             android:textSize="12sp" />
 
         <Button
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:onClick="onListFingerprints"
-            android:text="fingerprints.list()"
+            android:text="@string/fp_list"
             android:textSize="12sp" />
         
         <TextView
@@ -56,7 +56,7 @@
             android:layout_marginTop="12dp"
             android:ems="18"
             android:textIsSelectable="true"
-            android:hint="List all fingerprints"
+            android:hint="@string/list_fp"
             android:textSize="12sp" />
 
         <EditText
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:ems="18"
-            android:hint="Find neighbours of URN"
+            android:hint="@string/find_neighbours_of_urn"
             android:inputType="textFilter"
             android:textSize="12sp" />
 
@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:onClick="onFindNeighbours"
-            android:text="Find neighbours"
+            android:text="@string/find_neighbours"
             android:textSize="12sp" />
         
     </LinearLayout>

@@ -8,8 +8,13 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_launcher">tagin! Cloud</string>
     
+    <string name="urn_value">URN value</string>
+    <string name="current_labels">Current labels:</string>
+    <string name="new_label">New label</string>
+    
     <string name="fetching_urn">Fetching URN&#8230;</string>
     <string name="add_new_tag">Add a new tag</string>
+    <string name="no_labels_assigned">No labels assigned yet.</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 

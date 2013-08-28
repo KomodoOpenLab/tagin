@@ -9,12 +9,15 @@
     <string name="requesting_fp_list">Requesting fingerprints list&#8230;</string>
     <string name="invalid_urn">Invalid URN</string>
     <string name="searching_for_neighbours">Searching for nearby neighbours&#8230;</string>
+    <string name="list_fp">List all fingerprints</string>
     <string name="failed_list_fp">Failed to list fingerprints</string>
     <string name="fp_list">fingerprints.list()</string>
     <string name="failed_acquire_urn">Failed to acquire URN</string>
     <string name="request_urn">Request URN</string>
     <string name="could_not_find_neighbours">Could not find neighbours</string>
     <string name="find_neighbours">Find neighbours</string>
+    <string name="find_neighbours_of_urn">Find neighbours of URN</string>
+    <string name="received_urn">Received URN</string>
     
     <string name="fetching_label">Fetching label&#8230;</string>
     <string name="saving_tag">Saving tag&#8230;</string>

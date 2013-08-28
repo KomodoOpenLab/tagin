@@ -25,6 +25,7 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import ca.idrc.tagin.cloud.tag.Tag;
 import ca.idrc.tagin.cloud.tag.TagCloudView;
 import ca.idrc.tagin.cloud.util.TagAdderDialog;
@@ -183,7 +184,17 @@ public class CloudActivity extends Activity implements GetLabelsTaskListener, Se
 
 	@Override
 	public void onGetLabelsTaskComplete(String urn, List<String> labels) {
-		mTagAdderDialog.getLabelTextView().setText(labels.toString());
+		TextView textView = mTagAdderDialog.getLabelTextView();
+		if (labels.size() > 0) {
+			StringBuffer sb = new StringBuffer();
+			sb.append(labels.get(0));
+			for (int i = 1; i < labels.size(); i++) {
+				sb.append(", " + labels.get(i));
+			}
+			textView.setText(sb.toString());
+		} else {
+			textView.setText(R.string.no_labels_assigned);
+		}
 	}
 
 	@Override

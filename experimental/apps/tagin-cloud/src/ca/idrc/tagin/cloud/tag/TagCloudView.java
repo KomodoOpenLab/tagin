@@ -6,20 +6,19 @@ package ca.idrc.tagin.cloud.tag;
  * @authors Reza Shiftehfar, Sara Khosravinasr and Jorge Silva
  */
 
-import ca.idrc.tagin.cloud.util.TagMap;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import ca.idrc.tagin.cloud.util.TagMap;
 
 public class TagCloudView extends RelativeLayout {
 	
 	private final float TOUCH_SCALE_FACTOR = .8f;
 	private final float TRACKBALL_SCALE_FACTOR = 10;
-	private final int TEXT_SIZE_MIN = 4;
+	private final int TEXT_SIZE_MIN = 6;
 	private final int TEXT_SIZE_MAX = 34;
 	private final int SCROLL_SPEED = 1;
 	
@@ -69,10 +68,6 @@ public class TagCloudView extends RelativeLayout {
 	}
 	
 	private void initializeTag(Tag tag) {
-		TextView textView = new TextView(mContext);
-		tag.setTextView(textView);
-		textView.setText(tag.getText());
-		
 		RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT,  
 				LayoutParams.WRAP_CONTENT);
@@ -81,11 +76,17 @@ public class TagCloudView extends RelativeLayout {
 		param.setMargins((int) (mCenterX - mShiftLeft + tag.getX2D()), 
 						 (int) (mCenterY + tag.getY2D()), 0, 0);
 		
-		tag.getTextView().setLayoutParams(param);
-		tag.getTextView().setSingleLine(true);
-		tag.getTextView().setTextColor(tag.getColor());
-		tag.getTextView().setTextSize((int)(tag.getTextSize() * tag.getScale()));
-		tag.getTextView().setOnClickListener(onTagClickListener(tag.getUrl()));	
+		TextView textView = new TextView(mContext);
+		textView.setSingleLine(false);
+		textView.setMaxLines(10);
+		textView.setHorizontallyScrolling(true);
+		textView.setLayoutParams(param);
+		textView.setTextColor(tag.getColor());
+		textView.setTextSize((int)(tag.getTextSize() * tag.getScale()));
+		textView.setOnClickListener(onTagClickListener(tag.getUrl()));	
+		textView.setText(tag.getText());
+		
+		tag.setTextView(textView);
 		addView(tag.getTextView());
 	}
 	
@@ -101,9 +102,10 @@ public class TagCloudView extends RelativeLayout {
 	
 	public void addTag(Tag tag) {
 		if (mTagCloud.getTagMap().containsKey(tag.getID())) {
-			/*Tag oldTag = mTagCloud.getTagMap().get(tag.getID());
-			oldTag.setText(tag.getText());
-			oldTag.getTextView().setText(tag.getText());*/
+			Tag oldTag = mTagCloud.getTagMap().get(tag.getID());
+			String labels = oldTag.getText() + "\n" + tag.getText();
+			oldTag.setText(labels);
+			oldTag.getTextView().setText(labels);
 		} else {
 			initializeTag(tag);
 			updateView(tag);
