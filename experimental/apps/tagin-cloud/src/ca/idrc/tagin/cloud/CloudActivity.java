@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 import ca.idrc.tagin.cloud.tag.Tag;
 import ca.idrc.tagin.cloud.tag.TagCloudView;
 import ca.idrc.tagin.cloud.util.TagAdderDialog;
@@ -87,6 +88,7 @@ public class CloudActivity extends Activity implements GetLabelsTaskListener, Se
 		mTagMap.put(tag.getID(), tag);
 		updateTagCloud();
 		saveData();
+		Toast.makeText(this, "\"" + tag.getText() + "\" tag successfully added", Toast.LENGTH_SHORT).show();
 	}
 	
 	private void updateTagCloud() {
