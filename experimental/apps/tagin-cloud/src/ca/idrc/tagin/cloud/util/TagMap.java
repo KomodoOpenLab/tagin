@@ -40,4 +40,8 @@ public class TagMap implements Serializable {
 	public int size() {
 		return mTags.size();
 	}
+	
+	public boolean isEmpty() {
+		return mTags.isEmpty();
+	}
 }
