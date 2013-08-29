@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -84,12 +83,10 @@ public class CloudActivity extends Activity implements GetLabelsTaskListener, Se
 	}
 	
 	public void addTagToCloud(Tag tag) {
-		if (tag != null) {
-			mTagCloudView.addTag(tag);
-			mTagMap.put(tag.getID(), tag);
-			updateTagCloud();
-			saveData();
-		}
+		mTagCloudView.addTag(tag);
+		mTagMap.put(tag.getID(), tag);
+		updateTagCloud();
+		saveData();
 	}
 	
 	private void updateTagCloud() {
