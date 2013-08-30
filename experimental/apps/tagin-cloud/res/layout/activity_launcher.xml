@@ -6,21 +6,21 @@
     android:orientation="vertical"
     tools:context=".LauncherActivity" >
 
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:scaleType="centerInside"
-        android:src="@drawable/splash_picture" />
-
     <TextView
+        android:id="@+id/loading_textview"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="10"
+        android:layout_height="90dp"
+        android:layout_marginTop="60dp"
         android:gravity="center_horizontal"
-        android:text="Initializing..."
-        android:textColor="@color/red"
+        android:text="@string/initializing"
+        android:textSize="24sp"
         android:textStyle="bold" >
     </TextView>
+
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="160dp" />
 
 </LinearLayout>
