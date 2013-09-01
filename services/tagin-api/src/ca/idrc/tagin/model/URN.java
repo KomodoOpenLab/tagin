@@ -20,4 +20,9 @@ public class URN {
 		this.urn = urn;
 	}
 
+	public String toString() {
+		return getClass().getSimpleName() +
+				"[URN: " + getValue() + "]";
+	}
+
 }

@@ -1,5 +1,7 @@
 package ca.idrc.tagin.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,8 +11,9 @@ import javax.persistence.Id;
 import com.google.appengine.api.datastore.Key;
 
 @Entity
-public class Beacon implements Comparable<Beacon> {
-
+public class Beacon implements Serializable, Comparable<Beacon> {
+	
+	private static final long serialVersionUID = 7781154976687576390L;
 	public static final Double NULL_RSSI = -1.0;
 
 	@Id

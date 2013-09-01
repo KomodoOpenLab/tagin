@@ -1,5 +1,6 @@
 package ca.idrc.tagin.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,8 +19,9 @@ import ca.idrc.tagin.dao.TaginDao;
 import ca.idrc.tagin.dao.TaginEntityManager;
 
 @Entity
-public class Fingerprint {
+public class Fingerprint implements Serializable {
 
+	private static final long serialVersionUID = 4658250121896413119L;
 	public static final Double THRESHOLD = 0.33;
 
 	@Id
