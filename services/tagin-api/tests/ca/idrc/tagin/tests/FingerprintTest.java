@@ -86,6 +86,17 @@ public class FingerprintTest {
 	}
 	
 	@Test
+	public void testFetchNeighbours() {
+		TaginDao dao = new TaginEntityManager();
+		Fingerprint f1 = dao.getFingerprint(p1.getKey().getParent().getId());
+		Fingerprint f3 = dao.getFingerprint(p3.getKey().getParent().getId());
+		Fingerprint f4 = dao.getFingerprint(p4.getKey().getParent().getId());
+		Assert.assertTrue(!dao.fetchNumOfNeighbours(f1, 10).contains(f1.getUrn()));
+		Assert.assertTrue(!dao.fetchNumOfNeighbours(f3, 10).contains(f3.getUrn()));
+		Assert.assertTrue(dao.fetchNumOfNeighbours(f4, 10).isEmpty());
+	}
+	
+	@Test
 	public void testRankDistanceToNeighbour() {
 		TaginDao dao = new TaginEntityManager();
 		Fingerprint f1 = dao.getFingerprint(p1.getKey().getParent().getId());

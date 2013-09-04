@@ -1,5 +1,6 @@
 package ca.idrc.tagin.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,7 +18,9 @@ import javax.persistence.OneToMany;
 import com.google.appengine.api.datastore.Key;
 
 @Entity
-public class Pattern {
+public class Pattern implements Serializable {
+
+	private static final long serialVersionUID = 9092532996122510034L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

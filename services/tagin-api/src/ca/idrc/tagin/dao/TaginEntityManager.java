@@ -1,12 +1,19 @@
 package ca.idrc.tagin.dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+
+import net.sf.jsr107cache.Cache;
+import net.sf.jsr107cache.CacheException;
+import net.sf.jsr107cache.CacheFactory;
+import net.sf.jsr107cache.CacheManager;
 
 import ca.idrc.tagin.model.Beacon;
 import ca.idrc.tagin.model.Fingerprint;
@@ -18,15 +25,23 @@ import ca.idrc.tagin.spi.v1.URNManager;
 public class TaginEntityManager implements TaginDao {
 
 	private EntityManager mEntityManager;
+	private Cache mFingerprintCache;
 
 	public TaginEntityManager() {
 		mEntityManager = EMFService.createEntityManager();
+		try {
+			CacheFactory factory = CacheManager.getInstance().getCacheFactory();
+			mFingerprintCache = factory.createCache(Collections.emptyMap());
+		} catch (CacheException e) {
+			Logger.getLogger(TaginDao.class.getName()).severe("Unable to create cache using internal mechanism");
+		}
 	}
 
 	@Override
 	public String persistPattern(Pattern pattern) {
 		Fingerprint fp = new Fingerprint(pattern);
 		URNManager.generateURN(this, fp);
+		mFingerprintCache.put(fp.getUrn(), fp);
 		return fp.getUrn();
 	}
 
@@ -76,6 +91,9 @@ public class TaginEntityManager implements TaginDao {
 
 	@Override
 	public Fingerprint getFingerprint(String urn) {
+		if (mFingerprintCache.containsKey(urn)) {
+			return (Fingerprint) mFingerprintCache.get(urn);
+		}
 		return findFingerprint(urn);
 	}
 	

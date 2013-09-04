@@ -47,10 +47,10 @@ public class GetLabelsTask<T extends Context & GetLabelsTaskListener> extends As
 			labels = new Gson().fromJson(json, new TypeToken<List<String>>(){}.getType());
 		} catch (ClientProtocolException e1) {
 			e1.printStackTrace();
-			return null;
+			return labels;
 		} catch (IOException e1) {
 			e1.printStackTrace();
-			return null;
+			return labels;
 		}
 		return labels;
 	}

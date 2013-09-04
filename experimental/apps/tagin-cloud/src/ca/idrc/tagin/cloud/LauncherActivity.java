@@ -1,5 +1,6 @@
 package ca.idrc.tagin.cloud;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.api.services.tagin.model.URN;
@@ -106,9 +107,20 @@ public class LauncherActivity extends Activity implements GetLabelsTaskListener 
 		URNCollection urns = TaginUtils.deserialize(result, URNCollection.class);
 		
 		if (urns != null && urns.getItems() != null && urns.getItems().size() > 0) {
-			mNeighboursCounter = urns.getItems().size();
+			// Temporary workaround to handle duplicated URN
+			List<String> items = new ArrayList<String>();
 			for (URN urn : urns.getItems()) {
-				GetLabelsTask<LauncherActivity> task = new GetLabelsTask<LauncherActivity>(this, urn.getValue());
+				if (!urn.getValue().equals(mInitialURN)) {
+					items.add(urn.getValue());
+				}
+			}
+			if (items.size() == 0) {
+				startCloud();
+			}
+			
+			mNeighboursCounter = items.size();
+			for (String urn : items) {
+				GetLabelsTask<LauncherActivity> task = new GetLabelsTask<LauncherActivity>(this, urn);
 				task.execute();
 			}
 		} else {
