@@ -15,7 +15,7 @@
 
     <application
         android:name="ca.idrc.tagin.cloud.TaginCloudApp"
-        android:icon="@drawable/tagcloud_icon"
+        android:icon="@drawable/tagin_cloud_logo"
         android:label="@string/app_name" >
         <activity
             android:name="ca.idrc.tagin.cloud.MainActivity"
