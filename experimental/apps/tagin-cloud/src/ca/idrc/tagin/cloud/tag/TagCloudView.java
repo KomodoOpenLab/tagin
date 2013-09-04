@@ -108,8 +108,8 @@ public class TagCloudView extends RelativeLayout {
 			oldTag.getTextView().setText(labels);
 		} else {
 			initializeTag(tag);
-			updateView(tag);
 			mTagCloud.add(tag);
+			updateView(tag);
 		}
 	}
 	
